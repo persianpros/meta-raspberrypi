@@ -1,9 +1,9 @@
 RaspberryPi BSP layer for:
 ```
-raspberrypi0 - kernel 4.9.50 (RPi0)
-raspberrypi - kernel 4.9.50 (RPi1)
-raspberrypi2 - kernel 4.9.50 (RPi2)
-raspberrypi3 - kernel 4.9.50 (RPi3)
+raspberrypi0 - kernel 4.9.59 (RPi0)
+raspberrypi - kernel 4.9.59 (RPi1)
+raspberrypi2 - kernel 4.9.59 (RPi2)
+raspberrypi3 - kernel 4.9.59 (RPi3)
 ```
 How does it work? Simply with PLi's OE!
 
@@ -24,6 +24,6 @@ each time you do "make update" for the OE.
 
 Experimental machines:
 ```
-raspberrypi3-64 - kernel 4.9.50 (RPi3-64Bit)
+raspberrypi3-64 - kernel 4.9.59 (RPi3-64Bit)
 ```
 We're independent so if you think you can help you're welcome to send us merge requests.
