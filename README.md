@@ -1,55 +1,29 @@
-# meta-raspberrypi
+RaspberryPi BSP layer for:
+```
+raspberrypi0 - kernel 4.9.50 (RPi0)
+raspberrypi - kernel 4.9.50 (RPi1)
+raspberrypi2 - kernel 4.9.50 (RPi2)
+raspberrypi3 - kernel 4.9.50 (RPi3)
+```
+How does it work? Simply with PLi's OE!
 
-Yocto BSP layer for the Raspberry Pi boards - <http://www.raspberrypi.org/>.
+Use https://github.com/OpenPLi/openpli-oe-core (pyro branch) with Ubuntu 16.04.3 LTS as your base, Open a terminal inside "openpli-oe-core" folder and enter:
+```
+wget https://raw.githubusercontent.com/RaspberryPLi/PLiPi/master/PLiPi-pyro.sh
+sh PLiPi-pyro.sh
+```
+You must run PLiPi-pyro.sh only once!
 
-[![Build Status](https://yocto-ci.resin.io/job/meta-raspberrypi1/badge/icon)](https://yocto-ci.resin.io/job/meta-raspberrypi1)
-[![Build Status](https://yocto-ci.resin.io/job/meta-raspberrypi2/badge/icon)](https://yocto-ci.resin.io/job/meta-raspberrypi2)
-[![Build Status](https://yocto-ci.resin.io/job/meta-raspberrypi3/badge/icon)](https://yocto-ci.resin.io/job/meta-raspberrypi3)
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/agherzan/meta-raspberrypi)
+Edit PLi's "Makefile" and add "meta-raspberrypi" after "meta-lcoal".
 
-## Quick links
+For latest updates you need to open a terminal inside "meta-raspberrypi" folder and enter:
+```
+git pull origin pyro
+```
+each time you do "make update" for the OE.
 
-* Git repository web frontend:
-  <http://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/>
-* Mailing list (yocto mailing list): <yocto@yoctoproject.org>
-* Issues management (Github Issues):
-  <https://github.com/agherzan/meta-raspberrypi/issues>
-
-## Description
-
-This is the general hardware specific BSP overlay for the RaspberryPi device.
-
-More information can be found at: <http://www.raspberrypi.org/> (Official Site)
-
-The core BSP part of meta-raspberrypi should work with different
-OpenEmbedded/Yocto distributions and layer stacks, such as:
-
-* Distro-less (only with OE-Core).
-* Angstrom.
-* Yocto/Poky (main focus of testing).
-
-## Dependencies
-
-This layer depends on:
-
-* URI: git://git.yoctoproject.org/poky
-  * branch: pyro
-  * revision: HEAD
-
-* URI: git://git.openembedded.org/meta-openembedded
-  * layers: meta-oe, meta-multimedia, meta-networking, meta-python
-  * branch: pyro
-  * revision: HEAD
-
-## Quick Start
-
-1. source poky/oe-init-build-env rpi-build
-2. Add this layer to bblayers.conf and the dependencies above
-3. Set MACHINE in local.conf to one of the supported boards
-4. bitbake rpi-hwup-image
-5. dd to a SD card the generated sdimg file (use xzcat if rpi-sdimg.xz is used)
-6. Boot your RPI.
-
-## Maintainers
-
-* Andrei Gherzan `<andrei at gherzan.ro>`
+Experimental machines:
+```
+raspberrypi3-64 - kernel 4.9.50 (RPi3-64Bit)
+```
+We're independent so if you think you can help you're welcome to send us merge requests.
