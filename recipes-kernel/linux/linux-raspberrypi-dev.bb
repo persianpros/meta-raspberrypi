@@ -11,7 +11,7 @@ LINUX_VERSION ?= "4.11"
 LINUX_RPI_DEV_BRANCH ?= "rpi-4.11.y"
 
 SRCREV = "${AUTOREV}"
-SRC_URI = "git://github.com/RaspberryPLi/linux.git;protocol=git;branch=${LINUX_RPI_DEV_BRANCH} \
+SRC_URI = "git://github.com/raspberrypi/linux.git;protocol=git;branch=${LINUX_RPI_DEV_BRANCH} \
            file://0001-build-arm64-Add-rules-for-.dtbo-files-for-dts-overla.patch \
 "
 require linux-raspberrypi.inc
