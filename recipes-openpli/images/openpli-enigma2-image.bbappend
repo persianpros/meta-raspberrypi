@@ -1,3 +1,3 @@
-IMAGE_INSTALL_append_piplatform += " \
+IMAGE_INSTALL_append_pliplatform += " \
 	lirc \
 	"
