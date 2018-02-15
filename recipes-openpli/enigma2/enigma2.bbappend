@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI_append = " \
+SRC_URI_append += " \
 	${@bb.utils.contains('MACHINE_FEATURES', 'plipi', 'file://lirc.patch file://remote.conf', '', d)} \
 "
 
