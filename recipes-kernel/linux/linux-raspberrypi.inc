@@ -6,11 +6,9 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
-SRC_URI += " \
-        file://defconfig \
-        "
+SRC_URI += "file://defconfig"
 
-S = "${WORKDIR}/linux-rpi-4.9.y"
+S = "${WORKDIR}/linux-rpi-4.14.y"
 
 COMPATIBLE_MACHINE = "raspberrypi"
 
@@ -18,9 +16,11 @@ PE = "1"
 PV = "${LINUX_VERSION}"
 
 # NOTE: For now we pull in the default config from the RPi kernel GIT tree.
-KERNEL_DEFCONFIG_raspberrypi ?= "bcmrpi_defconfig"
-KERNEL_DEFCONFIG_raspberrypi2 ?= "bcm2709_defconfig"
-KERNEL_DEFCONFIG_raspberrypi3-64 ?= "bcmrpi3_defconfig"
+KBUILD_DEFCONFIG_raspberrypi0 ?= "bcmrpi_defconfig"
+KBUILD_DEFCONFIG_raspberrypi ?= "bcmrpi_defconfig"
+KBUILD_DEFCONFIG_raspberrypi2 ?= "bcm2709_defconfig"
+KBUILD_DEFCONFIG_raspberrypi3 ?= "bcm2709_defconfig"
+KBUILD_DEFCONFIG_raspberrypi3-64 ?= "bcmrpi3_defconfig"
 
 # CMDLINE for raspberrypi
 CMDLINE ?= "dwc_otg.lpm_enable=0 console=serial0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait"
