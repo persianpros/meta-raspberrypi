@@ -1,3 +1,3 @@
-IMAGE_INSTALL_append = " \
-	${@bb.utils.contains('MACHINE_FEATURES', 'plipi', 'lirc', '', d)} \
+IMAGE_INSTALL_append += "\
+	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'lirc', '', d)} \
 	"
