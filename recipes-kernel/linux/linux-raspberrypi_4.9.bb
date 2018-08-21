@@ -1,9 +1,11 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
-LINUX_VERSION ?= "4.9.59"
+LINUX_VERSION ?= "4.9.80"
 
-SRCREV = "${AUTOREV}"
-SRC_URI = "git://github.com/PLi-metas/linux.git;branch=rpi-4.9.y"
+SRC_URI[md5sum] = "61765ed7d8e96ceafe24b539188c59ee"
+SRC_URI[sha256sum] = "92fd843f172ba69def66ae6e06346630ad97c9c0909d5e1a7f0f1753ada553ef"
+
+SRC_URI = "https://github.com/PLi-metas/linux/archive/rpi-4.9.y.tar.gz"
 
 require linux-raspberrypi.inc
 

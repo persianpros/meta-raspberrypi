@@ -10,10 +10,12 @@ SRC_URI += " \
         file://defconfig \
         "
 
+S = "${WORKDIR}/linux-rpi-4.9.y"
+
 COMPATIBLE_MACHINE = "raspberrypi"
 
 PE = "1"
-PV = "${LINUX_VERSION}+git${SRCPV}"
+PV = "${LINUX_VERSION}"
 
 # NOTE: For now we pull in the default config from the RPi kernel GIT tree.
 KERNEL_DEFCONFIG_raspberrypi ?= "bcmrpi_defconfig"
