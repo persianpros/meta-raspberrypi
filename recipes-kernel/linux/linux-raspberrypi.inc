@@ -10,7 +10,7 @@ SRC_URI += "file://defconfig"
 
 S = "${WORKDIR}/linux-rpi-4.14.y"
 
-COMPATIBLE_MACHINE = "raspberrypi"
+COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi3-64"
 
 PE = "1"
 PV = "${LINUX_VERSION}"
