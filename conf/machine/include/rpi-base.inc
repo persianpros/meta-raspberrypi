@@ -1,9 +1,11 @@
-include conf/machine/include/rpi-default-settings.inc
-include conf/machine/include/rpi-default-versions.inc
 include conf/machine/include/rpi-default-providers.inc
 
 SOC_FAMILY = "rpi"
 include conf/machine/include/soc-family.inc
+
+IMAGE_CLASSES += "sdcard_image-rpi"
+
+PREFERRED_VERSION_linux-raspberrypi ?= "4.14.%"
 
 IMAGE_FSTYPES ?= "rpi-sdimg"
 
