@@ -10,6 +10,14 @@ include conf/machine/include/soc-family.inc
 IMAGE_FSTYPES ?= "rpi-sdimg"
 WKS_FILE ?= "sdimage-raspberrypi.wks"
 
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
+    rpi-e2-procfs \
+"
+
+KERNEL_MODULE_AUTOLOAD += "\
+    e2_procfs \
+"
+
 RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     overlays/dwc2.dtbo \
     overlays/hifiberry-amp.dtbo \
