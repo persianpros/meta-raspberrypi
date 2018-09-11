@@ -10,11 +10,13 @@ COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 SRCREV = "${AUTOREV}"
 
+PR = "r1"
+
 SRC_URI = "git://github.com/PLi-metas/rpi-e2-procfs.git;protocol=git"
 
 S = "${WORKDIR}/git/source/e2_procfs"
 
-inherit module
+inherit module machine_kernel_pr
 
 EXTRA_OEMAKE = "KSRC=${STAGING_KERNEL_BUILDDIR}"
 
@@ -24,6 +26,6 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/extra
-	install -m 0644 ${S}/e2_procfs.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/extra/
+	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel
+	install -m 0644 ${S}/e2_procfs.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/
 }

@@ -12,6 +12,7 @@ WKS_FILE ?= "sdimage-raspberrypi.wks"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     rpi-e2-procfs \
+    kernel-module-e2-procfs \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
