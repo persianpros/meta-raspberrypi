@@ -10,13 +10,14 @@ COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 SRCREV = "${AUTOREV}"
 
-PR = "r1"
+PV = "1.0+git${SRCPV}"
+PKGV = "1.0+git${GITPKGV}"
 
 SRC_URI = "git://github.com/PLi-metas/rpi-e2-procfs.git;protocol=git"
 
 S = "${WORKDIR}/git/source/e2_procfs"
 
-inherit module machine_kernel_pr
+inherit module machine_kernel_pr gitpkgv
 
 EXTRA_OEMAKE = "KSRC=${STAGING_KERNEL_BUILDDIR}"
 
