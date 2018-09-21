@@ -5,17 +5,15 @@ LIC_FILES_CHKSUM = "file://LICENCE.broadcom;md5=4a4d169737c0786fb9482bb6d30401d1
 
 inherit deploy nopackages
 
-include recipes-bsp/common/firmware.inc
+include firmware.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 
 DEPENDS = "rpi-config"
 
-COMPATIBLE_MACHINE = "^rpi$"
+COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 S = "${RPIFW_S}/boot"
-
-PR = "r3"
 
 do_deploy() {
     install -d ${DEPLOYDIR}/${PN}
@@ -38,4 +36,3 @@ addtask deploy before do_build after do_install
 do_deploy[dirs] += "${DEPLOYDIR}/${PN}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-
