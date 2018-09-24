@@ -8,6 +8,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
+DEPENDS = "userland"
+
 SRCREV = "${AUTOREV}"
 
 PV = "1.0+git${SRCPV}"
