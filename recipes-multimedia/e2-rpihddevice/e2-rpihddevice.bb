@@ -4,7 +4,8 @@ SECTION = "multimedia"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/git/COPYING;md5=892f569a555ba9c07a568a7c0c4fa63a"
 
-RDEPENDS_${PN} = "userland ffmpeg libav freetype"
+DEPENDS = "userland ffmpeg freetype"
+RDEPENDS_${PN} = "userland ffmpeg freetype"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
