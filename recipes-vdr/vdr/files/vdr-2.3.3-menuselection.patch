@@ -1,0 +1,134 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ vdr (2.3.3-5ckone0~trusty) trusty; urgency=medium
+ .
+   * automatic rebuild
+Author: CKone <ckone-launchpad@arcor.de>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+Index: vdr-2.3.8/osdbase.c
+===================================================================
+--- vdr-2.3.8.orig/osdbase.c
++++ vdr-2.3.8/osdbase.c
+@@ -83,6 +83,7 @@ cOsdMenu::cOsdMenu(const char *Title, in
+ {
+   isMenu = true;
+   digit = 0;
++  key_nr = -1;
+   hasHotkeys = false;
+   displayMenuItems = 0;
+   title = NULL;
+@@ -141,7 +142,7 @@ const char *cOsdMenu::hk(const char *s)
+         digit = -1; // prevents automatic hotkeys - input already has them
+      if (digit >= 0) {
+         digit++;
+-        buffer = cString::sprintf(" %c %s", (digit < 10) ? '0' + digit : ' ' , s);
++        buffer = cString::sprintf(" %2d%s %s", digit, (digit > 9) ? "" : " ", s);
+         s = buffer;
+         }
+      }
+@@ -491,20 +492,60 @@ void cOsdMenu::Mark(void)
+      }
+ }
+ 
++#define MENUKEY_TIMEOUT 1500
++
+ eOSState cOsdMenu::HotKey(eKeys Key)
+ {
+-  for (cOsdItem *item = First(); item; item = Next(item)) {
++  bool match = false;
++  bool highlight = false;
++  int  item_nr;
++  int  i;
++
++  if (Key == kNone) {
++     if (lastActivity.TimedOut())
++        Key = kOk;
++     else
++        return osContinue;
++     }
++  else
++     lastActivity.Set(MENUKEY_TIMEOUT);
++  for (cOsdItem *item = Last(); item; item = Prev(item)) {
+       const char *s = item->Text();
+-      if (s && (s = skipspace(s)) != NULL) {
+-         if (*s == Key - k1 + '1') {
++      i = 0;
++      item_nr = 0;
++      if (s && (s = skipspace(s)) != '\0' && '0' <= s[i] && s[i] <= '9') {
++         do {
++            item_nr = item_nr * 10 + (s[i] - '0');
++            }
++         while ( !((s[++i] == '\t')||(s[i] == ' ')) && (s[i] != '\0') && ('0' <= s[i]) && (s[i] <= '9'));
++         if ((Key == kOk) && (item_nr == key_nr)) {
+             current = item->Index();
+             RefreshCurrent();
+             Display();
+             cRemote::Put(kOk, true);
++            key_nr = -1;
+             break;
+             }
++         else if (Key != kOk) {
++            if (!highlight && (item_nr == (Key - k0))) {
++               highlight = true;
++               current = item->Index();
++               }
++            if (!match && (key_nr == -1) && ((item_nr / 10) == (Key - k0))) {
++               match = true;
++               key_nr = (Key - k0);
++               }
++            else if (((key_nr == -1) && (item_nr == (Key - k0))) || (!match && (key_nr >= 0) && (item_nr == (10 * key_nr + Key - k0)))) {
++               current = item->Index();
++               cRemote::Put(kOk, true);
++               key_nr = -1;
++               break;
++               }
++            }
+          }
+       }
++  if ((!match) && (Key != kNone))
++     key_nr = -1;
+   return osContinue;
+ }
+ 
+@@ -545,8 +586,8 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
+         }
+      }
+   switch (int(Key)) {
+-    case k0:      return osUnknown;
+-    case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
++    case kNone:
++    case k0...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
+     case kUp|k_Repeat:
+     case kUp:     if (menuOrientation == moHorizontal) PageUp();     else CursorUp(); break;
+     case kDown|k_Repeat:
+Index: vdr-2.3.8/osdbase.h
+===================================================================
+--- vdr-2.3.8.orig/osdbase.h
++++ vdr-2.3.8/osdbase.h
+@@ -101,6 +101,8 @@ private:
+   char *status;
+   int digit;
+   bool hasHotkeys;
++  int key_nr;
++  cTimeMs lastActivity;
+   void DisplayHelp(bool Force = false);
+ protected:
+   void SetDisplayMenu(void);
