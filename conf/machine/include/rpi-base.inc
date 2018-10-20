@@ -16,6 +16,8 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     rpi-e2-procfs \
     kernel-module-e2-procfs \
     e2-rpihddevice \
+    liborc-0.4-0 \
+    orc \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\

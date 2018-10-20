@@ -1,9 +1,9 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
-LINUX_VERSION ?= "4.14.76"
+LINUX_VERSION ?= "4.14.77"
 
-SRC_URI[md5sum] = "c5d961fbce97acb84b1b82c71bd0252f"
-SRC_URI[sha256sum] = "785525810514bc55802d5c14f0a61079b2e6912235fcd99783e7e2c7dad4670d"
+SRC_URI[md5sum] = "8fe121b832140ee4da46aa435ba27ad8"
+SRC_URI[sha256sum] = "2d070e2a803c0c5e115c2283652e92a8e33df159cda39e40f5f083e7ab3f8f9f"
 
 SRC_URI = "\
     https://github.com/PLi-metas/linux/archive/rpi-4.14.y.tar.gz \

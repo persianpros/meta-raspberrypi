@@ -12,3 +12,7 @@ do_install_append() {
 		${D}/etc/enigma2
 	fi
 }
+
+RDEPENDS_${PN} += " \
+	fribidi \
+	"
