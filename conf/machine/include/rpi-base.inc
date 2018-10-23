@@ -15,6 +15,7 @@ WKS_FILE ?= "sdimage-raspberrypi.wks"
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     rpi-e2-procfs \
     kernel-module-e2-procfs \
+    kernel-module-lirc-rpi \
     e2-rpihddevice \
     liborc-0.4-0 \
     orc \
@@ -23,6 +24,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 
 KERNEL_MODULE_AUTOLOAD += "\
     e2_procfs \
+    lirc_rpi \
 "
 
 RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
@@ -56,8 +58,6 @@ RPI_KERNEL_DEVICETREE ?= " \
     bcm2709-rpi-2-b.dtb \
     bcm2710-rpi-3-b.dtb \
     bcm2710-rpi-3-b-plus.dtb \
-    bcm2708-rpi-cm.dtb \
-    bcm2710-rpi-cm3.dtb \
     "
 
 KERNEL_DEVICETREE ?= " \
