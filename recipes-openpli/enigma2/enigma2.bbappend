@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI_append += "\
 	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://lirc.patch file://remote.conf', '', d)} \
+	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://rpihddevice.patch', '', d)} \
 "
 
 do_install_append() {
@@ -12,7 +13,3 @@ do_install_append() {
 		${D}/etc/enigma2
 	fi
 }
-
-RDEPENDS_${PN} += " \
-	fribidi \
-	"
