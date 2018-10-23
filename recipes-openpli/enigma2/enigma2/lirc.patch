@@ -1,6 +1,6 @@
-diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
---- enigma2-pli/data/keymap.xml	2018-01-02 14:04:52.687284000 +0330
-+++ enigma2-persianprince/data/keymap.xml	2018-01-02 14:25:12.932677911 +0330
+diff -Naur enigma2-pli/data/keymap.xml enigma2-rpi/data/keymap.xml
+--- enigma2-pli/data/keymap.xml	2018-10-23 22:20:51.395544555 +0000
++++ enigma2-rpi/data/keymap.xml	2018-10-23 23:13:44.809196352 +0000
 @@ -54,6 +54,11 @@
  			<key id="KEY_NEXT" mapto="deleteForward" flags="mr"/>
  			<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr"/>
@@ -13,7 +13,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_1" mapto="1" flags="m"/>
  		<key id="KEY_2" mapto="2" flags="m"/>
  		<key id="KEY_3" mapto="3" flags="m"/>
-@@ -95,6 +100,9 @@
+@@ -155,6 +160,9 @@
  		<device name="dreambox remote control (native)">
  			<key id="KEY_RED" mapto="instantRecord" flags="b"/>
  		</device>
@@ -23,7 +23,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="InfobarExtensions">
-@@ -153,6 +161,11 @@
+@@ -213,6 +221,11 @@
  			<key id="KEY_NEXT" mapto="deleteForward" flags="mr"/>
  			<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr"/>
  		</device>
@@ -35,7 +35,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_1" mapto="1" flags="m"/>
  		<key id="KEY_2" mapto="2" flags="m"/>
  		<key id="KEY_3" mapto="3" flags="m"/>
-@@ -212,6 +225,9 @@
+@@ -273,6 +286,9 @@
  		<device name="dreambox advanced remote control (native)">
  			<key id="KEY_YELLOW" mapto="audioSelection" flags="b"/>
  		</device>
@@ -45,7 +45,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="InfobarSubtitleSelectionActions">
-@@ -247,6 +263,9 @@
+@@ -308,6 +324,9 @@
  			<key id="KEY_BACK" mapto="prevSubservice" flags="m"/>
  			<key id="KEY_FORWARD" mapto="nextSubservice" flags="m"/>
  		</device>
@@ -55,7 +55,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_EXIT" mapto="exit" flags="m"/>
  		<key id="KEY_ESC" mapto="exit" flags="m"/>
  		<key id="KEY_TV" mapto="exit" flags="b"/>
-@@ -295,6 +314,11 @@
+@@ -356,6 +375,11 @@
  			<key id="KEY_NEXT" mapto="deleteForward" flags="mr"/>
  			<key id="KEY_PREVIOUS" mapto="deleteBackward" flags="mr"/>
  		</device>
@@ -67,7 +67,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="InfobarSeekActions">
-@@ -325,6 +349,18 @@
+@@ -386,6 +410,18 @@
  			<key id="KEY_LEFT" mapto="seekBack" flags="m"/>
  			<key id="KEY_RIGHT" mapto="seekFwd" flags="m"/>
  		</device>
@@ -86,7 +86,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_OK" mapto="okButton" flags="m"/>
  		<key id="KEY_1" mapto="seekdef:1" flags="m"/>
  		<key id="KEY_3" mapto="seekdef:3" flags="m"/>
-@@ -347,6 +383,14 @@
+@@ -408,6 +444,14 @@
  			<key id="KEY_RED" mapto="seekBackManual" flags="l"/>
  			<key id="KEY_BLUE" mapto="seekFwdManual" flags="l"/>
  		</device>
@@ -101,7 +101,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_REWIND" mapto="seekBack" flags="b"/>
  		<key id="KEY_FASTFORWARD" mapto="seekFwd" flags="b"/>
  		<key id="KEY_REWIND" mapto="seekBackManual" flags="l"/>
-@@ -367,6 +411,11 @@
+@@ -428,6 +472,11 @@
  		<device name="dreambox ir keyboard">
  			<key id="KEY_YELLOW" mapto="timeshiftStart" flags="m"/>
  		</device>
@@ -113,7 +113,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_PLAYPAUSE" mapto="timeshiftStart" flags="m"/>
  		<key id="KEY_PAUSE" mapto="timeshiftStart" flags="m"/>
  		<key id="KEY_STOP" mapto="timeshiftStop" flags="m"/>
-@@ -381,6 +430,9 @@
+@@ -451,6 +500,9 @@
  			<key id="KEY_RED" mapto="timeshiftActivateEnd" flags="b"/>
  			<key id="KEY_YELLOW" mapto="timeshiftActivateEndAndPause" flags="b"/>
  		</device>
@@ -123,7 +123,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_PLAYPAUSE" mapto="timeshiftActivateEndAndPause" flags="m"/>
  		<key id="KEY_PAUSE" mapto="timeshiftActivateEndAndPause" flags="m"/>
  		<key id="KEY_REWIND" mapto="timeshiftActivateEnd" flags="m"/>
-@@ -409,6 +461,19 @@
+@@ -480,6 +532,19 @@
  		<key id="KEY_PREVIOUS" mapto="movePrev" flags="b"/>
  		<key id="KEY_NEXT" mapto="moveNext" flags="b"/>
  		<key id="KEY_AUDIO" mapto="AudioSelection" flags="m"/>
@@ -143,7 +143,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="InfobarCueSheetActions">
-@@ -427,6 +492,11 @@
+@@ -498,6 +563,11 @@
  			<key id="KEY_TAB" mapto="toggleMark" flags="m"/>
  			<key id="KEY_NEXTSONG" mapto="jumpNextMark" flags="m"/>
  		</device>
@@ -155,7 +155,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="MediaPlayerCueSheetActions">
-@@ -439,6 +509,10 @@
+@@ -510,6 +580,10 @@
  		<device name="dreambox ir keyboard">
  			<key id="KEY_TAB" mapto="toggleMark" flags="m"/>
  		</device>
@@ -166,7 +166,7 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  	</map>
  
  	<map context="VirtualKeyboardActions">
-@@ -727,6 +801,15 @@
+@@ -798,6 +872,15 @@
  			<key id="KEY_PREVIOUSSONG" mapto="previous" flags="m"/>
  			<key id="KEY_NEXTSONG" mapto="next" flags="m"/>
  		</device>
@@ -182,371 +182,45 @@ diff -Naur enigma2-pli/data/keymap.xml enigma2-persianprince/data/keymap.xml
  		<key id="KEY_PLAYPAUSE" mapto="pause" flags="m"/>
  		<key id="KEY_PAUSE" mapto="pause" flags="m"/>
  		<key id="KEY_PLAY" mapto="play" flags="m"/>
-diff -Naur enigma2-pli/lib/base/condVar.cpp enigma2-persianprince/lib/base/condVar.cpp
---- enigma2-pli/lib/base/condVar.cpp	1970-01-01 03:30:00.000000000 +0330
-+++ enigma2-persianprince/lib/base/condVar.cpp	2016-12-07 10:35:05.000000000 +0330
-@@ -0,0 +1,246 @@
-+/*
-+ * condVar.cpp: Mutexes, conditional vars.
-+ *
-+ * Video Disk Recorder
-+ * Copyright (C) 2000, 2003, 2006, 2008 Klaus Schmidinger
-+ * The author can be reached at kls@tvdr.de
-+ * The project's page is at http://www.tvdr.de
-+ *
-+ */
-+
-+#include <lib/base/condVar.h>
-+
-+#if !defined(max)
-+#define max(a, b)       ((a) > (b) ? (a) : (b))
-+#endif
-+
-+static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
-+{
-+  struct timeval now;
-+  if (gettimeofday(&now, NULL) == 0) {           // get current time
-+     now.tv_usec += MillisecondsFromNow * 1000;  // add the timeout
-+     while (now.tv_usec >= 1000000) {            // take care of an overflow
-+           now.tv_sec++;
-+           now.tv_usec -= 1000000;
-+           }
-+     Abstime->tv_sec = now.tv_sec;          // seconds
-+     Abstime->tv_nsec = now.tv_usec * 1000; // nano seconds
-+     return true;
-+     }
-+  return false;
-+}
-+
-+
-+// --- cMutex ----------------------------------------------------------------
-+
-+cMutex::cMutex(void)
-+{
-+  pthread_mutexattr_t attr;
-+  pthread_mutexattr_init(&attr);
-+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
-+  locked = 0;
-+  pthread_mutex_init(&mutex, &attr);
-+}
-+
-+cMutex::~cMutex()
-+{
-+  pthread_mutex_destroy(&mutex);
-+}
-+
-+void cMutex::Lock(void)
-+{
-+  pthread_mutex_lock(&mutex);
-+  locked++;
-+}
-+
-+void cMutex::Unlock(void)
-+{
-+ if (!--locked)
-+    pthread_mutex_unlock(&mutex);
-+}
-+
-+
-+// --- cCondVar --------------------------------------------------------------
-+
-+cCondVar::cCondVar(void)
-+{
-+  pthread_cond_init(&cond, 0);
-+}
-+
-+cCondVar::~cCondVar()
-+{
-+  pthread_cond_broadcast(&cond); // wake up any sleepers
-+  pthread_cond_destroy(&cond);
-+}
-+
-+void cCondVar::Wait(cMutex &Mutex)
-+{
-+  if (Mutex.locked) {
-+     int locked = Mutex.locked;
-+     Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_wait
-+                       // does an implizit unlock of the mutex
-+     pthread_cond_wait(&cond, &Mutex.mutex);
-+     Mutex.locked = locked;
-+     }
-+}
-+
-+bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
-+{
-+  bool r = true; // true = condition signaled false = timeout
-+
-+  if (Mutex.locked) {
-+     struct timespec abstime;
-+     if (GetAbsTime(&abstime, TimeoutMs)) {
-+        int locked = Mutex.locked;
-+        Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_timedwait
-+                          // does an implizit unlock of the mutex.
-+        if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
-+           r = false;
-+        Mutex.locked = locked;
-+        }
-+     }
-+  return r;
-+}
-+
-+void cCondVar::Broadcast(void)
-+{
-+  pthread_cond_broadcast(&cond);
-+}
-+
-+
-+// --- cCondWait -------------------------------------------------------------
-+
-+cCondWait::cCondWait(void)
-+{
-+  signaled = false;
-+  pthread_mutex_init(&mutex, NULL);
-+  pthread_cond_init(&cond, NULL);
-+}
-+
-+cCondWait::~cCondWait()
-+{
-+  pthread_cond_broadcast(&cond); // wake up any sleepers
-+  pthread_cond_destroy(&cond);
-+  pthread_mutex_destroy(&mutex);
-+}
-+
-+void cCondWait::SleepMs(int TimeoutMs)
-+{
-+  cCondWait w;
-+  w.Wait(max(TimeoutMs, 3)); // making sure the time is >2ms to avoid a possible busy wait
-+}
-+
-+bool cCondWait::Wait(int TimeoutMs)
-+{
-+  pthread_mutex_lock(&mutex);
-+  if (!signaled) {
-+     if (TimeoutMs) {
-+        struct timespec abstime;
-+        if (GetAbsTime(&abstime, TimeoutMs)) {
-+           while (!signaled) {
-+                 if (pthread_cond_timedwait(&cond, &mutex, &abstime) == ETIMEDOUT)
-+                    break;
-+                 }
-+           }
-+        }
-+     else
-+        pthread_cond_wait(&cond, &mutex);
-+     }
-+  bool r = signaled;
-+  signaled = false;
-+  pthread_mutex_unlock(&mutex);
-+  return r;
-+}
-+
-+void cCondWait::Signal(void)
-+{
-+  pthread_mutex_lock(&mutex);
-+  signaled = true;
-+  pthread_cond_broadcast(&cond);
-+  pthread_mutex_unlock(&mutex);
-+}
-+
-+
-+// --- cMutexLock ------------------------------------------------------------
-+
-+cMutexLock::cMutexLock(cMutex *Mutex)
-+{
-+  mutex = NULL;
-+  locked = false;
-+  Lock(Mutex);
-+}
-+
-+cMutexLock::~cMutexLock()
-+{
-+  if (mutex && locked)
-+     mutex->Unlock();
-+}
-+
-+bool cMutexLock::Lock(cMutex *Mutex)
-+{
-+  if (Mutex && !mutex) {
-+     mutex = Mutex;
-+     Mutex->Lock();
-+     locked = true;
-+     return true;
-+     }
-+  return false;
-+}
-+
-+// --- cTimeMs ---------------------------------------------------------------
-+
-+cTimeMs::cTimeMs(int Ms)
-+{
-+  Set(Ms);
-+}
-+
-+uint64_t cTimeMs::Now(void)
-+{
-+#if _POSIX_TIMERS > 0 && defined(_POSIX_MONOTONIC_CLOCK)
-+#define MIN_RESOLUTION 5 // ms
-+  static bool initialized = false;
-+  static bool monotonic = false;
-+  struct timespec tp;
-+  if (!initialized) {
-+     // check if monotonic timer is available and provides enough accurate resolution:
-+     if (clock_getres(CLOCK_MONOTONIC, &tp) == 0) {
-+        long Resolution = tp.tv_nsec;
-+        // require a minimum resolution:
-+        if (tp.tv_sec == 0 && tp.tv_nsec <= MIN_RESOLUTION * 1000000) {
-+           if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0) {
-+              monotonic = true;
-+           }
-+        }
-+     }
-+     initialized = true;
-+  }
-+  if (monotonic) {
-+     if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0)
-+        return (uint64_t(tp.tv_sec)) * 1000 + tp.tv_nsec / 1000000;
-+     monotonic = false;
-+     // fall back to gettimeofday()
-+  }
-+#else
-+#  warning Posix monotonic clock not available
-+#endif
-+  struct timeval t;
-+  if (gettimeofday(&t, NULL) == 0)
-+     return (uint64_t(t.tv_sec)) * 1000 + t.tv_usec / 1000;
-+  return 0;
-+}
-+
-+void cTimeMs::Set(int Ms)
-+{
-+  begin = Now() + Ms;
-+}
-+
-+bool cTimeMs::TimedOut(void)
-+{
-+  return Now() >= begin;
-+}
-+
-+uint64_t cTimeMs::Elapsed(void)
-+{
-+  return Now() - begin;
-+}
-+
-diff -Naur enigma2-pli/lib/base/condVar.h enigma2-persianprince/lib/base/condVar.h
---- enigma2-pli/lib/base/condVar.h	1970-01-01 03:30:00.000000000 +0330
-+++ enigma2-persianprince/lib/base/condVar.h	2016-12-07 10:35:05.000000000 +0330
-@@ -0,0 +1,64 @@
-+#ifndef __base_condVar_h
-+#define __base_condVar_h
-+
-+#include <pthread.h>
-+
-+class cMutex {
-+  friend class cCondVar;
-+private:
-+  pthread_mutex_t mutex;
-+  int locked;
-+public:
-+  cMutex(void);
-+  ~cMutex();
-+  void Lock(void);
-+  void Unlock(void);
-+};
-+
-+class cCondVar {
-+private:
-+  pthread_cond_t cond;
-+public:
-+  cCondVar(void);
-+  ~cCondVar();
-+  void Wait(cMutex &Mutex);
-+  bool TimedWait(cMutex &Mutex, int TimeoutMs);
-+  void Broadcast(void);
-+};
-+
-+class cCondWait {
-+private:
-+  pthread_mutex_t mutex;
-+  pthread_cond_t cond;
-+  bool signaled;
-+public:
-+  cCondWait(void);
-+  ~cCondWait();
-+  static void SleepMs(int TimeoutMs);
-+  bool Wait(int TimeoutMs = 0);
-+  void Signal(void);
-+};
-+
-+class cMutexLock {
-+private:
-+  cMutex *mutex;
-+  bool locked;
-+public:
-+  cMutexLock(cMutex *Mutex = NULL);
-+  ~cMutexLock();
-+  bool Lock(cMutex *Mutex);
-+};
-+
-+class cTimeMs {
-+private:
-+  uint64_t begin;
-+public:
-+  cTimeMs(int Ms = 0);
-+      ///< Creates a timer with ms resolution and an initial timeout of Ms.
-+  static uint64_t Now(void);
-+  void Set(int Ms = 0);
-+  bool TimedOut(void);
-+  uint64_t Elapsed(void);
-+};
-+
-+#endif
-diff -Naur enigma2-pli/lib/base/Makefile.inc enigma2-persianprince/lib/base/Makefile.inc
---- enigma2-pli/lib/base/Makefile.inc	2018-01-02 14:04:52.795282000 +0330
-+++ enigma2-persianprince/lib/base/Makefile.inc	2018-01-02 15:00:19.232007743 +0330
-@@ -23,7 +23,8 @@
- 	base/thread.cpp \
- 	base/httpsstream.cpp \
- 	base/httpstream.cpp \
--	base/wrappers.cpp
-+	base/wrappers.cpp \
-+	base/condVar.cpp
- 
- EXTRA_DIST += \
- 	base/eenv.cpp.in
-@@ -57,4 +58,5 @@
- 	base/thread.h \
- 	base/httpsstream.h \
- 	base/httpstream.h \
--	base/wrappers.h
-+	base/wrappers.h \
-+	base/condVar.h
-diff -Naur enigma2-pli/lib/driver/Makefile.inc enigma2-persianprince/lib/driver/Makefile.inc
---- enigma2-pli/lib/driver/Makefile.inc	2018-01-02 14:04:52.803282000 +0330
-+++ enigma2-persianprince/lib/driver/Makefile.inc	2018-01-02 14:14:04.051110336 +0330
-@@ -9,7 +9,8 @@
+diff -Naur enigma2-pli/lib/driver/Makefile.inc enigma2-rpi/lib/driver/Makefile.inc
+--- enigma2-pli/lib/driver/Makefile.inc	2018-10-23 22:20:52.685581838 +0000
++++ enigma2-rpi/lib/driver/Makefile.inc	2018-10-23 23:35:16.871272394 +0000
+@@ -5,16 +5,18 @@
+ driver_libenigma_driver_a_SOURCES = \
+ 	driver/avswitch.cpp \
+ 	driver/etimezone.cpp \
++	driver/hdmi_cec.cpp \
+ 	driver/misc_options.cpp \
  	driver/rc.cpp \
  	driver/rcinput.cpp \
- 	driver/rfmod.cpp \
+-	driver/rfmod.cpp \
 -	driver/hdmi_cec.cpp
-+	driver/hdmi_cec.cpp \
-+        driver/rclirc.cpp
++	driver/rclirc.cpp \
++	driver/rfmod.cpp
  
  driverincludedir = $(pkgincludedir)/lib/driver
  driverinclude_HEADERS = \
-@@ -24,7 +25,8 @@
+ 	driver/avswitch.h \
+ 	driver/etimezone.h \
++	driver/hdmi_cec.h \
+ 	driver/input_fake.h \
+ 	driver/misc_options.h \
+ 	driver/rc.h \
+@@ -23,8 +25,8 @@
+ 	driver/rcdreambox2.h \
  	driver/rcinput.h \
  	driver/rcinput_swig.h \
- 	driver/rfmod.h \
+-	driver/rfmod.h \
 -	driver/hdmi_cec.h
-+	driver/hdmi_cec.h \
-+	driver/rclirc.h
++	driver/rclirc.h \
++	driver/rfmod.h
  
  if HAVE_LIBSDL
  driver_libenigma_driver_a_SOURCES += \
-diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-persianprince/lib/driver/rclirc.cpp
---- enigma2-pli/lib/driver/rclirc.cpp	1970-01-01 03:30:00.000000000 +0330
-+++ enigma2-persianprince/lib/driver/rclirc.cpp	2016-12-07 10:35:05.000000000 +0330
-@@ -0,0 +1,619 @@
+diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-rpi/lib/driver/rclirc.cpp
+--- enigma2-pli/lib/driver/rclirc.cpp	1970-01-01 00:00:00.000000000 +0000
++++ enigma2-rpi/lib/driver/rclirc.cpp	2018-10-23 23:30:50.093407938 +0000
+@@ -0,0 +1,620 @@
 +/*
 + * LIRC support based on LIRC for VDR, which was written by
 + * Carsten Koch.
@@ -560,6 +234,7 @@ diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-persianprince/lib/driver/rc
 +#include <lib/base/init.h>
 +#include <lib/base/init_num.h>
 +#include <lib/base/condVar.h>
++#include <lib/base/tools.h>
 +#include <lib/driver/input_fake.h>
 +#include <lib/base/eenv.h>
 +#include <stdio.h>
@@ -1166,9 +841,10 @@ diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-persianprince/lib/driver/rc
 +};
 +
 +eAutoInitP0<eRCLircInit> init_rcLirc(eAutoInitNumbers::rc+1, "Lirc RC Driver");
-diff -Naur enigma2-pli/lib/driver/rclirc.h enigma2-persianprince/lib/driver/rclirc.h
---- enigma2-pli/lib/driver/rclirc.h	1970-01-01 03:30:00.000000000 +0330
-+++ enigma2-persianprince/lib/driver/rclirc.h	2016-12-07 10:35:05.000000000 +0330
+\ No newline at end of file
+diff -Naur enigma2-pli/lib/driver/rclirc.h enigma2-rpi/lib/driver/rclirc.h
+--- enigma2-pli/lib/driver/rclirc.h	1970-01-01 00:00:00.000000000 +0000
++++ enigma2-rpi/lib/driver/rclirc.h	2018-10-23 23:25:33.642587643 +0000
 @@ -0,0 +1,56 @@
 +#ifndef __lib_driver_rclirc_h
 +#define __lib_driver_rclirc_h
@@ -1226,3 +902,4 @@ diff -Naur enigma2-pli/lib/driver/rclirc.h enigma2-persianprince/lib/driver/rcli
 +};
 +
 +#endif
+\ No newline at end of file
