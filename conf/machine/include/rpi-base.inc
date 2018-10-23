@@ -18,7 +18,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     e2-rpihddevice \
     liborc-0.4-0 \
     orc \
-	fribidi \
+    fribidi \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
