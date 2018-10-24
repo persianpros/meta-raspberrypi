@@ -220,7 +220,7 @@ diff -Naur enigma2-pli/lib/driver/Makefile.inc enigma2-rpi/lib/driver/Makefile.i
 diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-rpi/lib/driver/rclirc.cpp
 --- enigma2-pli/lib/driver/rclirc.cpp	1970-01-01 00:00:00.000000000 +0000
 +++ enigma2-rpi/lib/driver/rclirc.cpp	2018-10-23 23:30:50.093407938 +0000
-@@ -0,0 +1,646 @@
+@@ -0,0 +1,620 @@
 +/*
 + * LIRC support based on LIRC for VDR, which was written by
 + * Carsten Koch.
@@ -555,32 +555,6 @@ diff -Naur enigma2-pli/lib/driver/rclirc.cpp enigma2-rpi/lib/driver/rclirc.cpp
 +	{ 0,                    NULL                   },
 +};
 +
-+cTimeMs::cTimeMs(int Ms)
-+{
-+  if (Ms >= 0)
-+     Set(Ms);
-+  else
-+     begin = 0;
-+}
-+
-+uint64_t cTimeMs::Elapsed(void) const
-+{
-+  return Now() - begin;
-+}
-+
-+void cTimeMs::Set(int Ms)
-+{
-+  begin = Now() + Ms;
-+}
-+
-+uint64_t cTimeMs::Now(void)
-+{
-+ struct timeval t;
-+  if (gettimeofday(&t, NULL) == 0)
-+     return (uint64_t(t.tv_sec)) * 1000 + t.tv_usec / 1000;
-+  return 0;
-+ }
-+ 
 +static const std::string getConfigStringRemote(const  std::string &key, const  std::string &defaultValue)
 +{
 +        std::string value = defaultValue;
