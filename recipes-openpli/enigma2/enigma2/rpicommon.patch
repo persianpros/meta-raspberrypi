@@ -443,8 +443,8 @@ diff -Naur enigma2-pli/lib/base/Makefile.inc enigma2-rpi/lib/base/Makefile.inc
  	base/wrappers.h
 diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpi/lib/base/tools.cpp
 --- enigma2-pli/lib/base/tools.cpp	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-rpi/lib/base/tools.cpp	2018-10-24 14:46:37.073322042 +0000
-@@ -0,0 +1,180 @@
++++ enigma2-rpi/lib/base/tools.cpp	2018-10-24 18:18:57.044461492 +0000
+@@ -0,0 +1,184 @@
 +/*
 + * rpihddevice - Enigma2 rpihddevice library for Raspberry Pi
 + * Copyright (C) 2014, 2015, 2016 Thomas Reufer
@@ -465,6 +465,10 @@ diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpi/lib/base/tools.cpp
 + */
 +
 +#include <limits.h>
++#include <sys/time.h>
++#include <time.h>
++#include <utime.h>
++#include <lib/base/eerror.h>
 +#include <lib/base/tools.h>
 +#include <algorithm>
 +
@@ -497,23 +501,23 @@ diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpi/lib/base/tools.cpp
 +        // require a minimum resolution:
 +        if (tp.tv_sec == 0 && tp.tv_nsec <= MIN_RESOLUTION * 1000000) {
 +           if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0) {
-+              dsyslog("cTimeMs: using monotonic clock (resolution is %ld ns)", Resolution);
++              eLog(3, "[cTimeMs] using monotonic clock (resolution is %ld ns)", Resolution);
 +              monotonic = true;
 +              }
 +           else
-+              esyslog("cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
++              eLog(1, "[cTimeMs] clock_gettime(CLOCK_MONOTONIC) failed");
 +           }
 +        else
-+           dsyslog("cTimeMs: not using monotonic clock - resolution is too bad (%ld s %ld ns)", tp.tv_sec, tp.tv_nsec);
++           eLog(3, "[cTimeMs] not using monotonic clock - resolution is too bad (%ld s %ld ns)", tp.tv_sec, tp.tv_nsec);
 +        }
 +     else
-+        esyslog("cTimeMs: clock_getres(CLOCK_MONOTONIC) failed");
++        eLog(1, "[cTimeMs] clock_getres(CLOCK_MONOTONIC) failed");
 +     initialized = true;
 +     }
 +  if (monotonic) {
 +     if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0)
 +        return (uint64_t(tp.tv_sec)) * 1000 + tp.tv_nsec / 1000000;
-+     esyslog("cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
++     eLog(1, "[cTimeMs] clock_gettime(CLOCK_MONOTONIC) failed");
 +     monotonic = false;
 +     // fall back to gettimeofday()
 +     }
