@@ -1009,8 +1009,8 @@ diff -Naur enigma2-pli/lib/base/tools.h enigma2-rpicommon/lib/base/tools.h
 +#endif
 diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRingbuffer.cpp
 --- enigma2-pli/lib/base/tsRingbuffer.cpp	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-rpicommon/lib/base/tsRingbuffer.cpp	2018-10-25 20:39:54.532069175 +0000
-@@ -0,0 +1,335 @@
++++ enigma2-rpicommon/lib/base/tsRingbuffer.cpp	2018-10-25 22:24:17.698082820 +0000
+@@ -0,0 +1,336 @@
 +/*
 + * tsRingbuffer.cpp: A ring buffer
 + *
@@ -1025,6 +1025,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 + */
 +
 +#include <lib/base/tsRingbuffer.h>
++#include <lib/base/eerror.h>
 +#include <stdlib.h>
 +#include <unistd.h>
 +
@@ -1048,7 +1049,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +cRingBuffer::~cRingBuffer()
 +{
 +	if (statistics)
-+		printf("buffer stats: %d (%d%%) used\n", maxFill, maxFill * 100 / (size - 1));
++		eLog(3, "[cRingBuffer] buffer stats: %d (%d%%) used\n", maxFill, maxFill * 100 / (size - 1));
 +}
 +
 +void cRingBuffer::UpdatePercentage(int Fill)
@@ -1059,7 +1060,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +	if (percent != lastPercent) {
 +
 +	if (percent >= PERCENTAGETHRESHOLD && percent > lastPercent || percent < PERCENTAGETHRESHOLD && lastPercent >= PERCENTAGETHRESHOLD) {
-+		printf("buffer usage: %d%%\n", percent);
++		eLog(3, "[cRingBuffer] buffer usage: %d%%\n", percent);
 +		lastPercent = percent;
 +    }
 +  }
@@ -1100,7 +1101,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +	overflowCount++;
 +	overflowBytes += Bytes;
 +	if (time(NULL) - lastOverflowReport > OVERFLOWREPORTDELTA) {
-+		printf("ERROR: %d ring buffer overflow%s (%d bytes dropped)\n", overflowCount, overflowCount > 1 ? "s" : "", overflowBytes);
++		eLog(1, "[cRingBuffer] ERROR: %d ring buffer overflow%s (%d bytes dropped)\n", overflowCount, overflowCount > 1 ? "s" : "", overflowBytes);
 +		overflowCount = overflowBytes = 0;
 +		lastOverflowReport = time(NULL);
 +     }
@@ -1156,11 +1157,11 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +		buf[t] = '<';
 +		buf[h] = '>';
 +		buf[DEBUGRBLWIDTH] = 0;
-+		printf("%2d %s %8d %8d %s\n", i, buf, p->lastPut, p->lastGet, p->description);
++		eDebug("[cRingBuffer] %2d %s %8d %8d %s\n", i, buf, p->lastPut, p->lastGet, p->description);
 +		}
 +	}
 +	if (printed)
-+		printf("\n");
++		eDebug("[cRingBuffer] printed\n");
 +  }
 +#endif
 +
@@ -1175,14 +1176,14 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +		if (Margin <= Size / 2) {
 +			buffer = (uint8_t*)malloc(sizeof(uint8_t) * Size);
 +		if (!buffer)
-+			printf("ERROR: can't allocate ring buffer (size=%d)\n", Size);
++			eLog(1, "[cRingBuffer] ERROR: can't allocate ring buffer (size=%d)\n", Size);
 +		Clear();
 +		}
 +		else
-+			printf("ERROR: invalid margin for ring buffer (%d > %d)\n", Margin, Size / 2);
++			eLog(1, "[cRingBuffer] ERROR: invalid margin for ring buffer (%d > %d)\n", Margin, Size / 2);
 +	}
 +	else
-+		printf("ERROR: invalid size for ring buffer (%d)\n", Size);
++		eLog(1, "[cRingBuffer] ERROR: invalid size for ring buffer (%d)\n", Size);
 +#ifdef DEBUGRINGBUFFERS
 +	lastHead = head;
 +	lastTail = tail;
@@ -1329,7 +1330,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +void cRingBufferLinear::Del(int Count)
 +{
 +	if (Count > gotten) {
-+		printf("ERROR: invalid Count in cRingBufferLinear::Del: %d (limited to %d)\n", Count, gotten);
++		eLog(1, "[cRingBuffer] ERROR: invalid Count in cRingBufferLinear::Del: %d (limited to %d)\n", Count, gotten);
 +		Count = gotten;
 +	}
 +	if (Count > 0) {
@@ -1348,7 +1349,7 @@ diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRi
 +}
 diff -Naur enigma2-pli/lib/base/tsRingbuffer.h enigma2-rpicommon/lib/base/tsRingbuffer.h
 --- enigma2-pli/lib/base/tsRingbuffer.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-rpicommon/lib/base/tsRingbuffer.h	2018-10-25 20:40:08.673461116 +0000
++++ enigma2-rpicommon/lib/base/tsRingbuffer.h	2018-10-25 22:27:36.253904941 +0000
 @@ -0,0 +1,100 @@
 +/*
 + * TSringbuffer.h: A ring buffer
