@@ -9,7 +9,7 @@ RDEPENDS_${PN} = "userland"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
-inherit gitpkgv pkgconfig gettext autotools-brokensep
+inherit gitpkgv pkgconfig autotools-brokensep
 
 SRCREV = "${AUTOREV}"
 
@@ -37,4 +37,3 @@ FILES_${PN} += " \
 FILES_${PN}-dbg += " \
 	${libdir}/vdr/.debug/* \
 "
-FILES_${PN}-locale = "${datadir}/locale"

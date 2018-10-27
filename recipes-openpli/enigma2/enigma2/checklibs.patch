@@ -1,0 +1,37 @@
+diff -Naur enigma2-PLi/configure.ac enigma2-PersianPrince/configure.ac
+--- enigma2-PLi/configure.ac	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/configure.ac	2018-10-27 11:14:11.736125935 +0330
+@@ -35,7 +35,12 @@
+ PKG_CHECK_MODULES(LIBDDVD, libdreamdvd, HAVE_LIBDDVD="yes", HAVE_LIBDDVD="no")
+ AM_CONDITIONAL(HAVE_LIBDDVD, test "$HAVE_LIBDDVD" = "yes")
+ PKG_CHECK_MODULES(AVAHI, avahi-client)
+-
++PKG_CHECK_MODULES(DVBCSA, libdvbcsa)
++PKG_CHECK_MODULES(LIBNL, libnl-1 >= 1.0-pre8, has_libnl=yes, dummy=no)
++PKG_CHECK_MODULES(LIBNL, libnl-3.0, has_libnl=yes, dummy=no)
++if (test "${has_libnl}" = "no"); then
++	AC_MSG_ERROR(Netlink library is required)
++fi
+ AC_CHECK_LIB([udfread], [udfread_init])
+ AC_CHECK_LIB([dl], [dlopen], [LIBDL_LIBS="-ldl"], [AC_MSG_ERROR([Could not find libdl])])
+ AC_SUBST(LIBDL_LIBS)
+@@ -258,7 +263,7 @@
+ 
+ CPPFLAGS="$CPPFLAGS $PYTHON_CPPFLAGS"
+ CFLAGS="$CFLAGS -Wall"
+-CXXFLAGS="$CXXFLAGS -Wall $BASE_CFLAGS $ENIGMA2_CFLAGS $PTHREAD_CFLAGS $OPENMP_CFLAGS $ALSA_CFLAGS $AMCODEC_CFLAGS $AMADEC_CFLAGS $DVBCSA_CFLAGS"
++CXXFLAGS="$CXXFLAGS -Wall $BASE_CFLAGS $ENIGMA2_CFLAGS $PTHREAD_CFLAGS $OPENMP_CFLAGS $ALSA_CFLAGS $AMCODEC_CFLAGS $AMADEC_CFLAGS $DVBCSA_CFLAGS $LIBNL_CFLAGS"
+ 
+ AC_CONFIG_FILES([
+ Makefile
+diff -Naur enigma2-PLi/main/Makefile.am enigma2-PersianPrince/main/Makefile.am
+--- enigma2-PLi/main/Makefile.am	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/main/Makefile.am	2018-10-27 11:06:29.730446476 +0330
+@@ -46,6 +46,7 @@
+ 	@AMCODEC_LIBS@ \
+ 	@AMADEC_LIBS@ \
+ 	@DVBCSA_LIBS@ \
++	@LIBNL_LIBS@ \
+ 	@AVAHI_LIBS@ \
+ 	@LIBDL_LIBS@ \
+ 	-ltuxtxt32bpp
