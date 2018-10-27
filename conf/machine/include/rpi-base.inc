@@ -17,6 +17,8 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     kernel-module-e2-procfs \
     kernel-module-lirc-rpi \
     e2-rpihddevice \
+    rpi-dvbsoftwareca \
+    kernel-module-dvbsoftwareca \
     liborc-0.4-0 \
     orc \
     fribidi \
@@ -25,6 +27,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 KERNEL_MODULE_AUTOLOAD += "\
     e2_procfs \
     lirc_rpi \
+    dvbsoftwareca \
 "
 
 RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
