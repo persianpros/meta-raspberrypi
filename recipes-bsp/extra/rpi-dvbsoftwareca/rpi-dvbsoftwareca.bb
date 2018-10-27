@@ -32,4 +32,8 @@ do_compile() {
 do_install() {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/media/dvb-frontends
 	install -m 0644 ${S}/dvbsoftwareca.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/media/dvb-frontends/
+	install -d ${D}/${sysconfdir}/modules-load.d
+	echo dvbsoftwareca >> ${D}/${sysconfdir}/modules-load.d/z${MACHINE}.conf
 }
+
+FILES_${PN} += "${sysconfdir}/modules-load.d/z${MACHINE}.conf"

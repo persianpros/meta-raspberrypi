@@ -15,19 +15,17 @@ WKS_FILE ?= "sdimage-raspberrypi.wks"
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     rpi-e2-procfs \
     kernel-module-e2-procfs \
-    kernel-module-lirc-rpi \
-    e2-rpihddevice \
     rpi-dvbsoftwareca \
     kernel-module-dvbsoftwareca \
+    kernel-module-lirc-rpi \
+    e2-rpihddevice \
     liborc-0.4-0 \
     orc \
     fribidi \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
-    e2_procfs \
     lirc_rpi \
-    dvbsoftwareca \
 "
 
 RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
