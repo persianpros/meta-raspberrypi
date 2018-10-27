@@ -1,3 +1,106 @@
+diff -Naur enigma2-PLi/lib/dvb/demux.cpp enigma2-PersianPrince/lib/dvb/demux.cpp
+--- enigma2-PLi/lib/dvb/demux.cpp	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/lib/dvb/demux.cpp	2018-10-27 12:11:44.261287798 +0330
+@@ -70,6 +70,9 @@
+ 	m_pvr_fd(-1),
+ #endif
+ 	m_dvr_busy(0),
++/** {
++	decsa = new cDeCSA(adapter, demux); // Check this for RPi devices please
++} **/
+ 	m_dvr_id(-1),
+ 	m_dvr_source_offset(DMX_SOURCE_DVR0)
+ {
+@@ -80,6 +83,7 @@
+ 
+ eDVBDemux::~eDVBDemux()
+ {
++	delete decsa;
+ }
+ 
+ int eDVBDemux::openDemux(void)
+@@ -209,6 +213,20 @@
+ 	return 0;
+ }
+ 
++RESULT eDVBDemux::setCaDescr(ca_descr_t *ca_descr, bool initial)
++{
++	return decsa->SetDescr(ca_descr, initial);
++}
++
++RESULT eDVBDemux::setCaPid(ca_pid_t *ca_pid)
++{
++	return decsa->SetCaPid(ca_pid);
++}
++
++bool eDVBDemux::decrypt(uint8_t *data, int len, int &packetsCount) {
++	return decsa->Decrypt(data, len, packetsCount);
++}
++
+ void eDVBSectionReader::data(int)
+ {
+ 	uint8_t data[4096]; // max. section size
+diff -Naur enigma2-PLi/lib/dvb/demux.h enigma2-PersianPrince/lib/dvb/demux.h
+--- enigma2-PLi/lib/dvb/demux.h	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/lib/dvb/demux.h	2018-10-27 11:38:48.483975114 +0330
+@@ -4,6 +4,7 @@
+ #include <aio.h>
+ #include <lib/dvb/idvb.h>
+ #include <lib/dvb/idemux.h>
++#include <lib/dvb/decsa.h>
+ #include <lib/dvb/pvrparse.h>
+ #include "filepush.h"
+ 
+@@ -34,9 +35,12 @@
+ 	int openDVR(int flags);
+ 
+ 	int getRefCount() { return ref; }
++	RESULT setCaDescr(ca_descr_t *ca_descr, bool initial);
++	RESULT setCaPid(ca_pid_t *ca_pid);
++	bool decrypt(uint8_t *data, int len, int &packetsCount);
+ private:
+ 	int adapter, demux, source;
+-
++	cDeCSA *decsa;
+ 	int m_dvr_busy;
+ 	int m_dvr_id;
+ 	int m_dvr_source_offset;
+diff -Naur enigma2-PLi/lib/dvb/dvb.cpp enigma2-PersianPrince/lib/dvb/dvb.cpp
+--- enigma2-PLi/lib/dvb/dvb.cpp	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/lib/dvb/dvb.cpp	2018-10-27 11:32:04.879867743 +0330
+@@ -1479,6 +1479,21 @@
+ 	return false;
+ }
+ 
++RESULT eDVBResourceManager::getAdapterDemux(ePtr<eDVBDemux> &demux, int adapter_nr, int demux_nr)
++{
++	eSmartPtrList<iDVBAdapter>::iterator i(m_adapter.begin());
++
++	while (adapter_nr && (i != m_adapter.end())) {
++		--adapter_nr;
++		++i;
++	}
++
++	if (i != m_adapter.end())
++		return i->getDemux(demux, demux_nr);
++	else
++		return -1;
++}
++
+ class eDVBChannelFilePush: public eFilePushThread
+ {
+ public:
+diff -Naur enigma2-PLi/lib/dvb/dvb.h enigma2-PersianPrince/lib/dvb/dvb.h
+--- enigma2-PLi/lib/dvb/dvb.h	2018-10-26 16:05:52.000000000 +0330
++++ enigma2-PersianPrince/lib/dvb/dvb.h	2018-10-27 11:32:28.603375117 +0330
+@@ -243,6 +243,7 @@
+ 	bool frontendIsMultistream(int index);
+ 	std::string getFrontendCapabilities(int index);
+ 	void setFrontendType(int index, const char *type);
++	RESULT getAdapterDemux(ePtr<eDVBDemux> &demux, int adapter_nr, int demux_nr);
+ };
+ SWIG_TEMPLATE_TYPEDEF(ePtr<eDVBResourceManager>, eDVBResourceManager);
+ SWIG_EXTEND(ePtr<eDVBResourceManager>,
 diff -Naur enigma2-pli/lib/dvb/ca_connector.cpp enigma2-libdvb/lib/dvb/ca_connector.cpp
 --- enigma2-pli/lib/dvb/ca_connector.cpp	1970-01-01 00:00:00.000000000 +0000
 +++ enigma2-libdvb/lib/dvb/ca_connector.cpp	2018-10-26 18:21:04.541942633 +0000
