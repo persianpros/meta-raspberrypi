@@ -545,7 +545,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  
 diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
 --- enigma2-pli/lib/dvb/demux.h	2018-10-23 22:20:52.815585596 +0000
-+++ enigma2-libdvb/lib/dvb/demux.h	2018-10-27 14:23:36.459488658 +0000
++++ enigma2-libdvb/lib/dvb/demux.h	2018-10-27 18:01:00.289480882 +0000
 @@ -6,8 +6,9 @@
  #include <lib/dvb/idemux.h>
  #include <lib/dvb/pvrparse.h>
@@ -557,7 +557,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
  {
  	DECLARE_REF(eDVBDemux);
  public:
-@@ -34,9 +35,12 @@
+@@ -34,12 +35,15 @@
  	int openDVR(int flags);
  
  	int getRefCount() { return ref; }
@@ -570,7 +570,11 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
 +	cDeCSA *decsa;
  	int m_dvr_busy;
  	int m_dvr_id;
- 	int m_dvr_source_offset;
+-	int m_dvr_source_offset;
++//	int m_dvr_source_offset;
+ 	friend class eDVBSectionReader;
+ 	friend class eDVBPESReader;
+ 	friend class eDVBAudio;
 @@ -56,7 +60,7 @@
  	sigc::signal1<void, int> m_event;
  
@@ -582,7 +586,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
  {
 diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
 --- enigma2-pli/lib/dvb/dvb.cpp	2018-10-23 22:20:52.825585885 +0000
-+++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-27 13:56:21.709315622 +0000
++++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-27 21:26:08.588300187 +0000
 @@ -1479,6 +1479,21 @@
  	return false;
  }
@@ -605,9 +609,72 @@ diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
  class eDVBChannelFilePush: public eFilePushThread
  {
  public:
+@@ -2064,7 +2079,7 @@
+ 	}
+ 	return -1;
+ }
+-
++/*
+ int eDVBChannel::getDvrId()
+ {
+ 	ePtr<eDVBAllocatedDemux> dmx = m_decoder_demux ? m_decoder_demux : m_demux;
+@@ -2074,7 +2089,7 @@
+ 	}
+ 	return -1;
+ }
+-
++*/
+ RESULT eDVBChannel::requestTsidOnid()
+ {
+ 	if (!getDemux(m_tsid_onid_demux, 0))
+@@ -2096,8 +2111,9 @@
+ 
+ RESULT eDVBChannel::getDemux(ePtr<iDVBDemux> &demux, int cap)
+ {
+-	ePtr<eDVBAllocatedDemux> &our_demux = (cap & capDecode) ? m_decoder_demux : m_demux;
+-
++//	ePtr<eDVBAllocatedDemux> &our_demux = (cap & capDecode) ? m_decoder_demux : m_demux;
++	ePtr<eDVBAllocatedDemux> &our_demux = m_demux; /* openpliPC */
++	
+ 	eDebug("[eDVBChannel] getDemux cap=%02X", cap);
+ 
+ 	if (!m_frontend)
+@@ -2170,9 +2186,10 @@
+ 	m_source = source;
+ 	m_tstools.setSource(m_source, streaminfo_file);
+ 
++	m_pvr_fd_dst = ::open("/tmp/ENIGMA_FIFO", O_RDWR);
+ 	if (m_pvr_fd_dst < 0)
+ 	{
+-		ePtr<eDVBAllocatedDemux> &demux = m_demux ? m_demux : m_decoder_demux;
++/*		ePtr<eDVBAllocatedDemux> &demux = m_demux ? m_demux : m_decoder_demux;
+ 		if (demux)
+ 		{
+ 			m_pvr_fd_dst = demux->get().openDVR(O_WRONLY);
+@@ -2186,7 +2203,9 @@
+ 		{
+ 			eDebug("[eDVBChannel] no demux allocated yet.. so its not possible to open the dvr device!!");
+ 			return -ENODEV;
+-		}
++		}*/
++		eDebug("can't open DVR device - FIFO file (%m)");
++		return -ENODEV;
+ 	}
+ 
+ 	m_pvr_thread = new eDVBChannelFilePush(m_source->getPacketSize());
+@@ -2214,7 +2233,8 @@
+ 	}
+ 	if (m_pvr_fd_dst >= 0)
+ 	{
+-		::close(m_pvr_fd_dst);
++//		::close(m_pvr_fd_dst);
++/*	Pipe '/tmp/ENIGMA_FIFO' closed in eDVBServicePlay::stop() (lib/service/servicedvb.cpp) */
+ 		m_pvr_fd_dst = -1;
+ 	}
+ 	m_source = NULL;
 diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
 --- enigma2-pli/lib/dvb/dvb.h	2018-10-23 22:20:52.825585885 +0000
-+++ enigma2-libdvb/lib/dvb/dvb.h	2018-10-27 13:56:21.729315957 +0000
++++ enigma2-libdvb/lib/dvb/dvb.h	2018-10-27 21:17:22.358604974 +0000
 @@ -243,6 +243,7 @@
  	bool frontendIsMultistream(int index);
  	std::string getFrontendCapabilities(int index);
@@ -616,9 +683,18 @@ diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
  };
  SWIG_TEMPLATE_TYPEDEF(ePtr<eDVBResourceManager>, eDVBResourceManager);
  SWIG_EXTEND(ePtr<eDVBResourceManager>,
+@@ -296,7 +297,7 @@
+ 
+ 	RESULT requestTsidOnid();
+ 	int reserveDemux();
+-	int getDvrId();
++//	int getDvrId();
+ private:
+ 	ePtr<eDVBAllocatedFrontend> m_frontend;
+ 	ePtr<eDVBAllocatedDemux> m_demux, m_decoder_demux;
 diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 --- enigma2-pli/lib/dvb/edvbdemux.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 13:56:21.789316963 +0000
++++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 18:01:47.480268572 +0000
 @@ -0,0 +1,63 @@
 +#ifndef __dvb_edvbdemux_h
 +#define __dvb_edvbdemux_h
@@ -661,9 +737,9 @@ diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 +private:
 +	int adapter, demux, source;
 +	cDeCSA *decsa;
-+
 +	int m_dvr_busy;
 +	int m_dvr_id;
++//	int m_dvr_source_offset;	
 +	friend class eDVBSectionReader;
 +	friend class eDVBPESReader;
 +	friend class eDVBAudio;
@@ -768,6 +844,18 @@ diff -Naur enigma2-pli/lib/dvb/frontend.cpp enigma2-libdvb/lib/dvb/frontend.cpp
  	return ::ioctl(m_fd, FE_SET_VOLTAGE, vlt);
  }
  
+diff -Naur enigma2-pli/lib/dvb/idvb.h enigma2-libdvb/lib/dvb/idvb.h
+--- enigma2-pli/lib/dvb/idvb.h	2018-10-23 22:20:52.925588775 +0000
++++ enigma2-libdvb/lib/dvb/idvb.h	2018-10-27 21:18:56.961284379 +0000
+@@ -570,7 +570,7 @@
+ 	virtual RESULT requestTsidOnid() { return -1; }
+ 	PSignal2<void, int, int> receivedTsidOnid;
+ 	virtual int reserveDemux() { return -1; }
+-	virtual int getDvrId() { return -1; }
++//	virtual int getDvrId() { return -1; }
+ #ifndef SWIG
+ 	enum
+ 	{
 diff -Naur enigma2-pli/lib/dvb/Makefile.inc enigma2-libdvb/lib/dvb/Makefile.inc
 --- enigma2-pli/lib/dvb/Makefile.inc	2018-10-23 22:20:52.735583284 +0000
 +++ enigma2-libdvb/lib/dvb/Makefile.inc	2018-10-27 13:56:21.809317298 +0000
@@ -803,3 +891,15 @@ diff -Naur enigma2-pli/lib/dvb/Makefile.inc enigma2-libdvb/lib/dvb/Makefile.inc
  	dvb/eit.h \
  	dvb/epgcache.h \
  	dvb/esection.h \
+diff -Naur enigma2-pli/lib/dvb_ci/dvbci.cpp enigma2-libdvb/lib/dvb_ci/dvbci.cpp
+--- enigma2-pli/lib/dvb_ci/dvbci.cpp	2018-10-23 22:20:53.105593977 +0000
++++ enigma2-libdvb/lib/dvb_ci/dvbci.cpp	2018-10-27 21:19:39.622287969 +0000
+@@ -652,7 +652,7 @@
+ 									case interface_use_dvr:
+ 									{
+ 										std::stringstream source;
+-										source << "DVR" << channel->getDvrId();
++//										source << "DVR" << channel->getDvrId();
+ 										ci_it->setSource(source.str());
+ 										break;
+ 									}
