@@ -1,5 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
+DEPENDS += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa', '', d)}"
+
 SRC_URI_append += "\
 	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://rpicommon.patch', '', d)} \
 	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://lirc.patch file://remote.conf', '', d)} \
