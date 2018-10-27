@@ -446,7 +446,7 @@ diff -Naur enigma2-pli/lib/dvb/decsa.h enigma2-libdvb/lib/dvb/decsa.h
 +#endif
 diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
 --- enigma2-pli/lib/dvb/demux.cpp	2018-10-23 22:20:52.815585596 +0000
-+++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-27 17:01:01.020771551 +0000
++++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-27 17:38:28.967838322 +0000
 @@ -49,7 +49,11 @@
  	}
  	unsigned int megabytes = si.totalram >> 20;
@@ -460,18 +460,21 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  		result = 40; // 1024MB systems: Use 8MB IO buffers (vusolo2, vuduo2, ...)
  	else if (megabytes > 200)
  		result = 20; // 512MB systems: Use 4MB IO buffers (et9x00, vuultimo, ...)
-@@ -70,16 +74,18 @@
+@@ -69,17 +73,19 @@
+ #ifdef HAVE_AMLOGIC
  	m_pvr_fd(-1),
  #endif
- 	m_dvr_busy(0),
+-	m_dvr_busy(0),
 -	m_dvr_id(-1),
 -	m_dvr_source_offset(DMX_SOURCE_DVR0)
-+//	m_dvr_id(-1),
-+//	m_dvr_source_offset(DMX_SOURCE_DVR0)
- {
+-{
 -	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
 -		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 -
++	m_dvr_busy(0)
++//	m_dvr_id(-1),
++//	m_dvr_source_offset(DMX_SOURCE_DVR0)
++{
 +//	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
 +//		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 +	decsa = new cDeCSA(adapter, demux);
