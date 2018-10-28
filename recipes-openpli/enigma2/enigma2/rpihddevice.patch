@@ -1,6 +1,6 @@
-diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpicommon/lib/base/tools.cpp
+diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpihddevice/lib/base/tools.cpp
 --- enigma2-pli/lib/base/tools.cpp	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-rpicommon/lib/base/tools.cpp	2018-10-24 18:18:57.044461492 +0000
++++ enigma2-rpihddevice/lib/base/tools.cpp	2018-10-28 00:38:01.874749262 +0000
 @@ -0,0 +1,184 @@
 +/*
 + * rpihddevice - Enigma2 rpihddevice library for Raspberry Pi
@@ -186,9 +186,9 @@ diff -Naur enigma2-pli/lib/base/tools.cpp enigma2-rpicommon/lib/base/tools.cpp
 +
 +    return Gcd((v - u) >> 1, u);
 +}
-diff -Naur enigma2-pli/lib/base/tools.h enigma2-rpicommon/lib/base/tools.h
+diff -Naur enigma2-pli/lib/base/tools.h enigma2-rpihddevice/lib/base/tools.h
 --- enigma2-pli/lib/base/tools.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-rpicommon/lib/base/tools.h	2018-10-28 00:03:03.451254168 +0000
++++ enigma2-rpihddevice/lib/base/tools.h	2018-10-28 00:38:01.904749878 +0000
 @@ -0,0 +1,306 @@
 +/*
 + * rpihddevice - Enigma2 rpihddevice library for Raspberry Pi
