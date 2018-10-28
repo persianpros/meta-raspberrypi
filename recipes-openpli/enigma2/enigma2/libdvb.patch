@@ -853,12 +853,12 @@ diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
  	/* if we aren't running, don't bother stopping. */
 diff -Naur enigma2-pli/lib/dvb/filepush.h enigma2-libdvb/lib/dvb/filepush.h
 --- enigma2-pli/lib/dvb/filepush.h	2018-10-23 22:20:52.895587908 +0000
-+++ enigma2-libdvb/lib/dvb/filepush.h	2018-10-27 16:55:58.205780705 +0000
++++ enigma2-libdvb/lib/dvb/filepush.h	2018-10-28 15:04:29.250653398 +0000
 @@ -68,6 +68,7 @@
  	void thread();
  	void stop();
  	void start(int sourcefd);
-+//	void start(int fd, ePtr<eDVBDemux> &demux);
++	void start(int fd, ePtr<eDVBDemux> &demux);
  
  	enum { evtEOF, evtReadError, evtWriteError, evtUser, evtStopped };
  	sigc::signal1<void,int> m_event;
