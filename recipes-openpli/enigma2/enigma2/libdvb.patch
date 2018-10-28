@@ -807,8 +807,24 @@ diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 +#endif
 diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
 --- enigma2-pli/lib/dvb/filepush.cpp	2018-10-23 22:20:52.895587908 +0000
-+++ enigma2-libdvb/lib/dvb/filepush.cpp	2018-10-27 16:59:15.488998451 +0000
-@@ -303,9 +303,6 @@
++++ enigma2-libdvb/lib/dvb/filepush.cpp	2018-10-28 15:24:27.619417413 +0000
+@@ -47,6 +47,7 @@
+ {
+ 	ignore_but_report_signals();
+ 	hasStarted(); /* "start()" blocks until we get here */
++//	cXineLib *xineLib = cXineLib::getInstance();	--->	 [rpi] to be replaced with omx
+ 	setIoPrio(IOPRIO_CLASS_BE, 0);
+ 	eDebug("[eFilePushThread] START thread");
+ 
+@@ -148,6 +149,7 @@
+ 				   over and over until somebody responds.
+ 
+ 				   in stream_mode, think of evtEOF as "buffer underrun occurred". */
++//			if (xineLib->end_of_stream == true)	--->	 [rpi] to be replaced with omx
+ 			sendEvent(evtEOF);
+ 
+ 			if (m_stream_mode)
+@@ -303,9 +305,6 @@
  {
  }
  
@@ -818,7 +834,7 @@ diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
  eFilePushThreadRecorder::eFilePushThreadRecorder(unsigned char* buffer, size_t buffersize):
  	m_fd_source(-1),
  	m_buffersize(buffersize),
-@@ -334,7 +331,11 @@
+@@ -334,7 +333,11 @@
  	/* m_stop must be evaluated after each syscall. */
  	while (!m_stop)
  	{
@@ -831,12 +847,11 @@ diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
  		if (bytes < 0)
  		{
  			bytes = 0;
-@@ -384,7 +385,18 @@
+@@ -384,6 +387,17 @@
  	m_stop = 0;
  	run();
  }
--
-+/*
++
 +void eFilePushThreadRecorder::start(int fd, ePtr<eDVBDemux> &demux)
 +{
 +	eDecryptRawFile *f = new eDecryptRawFile();
@@ -847,10 +862,9 @@ diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
 +	m_stop = 0;
 +	run();
 +}
-+*/
+ 
  void eFilePushThreadRecorder::stop()
  {
- 	/* if we aren't running, don't bother stopping. */
 diff -Naur enigma2-pli/lib/dvb/filepush.h enigma2-libdvb/lib/dvb/filepush.h
 --- enigma2-pli/lib/dvb/filepush.h	2018-10-23 22:20:52.895587908 +0000
 +++ enigma2-libdvb/lib/dvb/filepush.h	2018-10-28 15:04:29.250653398 +0000
