@@ -443,6 +443,64 @@ diff -Naur enigma2-pli/lib/base/Makefile.inc enigma2-rpicommon/lib/base/Makefile
  	base/httpsstream.h \
  	base/httpstream.h \
  	base/wrappers.h
+diff -Naur enigma2-pli/lib/base/rawfile.h enigma2-rpicommon/lib/base/rawfile.h
+--- enigma2-pli/lib/base/rawfile.h	2018-10-23 22:20:52.655580971 +0000
++++ enigma2-rpicommon/lib/base/rawfile.h	2018-10-28 14:04:23.962389571 +0000
+@@ -3,23 +3,29 @@
+ 
+ #include <string>
+ #include <lib/base/itssource.h>
++#include <lib/base/tsRingbuffer.h>
++#include <lib/dvb/edvbdemux.h>
+ 
+ class eRawFile: public iTsSource
+ {
+ 	DECLARE_REF(eRawFile);
+-	eSingleLock m_lock;
++//	eSingleLock m_lock;
+ public:
+ 	eRawFile(int packetsize = 188);
+ 	~eRawFile();
+ 	int open(const char *filename);
++	void setfd(int fd);
+ 
+ 	// iTsSource
+ 	ssize_t read(off_t offset, void *buf, size_t count);
+ 	off_t length();
+ 	off_t offset();
+ 	int valid();
+-private:
++//private:
++protected:
++	eSingleLock m_lock;
+ 	int m_fd;
++private:
+ 	int m_nrfiles;
+ 	off_t m_splitsize;
+ 	off_t m_totallength;
+@@ -36,4 +42,22 @@
+ 	int openFileUncached(int nr);
+ };
+ 
++class eDecryptRawFile: public eRawFile
++{
++public:
++	eDecryptRawFile(int packetsize = 188);
++	~eDecryptRawFile();
++	void setDemux(ePtr<eDVBDemux> demux);
++	ssize_t read(off_t offset, void *buf, size_t count);
++private:
++	ePtr<eDVBDemux> demux;
++	cRingBufferLinear *ringBuffer;
++	int bs_size;
++	bool delivered;
++	int lastPacketsCount;
++	bool stream_correct;
++
++	uint8_t* getPackets(int &packetsCount);
++};
++
+ #endif
 diff -Naur enigma2-pli/lib/base/tsRingbuffer.cpp enigma2-rpicommon/lib/base/tsRingbuffer.cpp
 --- enigma2-pli/lib/base/tsRingbuffer.cpp	1970-01-01 00:00:00.000000000 +0000
 +++ enigma2-rpicommon/lib/base/tsRingbuffer.cpp	2018-10-25 22:24:17.698082820 +0000
