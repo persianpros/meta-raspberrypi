@@ -694,8 +694,8 @@ diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
  	ePtr<eDVBAllocatedDemux> m_demux, m_decoder_demux;
 diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 --- enigma2-pli/lib/dvb/edvbdemux.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 18:01:47.480268572 +0000
-@@ -0,0 +1,63 @@
++++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 23:54:54.929216115 +0000
+@@ -0,0 +1,109 @@
 +#ifndef __dvb_edvbdemux_h
 +#define __dvb_edvbdemux_h
 +
@@ -739,7 +739,7 @@ diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 +	cDeCSA *decsa;
 +	int m_dvr_busy;
 +	int m_dvr_id;
-+//	int m_dvr_source_offset;	
++//	int m_dvr_source_offset;
 +	friend class eDVBSectionReader;
 +	friend class eDVBPESReader;
 +	friend class eDVBAudio;
@@ -757,6 +757,52 @@ diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 +
 +	int openDemux(void);
 +};
++
++//	vdr/remux.h
++
++#define MAX33BIT  0x00000001FFFFFFFFLL // max. possible value with 33 bit
++
++typedef unsigned char uchar;
++
++inline bool PesLongEnough(int Length)
++{
++  return Length >= 6;
++}
++
++inline bool PesHasLength(const uchar *p)
++{
++  return p[4] | p[5];
++}
++
++inline int PesLength(const uchar *p)
++{
++  return 6 + p[4] * 256 + p[5];
++}
++
++inline int PesPayloadOffset(const uchar *p)
++{
++  return 9 + p[8];
++}
++
++inline bool PesHasPts(const uchar *p)
++{
++  return (p[7] & 0x80) && p[8] >= 5;
++}
++
++inline int64_t PesGetPts(const uchar *p)
++{
++  return ((((int64_t)p[ 9]) & 0x0E) << 29) |
++         (( (int64_t)p[10])         << 22) |
++         ((((int64_t)p[11]) & 0xFE) << 14) |
++         (( (int64_t)p[12])         <<  7) |
++         ((((int64_t)p[13]) & 0xFE) >>  1);
++}
++
++int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
++       ///< Returns the difference between two PTS values. The result of Pts2 - Pts1
++       ///< is the actual number of 90kHz time ticks that pass from Pts1 to Pts2,
++       ///< properly taking into account the 33bit wrap around. If Pts2 is "before"
++       ///< Pts1, the result is negative.
 +
 +#endif
 diff -Naur enigma2-pli/lib/dvb/filepush.cpp enigma2-libdvb/lib/dvb/filepush.cpp
