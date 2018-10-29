@@ -446,7 +446,7 @@ diff -Naur enigma2-pli/lib/dvb/decsa.h enigma2-libdvb/lib/dvb/decsa.h
 +#endif
 diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
 --- enigma2-pli/lib/dvb/demux.cpp	2018-10-23 22:20:52.815585596 +0000
-+++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-29 19:55:27.672257349 +0000
++++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-29 20:45:33.821917217 +0000
 @@ -49,7 +49,11 @@
  	}
  	unsigned int megabytes = si.totalram >> 20;
@@ -460,22 +460,13 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  		result = 40; // 1024MB systems: Use 8MB IO buffers (vusolo2, vuduo2, ...)
  	else if (megabytes > 200)
  		result = 20; // 512MB systems: Use 4MB IO buffers (et9x00, vuultimo, ...)
-@@ -70,16 +74,18 @@
- 	m_pvr_fd(-1),
- #endif
- 	m_dvr_busy(0),
--	m_dvr_id(-1),
--	m_dvr_source_offset(DMX_SOURCE_DVR0)
-+	m_dvr_id(-1)
-+//	m_dvr_source_offset(DMX_SOURCE_DVR0)
+@@ -75,11 +79,13 @@
  {
--	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
--		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
+ 	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
+ 		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 -
-+//	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
-+//		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 +	decsa = new cDeCSA(adapter, demux);
-+	eDebug("[eDVBDemux] new cDeCSA (adapter%d, demux%d)", adapter, demux);
++	eDebug("[RPi eDVBDemux] new cDeCSA (adapter%d, demux%d)", adapter, demux);
  }
  
  eDVBDemux::~eDVBDemux()
@@ -484,17 +475,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  }
  
  int eDVBDemux::openDemux(void)
-@@ -123,7 +129,8 @@
- {
- 	int fd = openDemux();
- 	if (fd < 0) return -1;
--	int n = m_dvr_source_offset + pvrnum;
-+//	int n = m_dvr_source_offset + pvrnum;
-+	int n = DMX_SOURCE_DVR0 + pvrnum;
- 	int res = ::ioctl(fd, DMX_SET_SOURCE, &n);
- 	if (res)
- 		eDebug("[eDVBDemux] DMX_SET_SOURCE dvr%d failed: %m", pvrnum);
-@@ -209,6 +216,20 @@
+@@ -209,6 +215,20 @@
  	return 0;
  }
  
@@ -515,7 +496,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  void eDVBSectionReader::data(int)
  {
  	uint8_t data[4096]; // max. section size
-@@ -727,6 +748,7 @@
+@@ -727,6 +747,7 @@
  
  RESULT eDVBTSRecorder::start()
  {
@@ -523,7 +504,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  	std::map<int,int>::iterator i(m_pids.begin());
  
  	if (m_running)
-@@ -740,6 +762,7 @@
+@@ -740,6 +761,7 @@
  
  	char filename[128];
  	snprintf(filename, 128, "/dev/dvb/adapter%d/demux%d", m_demux->adapter, m_demux->demux);
@@ -531,18 +512,28 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  
  	m_source_fd = ::open(filename, O_RDONLY | O_CLOEXEC);
  
-@@ -780,6 +803,8 @@
+@@ -772,14 +794,16 @@
+ 	if (!m_target_filename.empty())
+ 		m_thread->startSaveMetaInformation(m_target_filename);
+ 
+-	m_thread->start(m_source_fd);
+-	m_running = 1;
++//	m_thread->start(m_source_fd);
++//	m_running = 1;
+ 
+ 	while (i != m_pids.end()) {
+ 		startPID(i->first);
  		++i;
  	}
  
-+//	m_thread->start(m_source_fd, m_demux);
-+//	m_running = 1;	
++	m_thread->start(m_source_fd, m_demux);
++	m_running = 1;	
  	return 0;
  }
  
 diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
 --- enigma2-pli/lib/dvb/demux.h	2018-10-23 22:20:52.815585596 +0000
-+++ enigma2-libdvb/lib/dvb/demux.h	2018-10-27 18:01:00.289480882 +0000
++++ enigma2-libdvb/lib/dvb/demux.h	2018-10-29 20:43:17.989257455 +0000
 @@ -6,8 +6,9 @@
  #include <lib/dvb/idemux.h>
  #include <lib/dvb/pvrparse.h>
@@ -554,7 +545,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
  {
  	DECLARE_REF(eDVBDemux);
  public:
-@@ -34,12 +35,15 @@
+@@ -34,9 +35,12 @@
  	int openDVR(int flags);
  
  	int getRefCount() { return ref; }
@@ -567,11 +558,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
 +	cDeCSA *decsa;
  	int m_dvr_busy;
  	int m_dvr_id;
--	int m_dvr_source_offset;
-+//	int m_dvr_source_offset;
- 	friend class eDVBSectionReader;
- 	friend class eDVBPESReader;
- 	friend class eDVBAudio;
+ 	int m_dvr_source_offset;
 @@ -56,7 +60,7 @@
  	sigc::signal1<void, int> m_event;
  
@@ -583,7 +570,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
  {
 diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
 --- enigma2-pli/lib/dvb/dvb.cpp	2018-10-23 22:20:52.825585885 +0000
-+++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-29 19:55:27.292246401 +0000
++++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-29 20:50:58.539310131 +0000
 @@ -1479,6 +1479,21 @@
  	return false;
  }
@@ -613,7 +600,7 @@ diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
 -	ePtr<eDVBAllocatedDemux> &our_demux = (cap & capDecode) ? m_decoder_demux : m_demux;
 -
 +//	ePtr<eDVBAllocatedDemux> &our_demux = (cap & capDecode) ? m_decoder_demux : m_demux;
-+	ePtr<eDVBAllocatedDemux> &our_demux = m_demux; /* openpliPC */
++	ePtr<eDVBAllocatedDemux> &our_demux = m_demux; /* enigma2 [RPi] */
 +	
  	eDebug("[eDVBChannel] getDemux cap=%02X", cap);
  
@@ -664,7 +651,7 @@ diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
  SWIG_EXTEND(ePtr<eDVBResourceManager>,
 diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 --- enigma2-pli/lib/dvb/edvbdemux.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 23:54:54.929216115 +0000
++++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-29 20:43:17.989257455 +0000
 @@ -0,0 +1,109 @@
 +#ifndef __dvb_edvbdemux_h
 +#define __dvb_edvbdemux_h
@@ -709,7 +696,7 @@ diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 +	cDeCSA *decsa;
 +	int m_dvr_busy;
 +	int m_dvr_id;
-+//	int m_dvr_source_offset;
++	int m_dvr_source_offset;
 +	friend class eDVBSectionReader;
 +	friend class eDVBPESReader;
 +	friend class eDVBAudio;
