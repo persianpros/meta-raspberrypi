@@ -446,7 +446,7 @@ diff -Naur enigma2-pli/lib/dvb/decsa.h enigma2-libdvb/lib/dvb/decsa.h
 +#endif
 diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
 --- enigma2-pli/lib/dvb/demux.cpp	2018-10-23 22:20:52.815585596 +0000
-+++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-27 17:38:28.967838322 +0000
++++ enigma2-libdvb/lib/dvb/demux.cpp	2018-10-29 19:55:27.672257349 +0000
 @@ -49,7 +49,11 @@
  	}
  	unsigned int megabytes = si.totalram >> 20;
@@ -460,21 +460,18 @@ diff -Naur enigma2-pli/lib/dvb/demux.cpp enigma2-libdvb/lib/dvb/demux.cpp
  		result = 40; // 1024MB systems: Use 8MB IO buffers (vusolo2, vuduo2, ...)
  	else if (megabytes > 200)
  		result = 20; // 512MB systems: Use 4MB IO buffers (et9x00, vuultimo, ...)
-@@ -69,17 +73,19 @@
- #ifdef HAVE_AMLOGIC
+@@ -70,16 +74,18 @@
  	m_pvr_fd(-1),
  #endif
--	m_dvr_busy(0),
+ 	m_dvr_busy(0),
 -	m_dvr_id(-1),
 -	m_dvr_source_offset(DMX_SOURCE_DVR0)
--{
++	m_dvr_id(-1)
++//	m_dvr_source_offset(DMX_SOURCE_DVR0)
+ {
 -	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
 -		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 -
-+	m_dvr_busy(0)
-+//	m_dvr_id(-1),
-+//	m_dvr_source_offset(DMX_SOURCE_DVR0)
-+{
 +//	if (CFile::parseInt(&m_dvr_source_offset, "/proc/stb/frontend/dvr_source_offset") == 0)
 +//		eDebug("[eDVBDemux] using %d for PVR DMX_SET_SOURCE", m_dvr_source_offset);
 +	decsa = new cDeCSA(adapter, demux);
@@ -586,7 +583,7 @@ diff -Naur enigma2-pli/lib/dvb/demux.h enigma2-libdvb/lib/dvb/demux.h
  {
 diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
 --- enigma2-pli/lib/dvb/dvb.cpp	2018-10-23 22:20:52.825585885 +0000
-+++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-27 21:26:08.588300187 +0000
++++ enigma2-libdvb/lib/dvb/dvb.cpp	2018-10-29 19:55:27.292246401 +0000
 @@ -1479,6 +1479,21 @@
  	return false;
  }
@@ -609,24 +606,6 @@ diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
  class eDVBChannelFilePush: public eFilePushThread
  {
  public:
-@@ -2064,7 +2079,7 @@
- 	}
- 	return -1;
- }
--
-+/*
- int eDVBChannel::getDvrId()
- {
- 	ePtr<eDVBAllocatedDemux> dmx = m_decoder_demux ? m_decoder_demux : m_demux;
-@@ -2074,7 +2089,7 @@
- 	}
- 	return -1;
- }
--
-+*/
- RESULT eDVBChannel::requestTsidOnid()
- {
- 	if (!getDemux(m_tsid_onid_demux, 0))
 @@ -2096,8 +2111,9 @@
  
  RESULT eDVBChannel::getDemux(ePtr<iDVBDemux> &demux, int cap)
@@ -674,7 +653,7 @@ diff -Naur enigma2-pli/lib/dvb/dvb.cpp enigma2-libdvb/lib/dvb/dvb.cpp
  	m_source = NULL;
 diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
 --- enigma2-pli/lib/dvb/dvb.h	2018-10-23 22:20:52.825585885 +0000
-+++ enigma2-libdvb/lib/dvb/dvb.h	2018-10-27 21:17:22.358604974 +0000
++++ enigma2-libdvb/lib/dvb/dvb.h	2018-10-29 19:51:20.525130726 +0000
 @@ -243,6 +243,7 @@
  	bool frontendIsMultistream(int index);
  	std::string getFrontendCapabilities(int index);
@@ -683,15 +662,6 @@ diff -Naur enigma2-pli/lib/dvb/dvb.h enigma2-libdvb/lib/dvb/dvb.h
  };
  SWIG_TEMPLATE_TYPEDEF(ePtr<eDVBResourceManager>, eDVBResourceManager);
  SWIG_EXTEND(ePtr<eDVBResourceManager>,
-@@ -296,7 +297,7 @@
- 
- 	RESULT requestTsidOnid();
- 	int reserveDemux();
--	int getDvrId();
-+//	int getDvrId();
- private:
- 	ePtr<eDVBAllocatedFrontend> m_frontend;
- 	ePtr<eDVBAllocatedDemux> m_demux, m_decoder_demux;
 diff -Naur enigma2-pli/lib/dvb/edvbdemux.h enigma2-libdvb/lib/dvb/edvbdemux.h
 --- enigma2-pli/lib/dvb/edvbdemux.h	1970-01-01 00:00:00.000000000 +0000
 +++ enigma2-libdvb/lib/dvb/edvbdemux.h	2018-10-27 23:54:54.929216115 +0000
@@ -904,18 +874,6 @@ diff -Naur enigma2-pli/lib/dvb/frontend.cpp enigma2-libdvb/lib/dvb/frontend.cpp
  	return ::ioctl(m_fd, FE_SET_VOLTAGE, vlt);
  }
  
-diff -Naur enigma2-pli/lib/dvb/idvb.h enigma2-libdvb/lib/dvb/idvb.h
---- enigma2-pli/lib/dvb/idvb.h	2018-10-23 22:20:52.925588775 +0000
-+++ enigma2-libdvb/lib/dvb/idvb.h	2018-10-27 21:18:56.961284379 +0000
-@@ -570,7 +570,7 @@
- 	virtual RESULT requestTsidOnid() { return -1; }
- 	PSignal2<void, int, int> receivedTsidOnid;
- 	virtual int reserveDemux() { return -1; }
--	virtual int getDvrId() { return -1; }
-+//	virtual int getDvrId() { return -1; }
- #ifndef SWIG
- 	enum
- 	{
 diff -Naur enigma2-pli/lib/dvb/Makefile.inc enigma2-libdvb/lib/dvb/Makefile.inc
 --- enigma2-pli/lib/dvb/Makefile.inc	2018-10-23 22:20:52.735583284 +0000
 +++ enigma2-libdvb/lib/dvb/Makefile.inc	2018-10-27 13:56:21.809317298 +0000
