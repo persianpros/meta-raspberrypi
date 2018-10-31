@@ -896,6 +896,28 @@ diff -Naur enigma2-pli/lib/dvb/Makefile.inc enigma2-libdvb/lib/dvb/Makefile.inc
  	dvb/eit.h \
  	dvb/epgcache.h \
  	dvb/esection.h \
+diff -Naur enigma2-pli/lib/dvb/pmtparse.cpp enigma2-libdvb/lib/dvb/pmtparse.cpp
+--- enigma2-pli/lib/dvb/pmtparse.cpp	2018-10-23 22:20:52.995590798 +0000
++++ enigma2-libdvb/lib/dvb/pmtparse.cpp	2018-10-31 21:21:24.441554452 +0000
+@@ -99,6 +99,7 @@
+ 				video.type = videoStream::vtMPEG2;
+ 				audio.type = audioStream::atMPEG;
+ 				audio.rdsPid = -1;
++				video.orig_streamtype= streamtype;
+ 
+ 				switch (streamtype)
+ 				{
+diff -Naur enigma2-pli/lib/dvb/pmtparse.h enigma2-libdvb/lib/dvb/pmtparse.h
+--- enigma2-pli/lib/dvb/pmtparse.h	2018-10-23 22:20:53.005591087 +0000
++++ enigma2-libdvb/lib/dvb/pmtparse.h	2018-10-31 21:19:52.238159091 +0000
+@@ -26,6 +26,7 @@
+ 		int component_tag;
+ 		enum { vtMPEG2, vtMPEG4_H264, vtVC1 = 3, vtMPEG4_Part2, vtVC1_SM, vtMPEG1, vtH265_HEVC, vtCAVS = 16 };
+ 		int type;
++		int orig_streamtype;
+ 	};
+ 
+ 	struct audioStream
 diff -Naur enigma2-pli/lib/dvb_ci/dvbci.cpp enigma2-libdvb/lib/dvb_ci/dvbci.cpp
 --- enigma2-pli/lib/dvb_ci/dvbci.cpp	2018-10-23 22:20:53.105593977 +0000
 +++ enigma2-libdvb/lib/dvb_ci/dvbci.cpp	2018-10-27 21:19:39.622287969 +0000
