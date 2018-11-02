@@ -179,6 +179,426 @@ diff -Naur enigma2-pli/lib/dvb/ca_connector.h enigma2-libdvb/lib/dvb/ca_connecto
 +};
 +
 +#endif
+diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
+--- enigma2-pli/lib/dvb/decoder.cpp	2018-10-23 22:20:52.795585018 +0000
++++ enigma2-libdvb/lib/dvb/decoder.cpp	2018-11-01 21:44:50.559142943 +0000
+@@ -7,6 +7,7 @@
+ #include <linux/dvb/audio.h>
+ #include <linux/dvb/video.h>
+ #include <linux/dvb/dmx.h>
++/*	#include <lib/gdi/xineLib.h>	--->	#include <lib/dvb/omxdecoder.h>	*/
+ 
+ #include <unistd.h>
+ #include <fcntl.h>
+@@ -52,7 +53,25 @@
+ #endif
+ }
+ 
+-int eDVBAudio::startPid(int pid, int type)
++#define STREAM_SPU_BITMAP_HDMV                    0x90
++#define ISO_13818_AUDIO                           0x04
++#define STREAM_VIDEO_VC1                          0xea /* VC-1 Video */
++#define HDMV_AUDIO_80_PCM                         0x80 /* BluRay PCM */
++#define STREAM_AUDIO_AC3                          0x81
++#define HDMV_AUDIO_82_DTS                         0x82 /* DTS */
++#define HDMV_AUDIO_83_TRUEHD                      0x83 /* Dolby TrueHD, primary audio */
++#define HDMV_AUDIO_84_EAC3                        0x84 /* Dolby Digital plus, primary audio */
++#define HDMV_AUDIO_85_DTS_HRA                     0x85 /* DTS-HRA */
++#define HDMV_AUDIO_86_DTS_HD_MA                   0x86 /* DTS-HD Master audio */
++#define ISO_IEC_13818_7_ADTS_AAC_MPEG2_LOWER      0x0F /* AAC Xtra TV */
++//#define ISO_IEC_13818_7_ADTS_AAC                  0x2B
++//#define ISO_IEC_13818_7_ADTS_AAC_AES_128_CBC      0xCF
++
++//int eDVBAudio::startPid(int pid, int type)
++int eDVBAudio::startPid(int pid, int type, bool mode)
++ {
++/*	cXineLib *xineLib = cXineLib::getInstance();	*/
++
+ {
+ 	if (m_fd_demux >= 0)
+ 	{
+@@ -81,54 +100,67 @@
+ 		if (::ioctl(m_fd_demux, DMX_SET_PES_FILTER, &pes) < 0)
+ 		{
+ 			eDebugNoNewLine("failed: %m\n");
+-			return -errno;
++//			return -errno;
+ 		}
+ 		eDebugNoNewLine("ok\n");
+ 		eDebugNoNewLineStart("[eDVBAudio%d] DEMUX_START ", m_dev);
+ 		if (::ioctl(m_fd_demux, DMX_START) < 0)
+ 		{
+ 			eDebugNoNewLine("failed: %m\n");
+-			return -errno;
++//			return -errno;
+ 		}
+ 		eDebugNoNewLine("ok\n");
+ 	}
+ 
+-	if (m_fd >= 0)
+-	{
++//	if (m_fd >= 0)
++//	{
+ 		int bypass = 0;
+-
++//		xine_type = 0;
+ 		switch (type)
+ 		{
+ 		case aMPEG:
+ 			bypass = 1;
++//			xine_type = ISO_13818_AUDIO;
+ 			break;
+ 		case aAC3:
+ 			bypass = 0;
++//			xine_type = STREAM_AUDIO_AC3;
+ 			break;
+ 		case aDTS:
+ 			bypass = 2;
++//			xine_type = HDMV_AUDIO_82_DTS;
+ 			break;
+ 		case aAAC:
+ 			bypass = 8;
++//			xine_type = ISO_IEC_13818_7_ADTS_AAC_MPEG2_LOWER;
+ 			break;
+ 		case aAACHE:
+ 			bypass = 9;
++//			xine_type = ?
+ 			break;
+ 		case aLPCM:
+ 			bypass = 6;
++//			xine_type = HDMV_AUDIO_80_PCM;
+ 			break;
+ 		case aDTSHD:
+ 			bypass = 0x10;
++//			xine_type = HDMV_AUDIO_86_DTS_HD_MA;
+ 			break;
+ 		case aDDP:
+-#ifdef DREAMBOX
+-		bypass = 7;
+-#else
+-		bypass = 0x22;
+-#endif
++		#ifdef DREAMBOX
++			bypass = 7;
++		#else
++			bypass = 0x22;
++//			xine_type = HDMV_AUDIO_84_EAC3;
++		#endif
+ 		break;
+ 		}
+ 
++/*		xineLib->setAudioType(pid, xine_type);
++		// Radio mode
++		if (mode)
++			xineLib->playVideo();	*/
++
+ 		eDebugNoNewLineStart("[eDVBAudio%d] AUDIO_SET_BYPASS bypass=%d ", m_dev, bypass);
+ 		if (::ioctl(m_fd, AUDIO_SET_BYPASS_MODE, bypass) < 0)
+ 			eDebugNoNewLine("failed: %m\n");
+@@ -140,7 +172,7 @@
+ 			eDebugNoNewLine("failed: %m\n");
+ 		else
+ 			eDebugNoNewLine("ok\n");
+-	}
++//	}
+ 	return 0;
+ }
+ 
+@@ -309,11 +341,14 @@
+ #define VIDEO_STREAMTYPE_H265_HEVC 7
+ #define VIDEO_STREAMTYPE_AVS 16
+ 
+-int eDVBVideo::startPid(int pid, int type)
++//int eDVBVideo::startPid(int pid, int type)
++int eDVBVideo::startPid(int pid, int type, bool is_pvr)
+ {
+-	if (m_fd >= 0)
++//	if (m_fd >= 0)
++//	{
++	int streamtype = VIDEO_STREAMTYPE_MPEG2;
++	if (is_pvr)
+ 	{
+-		int streamtype = VIDEO_STREAMTYPE_MPEG2;
+ 		switch (type)
+ 		{
+ 		default:
+@@ -341,7 +376,7 @@
+ 			streamtype = VIDEO_STREAMTYPE_AVS;
+ 			break;
+ 		}
+-
++		type = streamtype;		
+ 		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_SET_STREAMTYPE %d - ", m_dev, streamtype);
+ 		if (::ioctl(m_fd, VIDEO_SET_STREAMTYPE, streamtype) < 0)
+ 			eDebugNoNewLine("failed: %m\n");
+@@ -375,27 +410,30 @@
+ 		if (::ioctl(m_fd_demux, DMX_SET_PES_FILTER, &pes) < 0)
+ 		{
+ 			eDebugNoNewLine("failed: %m\n");
+-			return -errno;
++//			return -errno;
+ 		}
+ 		eDebugNoNewLine("ok\n");
+ 		eDebugNoNewLineStart("[eDVBVideo%d] DEMUX_START ", m_dev);
+ 		if (::ioctl(m_fd_demux, DMX_START) < 0)
+ 		{
+ 			eDebugNoNewLine("failed: %m\n");
+-			return -errno;
++//			return -errno;
+ 		}
+ 		eDebugNoNewLine("ok\n");
+ 	}
+ 
+-	if (m_fd >= 0)
+-	{
++//	if (m_fd >= 0)
++//	{
++/*		cXineLib *xineLib = cXineLib::getInstance();
++		xineLib->setVideoType(pid, type);	*/
+ 		freeze();  // why freeze here?!? this is a problem when only a pid change is requested... because of the unfreeze logic in Decoder::setState
+ 		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_PLAY ", m_dev);
+ 		if (::ioctl(m_fd, VIDEO_PLAY) < 0)
+ 			eDebugNoNewLine("failed: %m\n");
+ 		else
+ 			eDebugNoNewLine("ok\n");
+-	}
++//	}
++/*	xineLib->playVideo();	*/	
+ 	return 0;
+ }
+ 
+@@ -404,10 +442,10 @@
+ 	if (m_fd_demux >= 0)
+ 	{
+ 		eDebugNoNewLineStart("[eDVBVideo%d] DEMUX_STOP  ", m_dev);
+-		if (::ioctl(m_fd_demux, DMX_STOP) < 0)
+-			eDebugNoNewLine("failed: %m\n");
+-		else
+-			eDebugNoNewLine("ok\n");
++//		if (::ioctl(m_fd_demux, DMX_STOP) < 0)
++//			eDebugNoNewLine("failed: %m\n");
++//		else
++		eDebugNoNewLine("ok\n");
+ 	}
+ 
+ 	if (m_fd >= 0)
+@@ -418,6 +456,8 @@
+ 		else
+ 			eDebugNoNewLine("ok\n");
+ 	}
++/*	cXineLib *xineLib = cXineLib::getInstance();
++	xineLib->stopVideo();	*/
+ }
+ 
+ void eDVBVideo::flush()
+@@ -433,7 +473,7 @@
+ }
+ 
+ void eDVBVideo::freeze()
+-{
++{+
+ 	if (m_fd >= 0)
+ 	{
+ 		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_FREEZE ", m_dev);
+@@ -442,6 +482,8 @@
+ 		else
+ 			eDebugNoNewLine("ok\n");
+ 	}
++/*	cXineLib *xineLib = cXineLib::getInstance();
++	xineLib->VideoPause();	*/	
+ }
+ 
+ void eDVBVideo::unfreeze()
+@@ -454,6 +496,8 @@
+ 		else
+ 			eDebugNoNewLine("ok\n");
+ 	}
++/*	cXineLib *xineLib = cXineLib::getInstance();
++	xineLib->VideoResume();	*/
+ }
+ 
+ int eDVBVideo::setSlowMotion(int repeat)
+@@ -488,14 +532,19 @@
+ 
+ int eDVBVideo::getPTS(pts_t &now)
+ {
+-	if (m_fd >= 0)
+-	{
+-		int ret = ::ioctl(m_fd, VIDEO_GET_PTS, &now);
++//	if (m_fd >= 0)
++//	{
++//		int ret = ::ioctl(m_fd, VIDEO_GET_PTS, &now);
++/*		cXineLib *xineLib = cXineLib::getInstance();
++		int ret = xineLib->getPTS(now);	*/
+ 		if (ret < 0)
++		{
+ 			eDebug("[eDVBVideo%d] VIDEO_GET_PTS failed: %m", m_dev);
++			return 0;
++		}
+ 		return ret;
+-	}
+-	return 0;
++//	}
++//	return 0;
+ }
+ 
+ eDVBVideo::~eDVBVideo()
+@@ -877,7 +926,8 @@
+ 		if ((m_apid >= 0) && (m_apid < 0x1FFF) && !noaudio)
+ 		{
+ 			m_audio = new eDVBAudio(m_demux, m_decoder);
+-			if (m_audio->startPid(m_apid, m_atype))
++//			if (m_audio->startPid(m_apid, m_atype))
++			if (m_audio->startPid(m_apid, m_atype, m_is_radio))
+ 				res = -1;
+ 		}
+ 		m_changed &= ~changeAudio;
+@@ -888,8 +938,18 @@
+ 		{
+ 			m_video = new eDVBVideo(m_demux, m_decoder);
+ 			m_video->connectEvent(sigc::mem_fun(*this, &eTSMPEGDecoder::video_event), m_video_event_conn);
+-			if (m_video->startPid(m_vpid, m_vtype))
+-				res = -1;
++//			if (m_video->startPid(m_vpid, m_vtype))
++//				res = -1;
++			if (m_vstreamtype != 0)
++			{
++				if (m_video->startPid(m_vpid, m_vstreamtype, m_is_pvr))
++					res = -1;
++			}
++			else
++			{
++				if (m_video->startPid(m_vpid, m_vtype, m_is_pvr))
++					res = -1;
++			}
+ 		}
+ 		m_changed &= ~changeVideo;
+ 	}
+@@ -994,7 +1054,8 @@
+ 
+ eTSMPEGDecoder::eTSMPEGDecoder(eDVBDemux *demux, int decoder)
+ 	: m_demux(demux),
+-		m_vpid(-1), m_vtype(-1), m_apid(-1), m_atype(-1), m_pcrpid(-1), m_textpid(-1),
++//		m_vpid(-1), m_vtype(-1), m_apid(-1), m_atype(-1), m_pcrpid(-1), m_textpid(-1),
++		m_vpid(-1), m_vtype(-1), m_apid(-1), m_atype(-1), m_pcrpid(-1), m_textpid(-1), m_vstreamtype(-1), m_is_pvr(false), m_is_radio(false),
+ 		m_changed(0), m_decoder(decoder), m_video_clip_fd(-1), m_showSinglePicTimer(eTimer::create(eApp))
+ {
+ 	if (m_demux)
+@@ -1023,27 +1084,39 @@
+ 		eTuxtxtApp::getInstance()->freeCache();
+ }
+ 
+-RESULT eTSMPEGDecoder::setVideoPID(int vpid, int type)
++//RESULT eTSMPEGDecoder::setVideoPID(int vpid, int type)
++RESULT eTSMPEGDecoder::setVideoPID(int vpid, int type, int streamtype)
+ {
+-	if ((m_vpid != vpid) || (m_vtype != type))
++	printf("eTSMPEGDecoder setVideoPID %d\n", vpid);
++//	if ((m_vpid != vpid) || (m_vtype != type))
++	if ((m_vpid != vpid) || (m_vtype != type) || (m_vstreamtype != streamtype))
+ 	{
+ 		m_changed |= changeVideo;
+ 		m_vpid = vpid;
+ 		m_vtype = type;
++		m_vstreamtype = streamtype;
++		
++		if (m_vstreamtype == 0)
++		  m_is_pvr = true;
++		else
++		  m_is_pvr = false;		
+ 	}
+ 	return 0;
+ }
+ 
+-RESULT eTSMPEGDecoder::setAudioPID(int apid, int type)
++//RESULT eTSMPEGDecoder::setAudioPID(int apid, int type)
++RESULT eTSMPEGDecoder::setAudioPID(int apid, int type, bool amode)
+ {
+ 	/* do not set an audio pid on decoders without audio support */
+-	if (!m_has_audio) apid = -1;
++/*	if (!m_has_audio) apid = -1;	*/
+ 
++	printf("eTSMPEGDecoder setAudioPID %d\n", apid);
+ 	if ((m_apid != apid) || (m_atype != type))
+ 	{
+ 		m_changed |= changeAudio;
+ 		m_atype = type;
+ 		m_apid = apid;
++		m_is_radio = amode;
+ 	}
+ 	return 0;
+ }
+@@ -1107,6 +1180,7 @@
+ 
+ RESULT eTSMPEGDecoder::play()
+ {
++	printf("eTSMPEGDecoder play\n");
+ 	if (m_state == statePlay)
+ 	{
+ 		if (!m_changed)
+@@ -1121,6 +1195,7 @@
+ 
+ RESULT eTSMPEGDecoder::pause()
+ {
++	printf("eTSMPEGDecoder pause\n");
+ 	if (m_state == statePause)
+ 		return 0;
+ 	m_state = statePause;
+diff -Naur enigma2-pli/lib/dvb/decoder.h enigma2-libdvb/lib/dvb/decoder.h
+--- enigma2-pli/lib/dvb/decoder.h	2018-10-23 22:20:52.805585307 +0000
++++ enigma2-libdvb/lib/dvb/decoder.h	2018-11-01 17:32:32.799690388 +0000
+@@ -3,6 +3,7 @@
+ 
+ #include <lib/base/object.h>
+ #include <lib/dvb/demux.h>
++//#include <lib/gdi/gxlibdc.h>	--->	#include <lib/gdi/omx.h>
+ 
+ class eSocketNotifier;
+ 
+@@ -18,7 +19,8 @@
+ 	enum { aMonoLeft, aStereo, aMonoRight };
+ 	void setChannel(int channel);
+ 	void stop();
+-	int startPid(int pid, int type);
++//	int startPid(int pid, int type);
++	int startPid(int pid, int type, bool mode);
+ 	void flush();
+ 	void freeze();
+ 	void unfreeze();
+@@ -43,7 +45,8 @@
+ 	enum { MPEG2, MPEG4_H264, VC1 = 3, MPEG4_Part2, VC1_SM, MPEG1, H265_HEVC, AVS = 16 };
+ 	eDVBVideo(eDVBDemux *demux, int dev);
+ 	void stop();
+-	int startPid(int pid, int type=MPEG2);
++//	int startPid(int pid, int type=MPEG2);
++	int startPid(int pid, int type=MPEG2, bool is_pvr=false);
+ 	void flush();
+ 	void freeze();
+ 	int setSlowMotion(int repeat);
+@@ -99,7 +102,9 @@
+ 	ePtr<eDVBVideo> m_video;
+ 	ePtr<eDVBPCR> m_pcr;
+ 	ePtr<eDVBTText> m_text;
+-	int m_vpid, m_vtype, m_apid, m_atype, m_pcrpid, m_textpid;
++//	int m_vpid, m_vtype, m_apid, m_atype, m_pcrpid, m_textpid;
++	int m_vpid, m_vtype, m_apid, m_atype, m_pcrpid, m_textpid, m_vstreamtype;
++	bool m_is_pvr, m_is_radio;
+ 	enum
+ 	{
+ 		changeVideo = 1,
+@@ -126,8 +131,10 @@
+ 	enum { pidNone = -1 };
+ 	eTSMPEGDecoder(eDVBDemux *demux, int decoder);
+ 	virtual ~eTSMPEGDecoder();
+-	RESULT setVideoPID(int vpid, int type);
+-	RESULT setAudioPID(int apid, int type);
++//	RESULT setVideoPID(int vpid, int type);
++//	RESULT setAudioPID(int apid, int type);
++	RESULT setVideoPID(int vpid, int type, int streamtype);
++	RESULT setAudioPID(int apid, int type, bool amode);
+ 	RESULT setAudioChannel(int channel);
+ 	int getAudioChannel();
+ 	RESULT setPCMDelay(int delay);
 diff -Naur enigma2-pli/lib/dvb/decsa.cpp enigma2-libdvb/lib/dvb/decsa.cpp
 --- enigma2-pli/lib/dvb/decsa.cpp	1970-01-01 00:00:00.000000000 +0000
 +++ enigma2-libdvb/lib/dvb/decsa.cpp	2018-10-27 13:56:21.779316795 +0000
@@ -861,6 +1281,25 @@ diff -Naur enigma2-pli/lib/dvb/frontend.cpp enigma2-libdvb/lib/dvb/frontend.cpp
  	return ::ioctl(m_fd, FE_SET_VOLTAGE, vlt);
  }
  
+diff -Naur enigma2-pli/lib/dvb/idvb.h enigma2-libdvb/lib/dvb/idvb.h
+--- enigma2-pli/lib/dvb/idvb.h	2018-10-23 22:20:52.925588775 +0000
++++ enigma2-libdvb/lib/dvb/idvb.h	2018-11-01 21:48:30.254750906 +0000
+@@ -699,11 +699,13 @@
+ public:
+ 	enum { pidDisabled = -1 };
+ 		/** Set Displayed Video PID and type */
+-	virtual RESULT setVideoPID(int vpid, int type)=0;
++//	virtual RESULT setVideoPID(int vpid, int type)=0;
++	virtual RESULT setVideoPID(int vpid, int type, int streamtype)=0;
+ 
+ 	enum { af_MPEG, af_AC3, af_DTS, af_AAC, af_DTSHD };
+ 		/** Set Displayed Audio PID and type */
+-	virtual RESULT setAudioPID(int apid, int type)=0;
++//	virtual RESULT setAudioPID(int apid, int type)=0;
++	virtual RESULT setAudioPID(int apid, int type, bool mode)=0;
+ 
+ 	enum { ac_left, ac_stereo, ac_right };
+ 		/** Set Displayed Audio Channel */
 diff -Naur enigma2-pli/lib/dvb/Makefile.inc enigma2-libdvb/lib/dvb/Makefile.inc
 --- enigma2-pli/lib/dvb/Makefile.inc	2018-10-23 22:20:52.735583284 +0000
 +++ enigma2-libdvb/lib/dvb/Makefile.inc	2018-10-27 13:56:21.809317298 +0000
