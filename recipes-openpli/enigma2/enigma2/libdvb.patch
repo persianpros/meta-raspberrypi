@@ -181,7 +181,7 @@ diff -Naur enigma2-pli/lib/dvb/ca_connector.h enigma2-libdvb/lib/dvb/ca_connecto
 +#endif
 diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
 --- enigma2-pli/lib/dvb/decoder.cpp	2018-10-23 22:20:52.795585018 +0000
-+++ enigma2-libdvb/lib/dvb/decoder.cpp	2018-11-01 21:44:50.559142943 +0000
++++ enigma2-libdvb/lib/dvb/decoder.cpp	2018-11-03 06:44:44.953990545 +0000
 @@ -7,6 +7,7 @@
  #include <linux/dvb/audio.h>
  #include <linux/dvb/video.h>
@@ -190,7 +190,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  
  #include <unistd.h>
  #include <fcntl.h>
-@@ -52,7 +53,25 @@
+@@ -52,8 +53,25 @@
  #endif
  }
  
@@ -211,13 +211,13 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
 +
 +//int eDVBAudio::startPid(int pid, int type)
 +int eDVBAudio::startPid(int pid, int type, bool mode)
-+ {
+ {
 +/*	cXineLib *xineLib = cXineLib::getInstance();	*/
 +
- {
  	if (m_fd_demux >= 0)
  	{
-@@ -81,54 +100,67 @@
+ 		dmx_pes_filter_params pes;
+@@ -81,54 +99,67 @@
  		if (::ioctl(m_fd_demux, DMX_SET_PES_FILTER, &pes) < 0)
  		{
  			eDebugNoNewLine("failed: %m\n");
@@ -287,15 +287,15 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  		break;
  		}
  
-+/*		xineLib->setAudioType(pid, xine_type);
++/*		xineLib->setAudioType(pid, xine_type);	*/
 +		// Radio mode
-+		if (mode)
-+			xineLib->playVideo();	*/
++/*		if (mode)
++			xineLib->playVideo();	*/	
 +
  		eDebugNoNewLineStart("[eDVBAudio%d] AUDIO_SET_BYPASS bypass=%d ", m_dev, bypass);
  		if (::ioctl(m_fd, AUDIO_SET_BYPASS_MODE, bypass) < 0)
  			eDebugNoNewLine("failed: %m\n");
-@@ -140,7 +172,7 @@
+@@ -140,7 +171,7 @@
  			eDebugNoNewLine("failed: %m\n");
  		else
  			eDebugNoNewLine("ok\n");
@@ -304,7 +304,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	return 0;
  }
  
-@@ -309,11 +341,14 @@
+@@ -309,11 +340,14 @@
  #define VIDEO_STREAMTYPE_H265_HEVC 7
  #define VIDEO_STREAMTYPE_AVS 16
  
@@ -322,7 +322,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  		switch (type)
  		{
  		default:
-@@ -341,7 +376,7 @@
+@@ -341,7 +375,7 @@
  			streamtype = VIDEO_STREAMTYPE_AVS;
  			break;
  		}
@@ -331,7 +331,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_SET_STREAMTYPE %d - ", m_dev, streamtype);
  		if (::ioctl(m_fd, VIDEO_SET_STREAMTYPE, streamtype) < 0)
  			eDebugNoNewLine("failed: %m\n");
-@@ -375,27 +410,30 @@
+@@ -375,27 +409,30 @@
  		if (::ioctl(m_fd_demux, DMX_SET_PES_FILTER, &pes) < 0)
  		{
  			eDebugNoNewLine("failed: %m\n");
@@ -367,7 +367,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	return 0;
  }
  
-@@ -404,10 +442,10 @@
+@@ -404,10 +441,10 @@
  	if (m_fd_demux >= 0)
  	{
  		eDebugNoNewLineStart("[eDVBVideo%d] DEMUX_STOP  ", m_dev);
@@ -382,7 +382,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	}
  
  	if (m_fd >= 0)
-@@ -418,6 +456,8 @@
+@@ -418,6 +455,8 @@
  		else
  			eDebugNoNewLine("ok\n");
  	}
@@ -391,7 +391,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  }
  
  void eDVBVideo::flush()
-@@ -433,7 +473,7 @@
+@@ -433,7 +472,7 @@
  }
  
  void eDVBVideo::freeze()
@@ -400,7 +400,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	if (m_fd >= 0)
  	{
  		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_FREEZE ", m_dev);
-@@ -442,6 +482,8 @@
+@@ -442,6 +481,8 @@
  		else
  			eDebugNoNewLine("ok\n");
  	}
@@ -409,7 +409,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  }
  
  void eDVBVideo::unfreeze()
-@@ -454,6 +496,8 @@
+@@ -454,6 +495,8 @@
  		else
  			eDebugNoNewLine("ok\n");
  	}
@@ -418,7 +418,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  }
  
  int eDVBVideo::setSlowMotion(int repeat)
-@@ -488,14 +532,19 @@
+@@ -488,14 +531,19 @@
  
  int eDVBVideo::getPTS(pts_t &now)
  {
@@ -443,7 +443,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  }
  
  eDVBVideo::~eDVBVideo()
-@@ -877,7 +926,8 @@
+@@ -877,7 +925,8 @@
  		if ((m_apid >= 0) && (m_apid < 0x1FFF) && !noaudio)
  		{
  			m_audio = new eDVBAudio(m_demux, m_decoder);
@@ -453,7 +453,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  				res = -1;
  		}
  		m_changed &= ~changeAudio;
-@@ -888,8 +938,18 @@
+@@ -888,8 +937,18 @@
  		{
  			m_video = new eDVBVideo(m_demux, m_decoder);
  			m_video->connectEvent(sigc::mem_fun(*this, &eTSMPEGDecoder::video_event), m_video_event_conn);
@@ -474,7 +474,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  		}
  		m_changed &= ~changeVideo;
  	}
-@@ -994,7 +1054,8 @@
+@@ -994,7 +1053,8 @@
  
  eTSMPEGDecoder::eTSMPEGDecoder(eDVBDemux *demux, int decoder)
  	: m_demux(demux),
@@ -484,7 +484,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  		m_changed(0), m_decoder(decoder), m_video_clip_fd(-1), m_showSinglePicTimer(eTimer::create(eApp))
  {
  	if (m_demux)
-@@ -1023,27 +1084,39 @@
+@@ -1023,27 +1083,39 @@
  		eTuxtxtApp::getInstance()->freeCache();
  }
  
@@ -528,7 +528,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	}
  	return 0;
  }
-@@ -1107,6 +1180,7 @@
+@@ -1107,6 +1179,7 @@
  
  RESULT eTSMPEGDecoder::play()
  {
@@ -536,7 +536,7 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  	if (m_state == statePlay)
  	{
  		if (!m_changed)
-@@ -1121,6 +1195,7 @@
+@@ -1121,6 +1194,7 @@
  
  RESULT eTSMPEGDecoder::pause()
  {
