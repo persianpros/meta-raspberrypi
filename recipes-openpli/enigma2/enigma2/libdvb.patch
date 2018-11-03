@@ -181,7 +181,7 @@ diff -Naur enigma2-pli/lib/dvb/ca_connector.h enigma2-libdvb/lib/dvb/ca_connecto
 +#endif
 diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
 --- enigma2-pli/lib/dvb/decoder.cpp	2018-10-23 22:20:52.795585018 +0000
-+++ enigma2-libdvb/lib/dvb/decoder.cpp	2018-11-03 06:44:44.953990545 +0000
++++ enigma2-libdvb/lib/dvb/decoder.cpp	2018-11-03 07:12:15.030790928 +0000
 @@ -7,6 +7,7 @@
  #include <linux/dvb/audio.h>
  #include <linux/dvb/video.h>
@@ -391,15 +391,6 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  }
  
  void eDVBVideo::flush()
-@@ -433,7 +472,7 @@
- }
- 
- void eDVBVideo::freeze()
--{
-+{+
- 	if (m_fd >= 0)
- 	{
- 		eDebugNoNewLineStart("[eDVBVideo%d] VIDEO_FREEZE ", m_dev);
 @@ -442,6 +481,8 @@
  		else
  			eDebugNoNewLine("ok\n");
@@ -424,10 +415,9 @@ diff -Naur enigma2-pli/lib/dvb/decoder.cpp enigma2-libdvb/lib/dvb/decoder.cpp
  {
 -	if (m_fd >= 0)
 -	{
--		int ret = ::ioctl(m_fd, VIDEO_GET_PTS, &now);
 +//	if (m_fd >= 0)
 +//	{
-+//		int ret = ::ioctl(m_fd, VIDEO_GET_PTS, &now);
+ 		int ret = ::ioctl(m_fd, VIDEO_GET_PTS, &now);
 +/*		cXineLib *xineLib = cXineLib::getInstance();
 +		int ret = xineLib->getPTS(now);	*/
  		if (ret < 0)
