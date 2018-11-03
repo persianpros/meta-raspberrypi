@@ -3,12 +3,8 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 DEPENDS += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa libnl', '', d)}"
 
 SRC_URI_append += "\
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://checklibs.patch', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://rpicommon.patch', '', d)} \
+	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://checklibs.patch file://rpicommon.patch file://libdvb.patch file://libservice.patch file://rpihddevice.patch', '', d)} \
 	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://lirc.patch file://remote.conf', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://libdvb.patch', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://libservice.patch', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://rpihddevice.patch', '', d)} \
 "
 
 do_install_append() {
