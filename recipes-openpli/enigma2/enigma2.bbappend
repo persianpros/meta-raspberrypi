@@ -1,7 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-PV = "rpi+git${SRCPV}"
-PKGV = "rpi+git${GITPKGV}"
+PV_rpi = "rpi+git${SRCPV}"
+PKGV_rpi = "rpi+git${GITPKGV}"
 
 DEPENDS += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa libnl', '', d)}"
 
