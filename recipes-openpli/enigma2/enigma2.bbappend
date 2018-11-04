@@ -1,17 +1,18 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
+PV = "rpi+git${SRCPV}"
+PKGV = "rpi+git${GITPKGV}"
+
 DEPENDS += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa libnl', '', d)}"
 
-SRC_URI_append += "\
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://checklibs.patch file://rpicommon.patch file://libdvb.patch file://libservice.patch file://rpihddevice.patch', '', d)} \
-	${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'file://lirc.patch file://remote.conf', '', d)} \
-"
+SRC_URI_rpi = "\
+	git://github.com/PLi-metas/enigma2-openpli-rpi.git;branch=develop;name=enigma2 \
+	git://github.com/PLi-metas/extra_rc_models.git;protocol=git;destsuffix=extra_rc_models;name=extrarcmodels \
+	file://remote.conf \
+	"
 
-do_install_append() {
-	if echo "${MACHINE_FEATURES}" | grep -q rpi-pli
-	then
-		install -d  ${D}/etc/enigma2
-		install -m 0644 ${WORKDIR}/remote.conf \
-		${D}/etc/enigma2
-	fi
+do_install_append_rpi() {
+	install -d ${D}/etc/enigma2
+	install -m 0644 ${WORKDIR}/remote.conf \
+	${D}/etc/enigma2
 }
