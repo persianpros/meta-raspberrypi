@@ -15,6 +15,8 @@ SRCREV = "f74ea7fdef9911904e269127443cd8a608abeacc"
 # SRCREV is changed.
 PV = "20180726"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/userland:"
+
 SRC_URI = "\
     git://github.com/${SRCFORK}/userland.git;protocol=git;branch=${SRCBRANCH} \
     file://0001-Allow-applications-to-set-next-resource-handle.patch \
@@ -47,7 +49,6 @@ EXTRA_OECMAKE = "-DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS='-Wl,--no-a
 "
 
 EXTRA_OECMAKE_append_aarch64 = " -DARM64=ON "
-
 
 PACKAGECONFIG ?= "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'wayland', '', d)}"
 
