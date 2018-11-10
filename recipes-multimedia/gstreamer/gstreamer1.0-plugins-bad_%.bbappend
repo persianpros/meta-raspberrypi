@@ -1,2 +1,2 @@
-# I hope it solves the PAK archive (application/x-pak) problem
+# Just a comment line to avoid PAK archive (application/x-pak)
 PACKAGECONFIG_append_rpi = " hls libmms faad"

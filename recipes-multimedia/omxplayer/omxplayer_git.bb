@@ -22,7 +22,6 @@ SRCREV_ffmpeg = "afa34cb36edca0ff809b7e58474bbce12271ecba"
 
 SRC_URI = "git://github.com/popcornmix/omxplayer.git;protocol=git;branch=master \
            git://source.ffmpeg.org/ffmpeg;branch=release/3.1;protocol=git;depth=1;name=ffmpeg;destsuffix=git/ffmpeg \
-           file://0001-Remove-Makefile.include-which-includes-hardcoded.patch \
            file://0002-Libraries-and-headers-from-ffmpeg-are-installed-in-u.patch \
            file://0003-Remove-strip-step-in-Makefile.patch \
            file://0004-Add-FFMPEG_EXTRA_CFLAGS-and-FFMPEG_EXTRA_LDFLAGS.patch \
@@ -34,8 +33,12 @@ SRC_URI = "git://github.com/popcornmix/omxplayer.git;protocol=git;branch=master 
            file://0001-openssl-Support-version-1.1.0.patch;patchdir=ffmpeg \
            file://0001-swresample-arm-avoid-conditional-branch-to-PLT-in-TH.patch;patchdir=ffmpeg \
            file://0001-rtmpdh-Stop-using-OpenSSL-provided-DH-functions-to-s.patch;patchdir=ffmpeg \
+           file://cross-crompile-ffmpeg.patch \
+           file://0001-Fix-build-with-vc4-driver.patch \
            "
 S = "${WORKDIR}/git"
+
+COMPATIBLE_MACHINE = "^rpi$"
 
 def cpu(d):
     for arg in (d.getVar('TUNE_CCARGS') or '').split():
@@ -62,11 +65,13 @@ export FFMPEG_EXTRA_CFLAGS  = "${TUNE_CCARGS} ${TOOLCHAIN_OPTIONS}"
 export FFMPEG_EXTRA_LDFLAGS  = "${TUNE_CCARGS} ${TOOLCHAIN_OPTIONS}"
 
 # Needed in top Makefile
+
 export LDFLAGS = "-L${S}/ffmpeg_compiled/usr/lib \
                   -L${STAGING_DIR_HOST}/lib \
                   -L${STAGING_DIR_HOST}/usr/lib \
                  "
-export INCLUDES = "-isystem${STAGING_DIR_HOST}/usr/include/interface/vcos/pthreads \
+export INCLUDES = "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", " -D__GBM__", "", d)} \
+                   -isystem${STAGING_DIR_HOST}/usr/include/interface/vcos/pthreads \
                    -isystem${STAGING_DIR_HOST}/usr/include/freetype2 \
                    -isystem${STAGING_DIR_HOST}/usr/include/interface/vmcs_host/linux \
                    -isystem${STAGING_DIR_HOST}/usr/include/dbus-1.0 \
