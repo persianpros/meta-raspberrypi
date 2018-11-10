@@ -5,6 +5,6 @@ EXTRA_OECONF_append_rpi = " CPPFLAGS='-I${STAGING_INCDIR}/interface/vcos/pthread
 
 PACKAGECONFIG_append_rpi = " dispmanx"
 
-#PACKAGECONFIG_GL_rpi = "egl gles2"
+PACKAGECONFIG_GL_rpi = "egl gles2"
 
 PACKAGECONFIG[dispmanx] = "--enable-dispmanx,--disable-dispmanx,userland"
