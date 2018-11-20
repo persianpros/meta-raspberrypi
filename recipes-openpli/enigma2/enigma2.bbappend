@@ -4,7 +4,7 @@ PV_rpi = "rpi+git${SRCPV}"
 PKGV_rpi = "rpi+git${GITPKGV}"
 
 DEPENDS += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa libnl userland ffmpeg e2-rpihddevice', '', d)}"
-RDEPENDS_${PN} += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa userland e2-rpihddevice', '', d)}"
+RDEPENDS_${PN} += "${@bb.utils.contains('MACHINE_FEATURES', 'rpi-pli', 'libdvbcsa e2-rpihddevice', '', d)}"
 
 SRC_URI_rpi = "\
 	git://github.com/PLi-metas/enigma2-openpli-rpi.git;branch=develop;name=enigma2 \
