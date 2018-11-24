@@ -21,6 +21,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     liborc-0.4-0 \
     orc \
     fribidi \
+    omxplayer \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
