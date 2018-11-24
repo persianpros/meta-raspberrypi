@@ -5,8 +5,7 @@ vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG."
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=0448d6488ef8cc380632b1569ee6d196"
 
-PROVIDES = "virtual/libgles2 \
-            virtual/egl"
+PROVIDES += "virtual/libgles2 virtual/egl"
 
 RPROVIDES_${PN} += "libgles2 egl libegl"
 
@@ -65,6 +64,14 @@ do_install_append () {
 		sed -i 's/include "vcos_futex_mutex.h"/include "pthreads\/vcos_futex_mutex.h"/g' ${f}
 		sed -i 's/include "vcos_platform_types.h"/include "pthreads\/vcos_platform_types.h"/g' ${f}
 	done
+	if [ "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "1", "0", d)}" = "1" ]; then
+		rm -rf ${D}${libdir}/libEGL*
+		rm -rf ${D}${libdir}/libGLES*
+		rm -rf ${D}${libdir}/libwayland-*
+		rm -rf ${D}${libdir}/pkgconfig/egl.pc ${D}${libdir}/pkgconfig/glesv2.pc \
+			${D}${libdir}/pkgconfig/wayland-egl.pc
+		rm -rf ${D}${includedir}/EGL ${D}${includedir}/GLES* ${D}${includedir}/KHR
+	fi
 }
 
 # Shared libs from userland package  build aren't versioned, so we need
