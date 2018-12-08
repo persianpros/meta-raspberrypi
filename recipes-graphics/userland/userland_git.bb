@@ -7,17 +7,17 @@ LIC_FILES_CHKSUM = "file://LICENCE;md5=0448d6488ef8cc380632b1569ee6d196"
 
 PROVIDES += "virtual/libgles2 virtual/egl"
 
-RPROVIDES_${PN} += "libgles2 egl libegl"
+RPROVIDES_${PN} += "libgles2 egl libegl libegl1 libgl1 libglesv2-2"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 SRCBRANCH = "master"
 SRCFORK = "raspberrypi"
-SRCREV = "d574b51a60a075baefe863670466ee24e6c4256e"
+SRCREV = "b091bba2b21c368591e3a0f5b0468dd7052e2643"
 
 # Use the date of the above commit as the package version. Update this when
 # SRCREV is changed.
-PV = "20181120"
+PV = "20181203"
 
 SRC_URI = "\
     git://github.com/${SRCFORK}/userland.git;protocol=git;branch=${SRCBRANCH} \
