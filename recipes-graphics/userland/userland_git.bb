@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENCE;md5=0448d6488ef8cc380632b1569ee6d196"
 
 PROVIDES += "virtual/libgles2 virtual/egl"
 
-RPROVIDES_${PN} += "libgles2 egl libegl libegl1 libgl1 libglesv2-2"
+RPROVIDES_${PN} += "libgles2 egl libegl libegl1 libglesv2-2"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
