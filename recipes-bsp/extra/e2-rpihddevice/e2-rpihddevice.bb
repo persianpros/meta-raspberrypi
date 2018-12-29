@@ -16,7 +16,7 @@ SRCREV = "${AUTOREV}"
 PV = "1.0+git${SRCPV}"
 PKGV = "1.0+git${GITPKGV}"
 
-SRC_URI = "git://github.com/PLi-metas/e2-rpihddevice.git;protocol=git"
+SRC_URI = "git://github.com/OpenVisionE2/e2-rpihddevice.git;protocol=git"
 
 S = "${WORKDIR}/git"
 
