@@ -1,5 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
+MAINTAINER = "Open Vision Developers"
+
 PV_rpi = "rpi+git${SRCPV}"
 PKGV_rpi = "rpi+git${GITPKGV}"
 
