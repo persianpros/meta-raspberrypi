@@ -1,9 +1,9 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
-LINUX_VERSION ?= "4.14.90"
+LINUX_VERSION ?= "4.14.92"
 
-SRC_URI[md5sum] = "c61dd8cac156a0d1584aad11c972715c"
-SRC_URI[sha256sum] = "201989bef5f1000164380bd4db5c4501598f6180e82723d688c20a4c25e1f595"
+SRC_URI[md5sum] = "11b11b9e20b140bdf0f269345f972287"
+SRC_URI[sha256sum] = "a6e3a4614e7e34098250c5797b326c5c4aa8b282a0c8b61117facc570acba1b8"
 
 SRC_URI = "\
     https://github.com/OpenVisionE2/linux/archive/rpi-4.14.y.tar.gz \
