@@ -13,11 +13,11 @@ COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 SRCBRANCH = "master"
 SRCFORK = "raspberrypi"
-SRCREV = "7cbfbd38d9824535164f93a1d32c81a33a00ca31"
+SRCREV = "3617b3f5c096eec6ab9121a67dc1c28ef89fe8f9"
 
 # Use the date of the above commit as the package version. Update this when
 # SRCREV is changed.
-PV = "20181212"
+PV = "20190108"
 
 SRC_URI = "\
     git://github.com/${SRCFORK}/userland.git;protocol=git;branch=${SRCBRANCH} \
