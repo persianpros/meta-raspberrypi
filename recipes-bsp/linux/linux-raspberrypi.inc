@@ -10,7 +10,7 @@ S_raspberrypi = "${WORKDIR}/linux-rpi-4.14.y"
 S_raspberrypi2 = "${WORKDIR}/linux-rpi-4.14.y"
 S_raspberrypi3 = "${WORKDIR}/linux-rpi-4.14.y"
 
-MACHINE_KERNEL_PR_append = ".21"
+MACHINE_KERNEL_PR_append = ".22"
 
 PE = "1"
 PV = "${LINUX_VERSION}"
