@@ -97,7 +97,7 @@ index 94b93b8..50b90b1 100644
 @@ -6,3 +6,7 @@ Use buildme to build. It requires cmake to be installed and an arm cross compile
  https://github.com/raspberrypi/tools/tree/master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian
  
- Note that this repository does not contain the source for the edid_parser and vcdbg binaries due to licensing restrictions.
+ Note that this repository does not contain the source for the edidparser and vcdbg binaries due to licensing restrictions.
 +
 +To build support for the Wayland winsys in EGL, execute the buildme script like this:
 +
