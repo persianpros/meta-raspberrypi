@@ -17,7 +17,7 @@ SRCREV = "e5803f2c986cbf8c919c60278b3231dcdf4271a6"
 
 # Use the date of the above commit as the package version. Update this when
 # SRCREV is changed.
-PV = "20190108"
+PV = "20190115"
 
 SRC_URI = "\
     git://github.com/${SRCFORK}/userland.git;protocol=git;branch=${SRCBRANCH} \
