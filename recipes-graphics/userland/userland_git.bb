@@ -64,14 +64,8 @@ do_install_append () {
 		sed -i 's/include "vcos_futex_mutex.h"/include "pthreads\/vcos_futex_mutex.h"/g' ${f}
 		sed -i 's/include "vcos_platform_types.h"/include "pthreads\/vcos_platform_types.h"/g' ${f}
 	done
-	if [ "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "1", "0", d)}" = "1" ]; then
-		rm -rf ${D}${libdir}/libEGL*
-		rm -rf ${D}${libdir}/libGLES*
-		rm -rf ${D}${libdir}/libwayland-*
-		rm -rf ${D}${libdir}/pkgconfig/egl.pc ${D}${libdir}/pkgconfig/glesv2.pc \
-			${D}${libdir}/pkgconfig/wayland-egl.pc
-		rm -rf ${D}${includedir}/EGL ${D}${includedir}/GLES* ${D}${includedir}/KHR
-	fi
+	install -D -m 0755 ${D}${prefix}${sysconfdir}/init.d/vcfiled ${D}${sysconfdir}/init.d/vcfiled
+	rm -rf ${D}${prefix}${sysconfdir}
 }
 
 # Shared libs from userland package  build aren't versioned, so we need

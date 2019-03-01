@@ -1,16 +1,16 @@
 DESCRIPTION = "Linux Kernel for Raspberry Pi"
 SECTION = "kernel"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
+LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
-S_raspberrypi0 = "${WORKDIR}/linux-rpi-4.14.y"
-S_raspberrypi = "${WORKDIR}/linux-rpi-4.14.y"
-S_raspberrypi2 = "${WORKDIR}/linux-rpi-4.14.y"
-S_raspberrypi3 = "${WORKDIR}/linux-rpi-4.14.y"
+S_raspberrypi0 = "${WORKDIR}/linux-rpi-4.19.y"
+S_raspberrypi = "${WORKDIR}/linux-rpi-4.19.y"
+S_raspberrypi2 = "${WORKDIR}/linux-rpi-4.19.y"
+S_raspberrypi3 = "${WORKDIR}/linux-rpi-4.19.y"
 
-MACHINE_KERNEL_PR_append = ".23"
+MACHINE_KERNEL_PR_append = ".1"
 
 PE = "1"
 PV = "${LINUX_VERSION}"
