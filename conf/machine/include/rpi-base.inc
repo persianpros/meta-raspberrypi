@@ -17,7 +17,6 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     kernel-module-e2-procfs \
     rpi-dvbsoftwareca \
     kernel-module-dvbsoftwareca \
-    kernel-module-lirc-rpi \
     liborc-0.4-0 \
     orc \
     fribidi \
