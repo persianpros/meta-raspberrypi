@@ -8,3 +8,5 @@ SRC_URI[sha256sum] = "fc7154a6ae0ee0a9073d2e2d918c247de98e6c10ff61534f5769eca3cd
 SRC_URI = "https://github.com/OpenVisionE2/linux/archive/rpi-4.19.y.tar.gz"
 
 require linux-raspberrypi.inc
+
+LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
