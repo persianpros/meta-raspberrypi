@@ -1,5 +1,5 @@
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-raspberrypi"
-PREFERRED_VERSION_linux-raspberrypi ?= "4.19.%"
+PREFERRED_VERSION_linux-raspberrypi ?= "4.14.%"
 PREFERRED_PROVIDER_virtual/egl ?= "userland"
 PREFERRED_PROVIDER_virtual/libgles2 ?= "userland"
 PREFERRED_PROVIDER_jpeg ?= "jpeg"
@@ -17,6 +17,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     kernel-module-e2-procfs \
     rpi-dvbsoftwareca \
     kernel-module-dvbsoftwareca \
+    kernel-module-lirc-rpi \
     liborc-0.4-0 \
     orc \
     fribidi \
@@ -38,6 +39,7 @@ RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     overlays/i2c-rtc.dtbo \
     overlays/iqaudio-dac.dtbo \
     overlays/iqaudio-dacplus.dtbo \
+    overlays/lirc-rpi.dtbo \
     overlays/mcp2515-can0.dtbo \
     overlays/pi3-disable-bt.dtbo \
     overlays/pi3-miniuart-bt.dtbo \

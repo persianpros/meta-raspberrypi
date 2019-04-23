@@ -1,0 +1,12 @@
+require linux-raspberrypi.inc
+
+LINUX_VERSION = "4.14.112"
+
+MACHINE_KERNEL_PR_append = ".7"
+
+SRCREV = "6b5c4a2508403839af29ef44059d04acbe0ee204"
+
+S_rpi = "${WORKDIR}/linux-${SRCREV}"
+
+SRC_URI[md5sum] = "a38a61fb86579485d413166766e83509"
+SRC_URI[sha256sum] = "3cc1b0304e1a3b6d514fa672b22f4691535182f109963c726e08118863a69684"

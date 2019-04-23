@@ -1,13 +1,16 @@
 DESCRIPTION = "Linux Kernel for Raspberry Pi"
 SECTION = "kernel"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI = "https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz"
+SRC_URI = "\
+    https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
+    file://0001-menuconfig-check-lxdiaglog.sh-Allow-specification-of.patch \
+"
 
 PE = "1"
 PV = "${LINUX_VERSION}"
