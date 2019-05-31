@@ -14,6 +14,8 @@ include conf/machine/include/soc-family.inc
 IMAGE_FSTYPES ?= "rpi-sdimg"
 WKS_FILE ?= "sdimage-raspberrypi.wks"
 
+DVBMEDIASINK_CONFIG = "--with-wmv --with-pcm --with-eac3 --with-h265 --with-dtsdownmix"
+
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     rpi-dvb-modules-e2procfs \
     kernel-module-e2-procfs \
