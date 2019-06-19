@@ -2,8 +2,6 @@ require linux-raspberrypi.inc
 
 LINUX_VERSION = "4.14.114"
 
-MACHINE_KERNEL_PR_append = ".8"
-
 SRCREV = "caa653325d58e5062907ec378269e77e6018f2ee"
 
 S_rpi = "${WORKDIR}/linux-${SRCREV}"
