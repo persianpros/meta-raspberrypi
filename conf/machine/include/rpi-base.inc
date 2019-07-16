@@ -53,7 +53,6 @@ RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     overlays/pps-gpio.dtbo \
     overlays/rpi-ft5406.dtbo \
     overlays/rpi-poe.dtbo \
-    overlays/vc4-kms-v3d.dtbo \
     overlays/w1-gpio-pullup.dtbo \
     overlays/w1-gpio.dtbo \
     "
@@ -65,6 +64,7 @@ RPI_KERNEL_DEVICETREE ?= " \
     bcm2709-rpi-2-b.dtb \
     bcm2710-rpi-3-b.dtb \
     bcm2710-rpi-3-b-plus.dtb \
+    bcm2711-rpi-4-b.dtb \
     "
 
 KERNEL_DEVICETREE ?= " \

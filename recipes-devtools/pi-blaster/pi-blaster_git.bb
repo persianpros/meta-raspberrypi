@@ -19,6 +19,6 @@ INITSCRIPT_PACKAGES = "${PN}"
 INITSCRIPT_NAME_${PN} = "${PN}.boot.sh"
 INITSCRIPT_PARAMS_${PN} = "defaults 15 85"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
+COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

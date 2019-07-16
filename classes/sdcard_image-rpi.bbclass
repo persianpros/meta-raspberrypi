@@ -55,6 +55,7 @@ IMAGE_DEPENDS_rpi-sdimg = " \
 			dosfstools-native \
 			virtual/kernel:do_deploy \
 			${IMAGE_BOOTLOADER} \
+			${@bb.utils.contains('MACHINE_FEATURES', 'armstub', 'armstubs:do_deploy', '' ,d)} \
 			${@bb.utils.contains('KERNEL_IMAGETYPE', 'uImage', 'u-boot', '',d)} \
 			"
 
@@ -104,6 +105,9 @@ IMAGE_CMD_rpi-sdimg () {
 	rm -f ${WORKDIR}/boot.img
 	mkfs.vfat -F32 -n "${BOOTDD_VOLUME_ID}" -S 512 -C ${WORKDIR}/boot.img $BOOT_BLOCKS
 	mcopy -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/bcm2835-bootfiles/* ::/
+	if [ -n "${ARMSTUB}" ]; then
+		mcopy -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/armstubs/${ARMSTUB} ::/
+	fi
 	if test -n "${DTS}"; then
 		# Device Tree Overlays are assumed to be suffixed by '-overlay.dtb' (4.1.x) or by '.dtbo' (4.4.9+) string and will be put in a dedicated folder
 		DT_OVERLAYS="${@split_overlays(d, 0)}"
@@ -136,7 +140,7 @@ IMAGE_CMD_rpi-sdimg () {
 		;;
 	esac
 
-	if [ -n ${FATPAYLOAD} ] ; then
+	if [ -n "${FATPAYLOAD}" ] ; then
 		echo "Copying payload into VFAT"
 		for entry in ${FATPAYLOAD} ; do
 				# add the || true to stop aborting on vfat issues like not supporting .~lock files

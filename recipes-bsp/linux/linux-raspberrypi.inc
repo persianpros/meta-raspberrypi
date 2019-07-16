@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
+COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
@@ -23,6 +23,7 @@ KBUILD_DEFCONFIG_raspberrypi0 ?= "bcmrpi_defconfig"
 KBUILD_DEFCONFIG_raspberrypi ?= "bcmrpi_defconfig"
 KBUILD_DEFCONFIG_raspberrypi2 ?= "bcm2709_defconfig"
 KBUILD_DEFCONFIG_raspberrypi3 ?= "bcm2709_defconfig"
+KBUILD_DEFCONFIG_raspberrypi4 ?= "bcm2711_defconfig"
 
 # CMDLINE for raspberrypi
 SERIAL = "${@oe.utils.conditional("ENABLE_UART", "1", "console=serial0,115200", "", d)}"

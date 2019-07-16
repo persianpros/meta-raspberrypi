@@ -9,7 +9,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 DEPENDS = "libdvbcsa"
 RDEPENDS_${PN} = "libdvbcsa"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3"
+COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
 
 SRCREV = "${AUTOREV}"
 

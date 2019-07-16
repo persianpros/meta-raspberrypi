@@ -31,6 +31,7 @@ SRC_URI = "git://github.com/popcornmix/omxplayer.git;protocol=git;branch=master 
            file://0006-Prevent-ffmpeg-configure-compile-race-condition.patch \
            file://0001-Specify-cc-cxx-and-ld-variables-from-environment.patch \
            file://cross-crompile-ffmpeg.patch \
+           file://0007-Remove-Makefile-hardcoded-arch-tune.patch \
            "
 S = "${WORKDIR}/git"
 
