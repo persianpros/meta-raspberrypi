@@ -52,7 +52,7 @@ FILES_SOLIBSDEV = ""
 INSANE_SKIP_${PN} += "dev-so"
 
 FILES_${PN} += " \
-    /usr/etc/ \
+    /usr${sysconfdir}/ \
     ${libdir}/*.so \
     ${libdir}/plugins"
 FILES_${PN}-dev += "${includedir} \

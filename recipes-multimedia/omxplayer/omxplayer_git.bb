@@ -63,15 +63,15 @@ export FFMPEG_EXTRA_LDFLAGS  = "${TUNE_CCARGS} ${TOOLCHAIN_OPTIONS}"
 
 # Needed in top Makefile
 
-export LDFLAGS = "-L${S}/ffmpeg_compiled/usr/lib \
+export LDFLAGS = "-L${S}/ffmpeg_compiled${libdir} \
                   -L${STAGING_DIR_HOST}/lib \
-                  -L${STAGING_DIR_HOST}/usr/lib \
+                  -L${STAGING_DIR_HOST}${libdir} \
                  "
 export INCLUDES = "-isystem${STAGING_DIR_HOST}/usr/include/interface/vcos/pthreads \
                    -isystem${STAGING_DIR_HOST}/usr/include/freetype2 \
                    -isystem${STAGING_DIR_HOST}/usr/include/interface/vmcs_host/linux \
                    -isystem${STAGING_DIR_HOST}/usr/include/dbus-1.0 \
-                   -isystem${STAGING_DIR_HOST}/usr/lib/dbus-1.0/include \
+                   -isystem${STAGING_DIR_HOST}${libdir}/dbus-1.0/include \
                   "
 export DIST = "${D}"
 

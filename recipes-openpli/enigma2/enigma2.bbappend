@@ -13,7 +13,7 @@ SRC_URI_rpi = "\
 	"
 
 do_install_append_rpi() {
-	install -d ${D}/etc/enigma2
+	install -d ${D}${sysconfdir}/enigma2
 	install -m 0644 ${WORKDIR}/remote.conf \
-	${D}/etc/enigma2
+	${D}${sysconfdir}/enigma2
 }
