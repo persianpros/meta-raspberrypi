@@ -53,7 +53,6 @@ RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     overlays/pps-gpio.dtbo \
     overlays/rpi-ft5406.dtbo \
     overlays/rpi-poe.dtbo \
-    overlays/vc4-kms-v3d.dtbo \
     overlays/w1-gpio-pullup.dtbo \
     overlays/w1-gpio.dtbo \
     "
