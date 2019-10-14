@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for Raspberry Pi"
 SECTION = "kernel"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
+LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
 
@@ -9,8 +9,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "\
     https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
-    file://0001-menuconfig-check-lxdiaglog.sh-Allow-specification-of.patch \
+    file://rpi-kernel-misc.cfg \
 "
+
+KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
 
 PE = "1"
 PV = "${LINUX_VERSION}"
@@ -114,6 +116,13 @@ do_configure_prepend() {
     # Remove all modified configs and add the rest to .config
     sed -e "${CONF_SED_SCRIPT}" < '${B}/.config.patched' >> '${B}/.config'
     rm -f ${B}/.config.patched
+}
+
+do_compile_append() {
+    if [ "${SITEINFO_BITS}" = "64" ]; then
+        cc_extra=$(get_cc_option)
+        oe_runmake dtbs CC="${KERNEL_CC} $cc_extra " LD="${KERNEL_LD}" ${KERNEL_EXTRA_ARGS}
+    fi
 }
 
 do_deploy_append() {

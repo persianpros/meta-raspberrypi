@@ -1,7 +1,7 @@
 BOX_BRAND = "rpi"
 
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-raspberrypi"
-PREFERRED_VERSION_linux-raspberrypi ?= "4.14.%"
+PREFERRED_VERSION_linux-raspberrypi ?= "4.19.%"
 PREFERRED_PROVIDER_virtual/egl ?= "userland"
 PREFERRED_PROVIDER_virtual/libgles2 ?= "userland"
 PREFERRED_PROVIDER_jpeg ?= "jpeg"
@@ -43,7 +43,6 @@ RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     overlays/i2c-rtc.dtbo \
     overlays/iqaudio-dac.dtbo \
     overlays/iqaudio-dacplus.dtbo \
-    overlays/lirc-rpi.dtbo \
     overlays/mcp2515-can0.dtbo \
     overlays/pi3-disable-bt.dtbo \
     overlays/pi3-miniuart-bt.dtbo \
@@ -58,12 +57,13 @@ RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
     "
 
 RPI_KERNEL_DEVICETREE ?= " \
-    bcm2708-rpi-0-w.dtb \
+    bcm2708-rpi-zero-w.dtb \
     bcm2708-rpi-b.dtb \
     bcm2708-rpi-b-plus.dtb \
     bcm2709-rpi-2-b.dtb \
     bcm2710-rpi-3-b.dtb \
     bcm2710-rpi-3-b-plus.dtb \
+    bcm2711-rpi-4-b.dtb \
     "
 
 KERNEL_DEVICETREE ?= " \
