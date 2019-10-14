@@ -25,45 +25,28 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
     orc \
     fribidi \
     omxplayer \
+    kernel-module-gpio-ir-tx \
+    kernel-module-gpio-ir-recv \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
-    lirc_rpi \
+    gpio-ir-tx \
+    gpio-ir-recv \
 "
 
-RPI_KERNEL_DEVICETREE_OVERLAYS ?= " \
-    overlays/at86rf233.dtbo \
-    overlays/dwc2.dtbo \
+RPI_KERNEL_DEVICETREE_OVERLAYS = "\
+    overlays/dwc-otg.dtbo \
     overlays/gpio-key.dtbo \
-    overlays/hifiberry-amp.dtbo \
-    overlays/hifiberry-dac.dtbo \
-    overlays/hifiberry-dacplus.dtbo \
-    overlays/hifiberry-digi.dtbo \
-    overlays/i2c-rtc.dtbo \
-    overlays/iqaudio-dac.dtbo \
-    overlays/iqaudio-dacplus.dtbo \
-    overlays/mcp2515-can0.dtbo \
-    overlays/pi3-disable-bt.dtbo \
-    overlays/pi3-miniuart-bt.dtbo \
-    overlays/pitft22.dtbo \
-    overlays/pitft28-resistive.dtbo \
-    overlays/pitft35-resistive.dtbo \
+    overlays/miniuart-bt.dtbo \
     overlays/pps-gpio.dtbo \
-    overlays/rpi-ft5406.dtbo \
     overlays/rpi-poe.dtbo \
     overlays/w1-gpio-pullup.dtbo \
     overlays/w1-gpio.dtbo \
-    "
-
-RPI_KERNEL_DEVICETREE ?= " \
-    bcm2708-rpi-zero-w.dtb \
-    bcm2708-rpi-b.dtb \
-    bcm2708-rpi-b-plus.dtb \
-    bcm2709-rpi-2-b.dtb \
-    bcm2710-rpi-3-b.dtb \
-    bcm2710-rpi-3-b-plus.dtb \
-    bcm2711-rpi-4-b.dtb \
-    "
+    overlays/gpio-ir-tx.dtbo \
+    overlays/gpio-ir.dtbo \
+    overlays/rpi-tv.dtbo \
+    overlays/gpio-fan \
+"
 
 KERNEL_DEVICETREE ?= " \
     ${RPI_KERNEL_DEVICETREE} \
@@ -83,7 +66,7 @@ KERNEL_IMAGETYPE_DIRECT ??= "zImage"
 KERNEL_IMAGETYPE ?= "${@bb.utils.contains('RPI_USE_U_BOOT', '1', \
         '${KERNEL_IMAGETYPE_UBOOT}', '${KERNEL_IMAGETYPE_DIRECT}', d)}"
 
-MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 screen touchscreen alsa bluetooth wifi sdio rpi-vision"
+MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio rpi-vision"
 
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
