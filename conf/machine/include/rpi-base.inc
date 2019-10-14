@@ -45,7 +45,7 @@ RPI_KERNEL_DEVICETREE_OVERLAYS = "\
     overlays/gpio-ir-tx.dtbo \
     overlays/gpio-ir.dtbo \
     overlays/rpi-tv.dtbo \
-    overlays/gpio-fan \
+    overlays/gpio-fan.dtbo \
 "
 
 KERNEL_DEVICETREE ?= " \
