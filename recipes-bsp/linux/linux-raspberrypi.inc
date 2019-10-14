@@ -15,7 +15,7 @@ SRC_URI = "\
 KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
 
 PE = "1"
-PV = "${LINUX_VERSION}"
+PV = "${LINUX_VERSION}+git${SRCREV}"
 
 inherit kernel siteinfo machine_kernel_pr
 require recipes-kernel/linux/linux-yocto.inc
