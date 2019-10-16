@@ -28,6 +28,8 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	orc \
 	fribidi \
 	omxplayer \
+	libcec \
+	enigma2-plugin-extensions-lcd4linux \
 "
 
 RPI_DVB_MODULES = "\
