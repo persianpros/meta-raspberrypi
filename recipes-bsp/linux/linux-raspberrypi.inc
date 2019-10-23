@@ -132,6 +132,6 @@ do_configure_prepend() {
 
 do_deploy_append() {
     # Deploy cmdline.txt
-    install -d ${DEPLOYDIR}/bcm2835-bootfiles
-    echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/bcm2835-bootfiles/cmdline.txt
+    install -d ${DEPLOYDIR}/rpi-bootfiles
+    echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/rpi-bootfiles/cmdline.txt
 }

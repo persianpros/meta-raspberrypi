@@ -144,12 +144,12 @@ def make_dtb_boot_files(d):
     return ' '.join([transform(dtb) for dtb in alldtbs.split(' ') if dtb])
 
 
-IMAGE_BOOT_FILES ?= "bcm2835-bootfiles/* \
+IMAGE_BOOT_FILES ?= "rpi-bootfiles/* \
                  ${@make_dtb_boot_files(d)} \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
 do_image_wic[depends] += " \
-    bcm2835-bootfiles:do_deploy \
+    rpi-bootfiles:do_deploy \
     "
 
 do_image_wic[recrdeps] = "do_build"
