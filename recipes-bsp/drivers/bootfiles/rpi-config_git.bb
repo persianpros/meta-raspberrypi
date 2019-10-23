@@ -15,13 +15,6 @@ S = "${WORKDIR}/git"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
-PITFT="${@bb.utils.contains("MACHINE_FEATURES", "pitft", "1", "0", d)}"
-PITFT22="${@bb.utils.contains("MACHINE_FEATURES", "pitft22", "1", "0", d)}"
-PITFT28r="${@bb.utils.contains("MACHINE_FEATURES", "pitft28r", "1", "0", d)}"
-PITFT35r="${@bb.utils.contains("MACHINE_FEATURES", "pitft35r", "1", "0", d)}"
-
-VC4DTBO ?= "vc4-kms-v3d"
-
 inherit deploy nopackages
 
 do_deploy() {
@@ -107,12 +100,6 @@ do_deploy() {
         sed -i '/#display_rotate=/ c\display_rotate=${DISPLAY_ROTATE}' ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
-    # Video camera support
-    if [ "${VIDEO_CAMERA}" = "1" ]; then
-        echo "# Enable video camera" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "start_x=1" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-    fi
-
     # Offline compositing support
     if [ "${DISPMANX_OFFLINE}" = "1" ]; then
         echo "# Enable offline compositing" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
@@ -120,46 +107,22 @@ do_deploy() {
     fi
 
     # SPI bus support
-    if [ "${ENABLE_SPI_BUS}" = "1" ] || [ "${PITFT}" = "1" ]; then
+    if [ "${ENABLE_SPI_BUS}" = "1" ]; then
         echo "# Enable SPI bus" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "dtparam=spi=on" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
     # I2C support
-    if [ "${ENABLE_I2C}" = "1" ] || [ "${PITFT}" = "1" ]; then
+    if [ "${ENABLE_I2C}" = "1" ]; then
         echo "# Enable I2C" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "dtparam=i2c1=on" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "dtparam=i2c_arm=on" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-    fi
-
-    # PiTFT22 display support
-    if [ "${PITFT22}" = "1" ]; then
-        echo "# Enable PITFT22 display" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "dtoverlay=pitft22,rotate=270,speed=32000000,txbuflen=32768" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-    fi
-    if [ "${PITFT28r}" = "1" ]; then
-        echo "# Enable PITFT28r display" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "dtoverlay=pitft28-resistive,rotate=90,speed=32000000,txbuflen=32768" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-    fi
-    if [ "${PITFT35r}" = "1" ]; then
-        echo "# Enable PITFT35r display" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "dtoverlay=pitft35-resistive,rotate=90,speed=42000000,fps=20" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
     # UART support
     if [ "${ENABLE_UART}" = "1" ]; then
         echo "# Enable UART" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "enable_uart=1" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-    fi
-
-    # Waveshare "C" 1024x600 7" Rev2.1 IPS capacitive touch (http://www.waveshare.com/7inch-HDMI-LCD-C.htm)
-    if [ "${WAVESHARE_1024X600_C_2_1}" = "1" ]; then
-        echo "# Waveshare \"C\" 1024x600 7\" Rev2.1 IPS capacitive touch screen" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "max_usb_current=1" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "hdmi_group=2" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "hdmi_mode=87" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "hdmi_cvt 1024 600 60 6 0 0 0" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "hdmi_drive=1" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
     # DWC2 USB peripheral support
@@ -182,17 +145,6 @@ do_deploy() {
 
     # Append extra config if the user has provided any
     printf "${RPI_EXTRA_CONFIG}\n" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-
-    # Handle setup with armstub file
-    if [ "${@bb.utils.contains("MACHINE_FEATURES", "armstub", "1", "0", d)}" = "1" ]; then
-        echo "\n# ARM stub configuration" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        echo "armstub=${ARMSTUB}" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-        case "${ARMSTUB}" in
-            *-gic.bin)
-                echo  "enable_gic=1" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
-                ;;
-        esac
-    fi
 }
 
 addtask deploy before do_build after do_install

@@ -108,14 +108,8 @@ KERNEL_DEVICETREE ?= " \
 #
 # * When u-boot is disabled use the "Image" format which can be directly loaded
 #   by the rpi firmware.
-#
-# * When u-boot is enabled use the "uImage" format and the "bootm" command
-#   within u-boot to load the kernel.
-KERNEL_BOOTCMD ??= "bootm"
-KERNEL_IMAGETYPE_UBOOT ??= "uImage"
 KERNEL_IMAGETYPE_DIRECT ??= "zImage"
-KERNEL_IMAGETYPE ?= "${@bb.utils.contains('RPI_USE_U_BOOT', '1', \
-        '${KERNEL_IMAGETYPE_UBOOT}', '${KERNEL_IMAGETYPE_DIRECT}', d)}"
+KERNEL_IMAGETYPE ??= "zImage"
 
 MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio rpi-vision"
 
@@ -152,13 +146,10 @@ def make_dtb_boot_files(d):
 
 IMAGE_BOOT_FILES ?= "bcm2835-bootfiles/* \
                  ${@make_dtb_boot_files(d)} \
-                 ${@bb.utils.contains('RPI_USE_U_BOOT', '1', \
-                    '${KERNEL_IMAGETYPE} u-boot.bin;${SDIMG_KERNELIMAGE} boot.scr', \
-                    '${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE}', d)} \
+                 ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
 do_image_wic[depends] += " \
     bcm2835-bootfiles:do_deploy \
-    ${@bb.utils.contains('RPI_USE_U_BOOT', '1', 'u-boot:do_deploy', '',d)} \
     "
 
 do_image_wic[recrdeps] = "do_build"

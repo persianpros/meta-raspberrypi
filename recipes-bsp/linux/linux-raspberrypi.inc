@@ -36,15 +36,10 @@ CMDLINE ?= "dwc_otg.lpm_enable=0 ${SERIAL} root=/dev/mmcblk0p2 rootfstype=ext4 r
 # Add the kernel debugger over console kernel command line option if enabled
 CMDLINE_append = ' ${@oe.utils.conditional("ENABLE_KGDB", "1", "kgdboc=serial0,115200", "", d)}'
 
-# Disable rpi logo on boot
-CMDLINE_append += ' ${@oe.utils.conditional("DISABLE_RPI_BOOT_LOGO", "1", "logo.nologo", "", d)}'
-
 # You can define CMDLINE_DEBUG as "debug" in your local.conf or distro.conf
 # to enable kernel debugging.
 CMDLINE_DEBUG ?= ""
 CMDLINE_append = " ${CMDLINE_DEBUG}"
-
-KERNEL_MODULE_AUTOLOAD += "${@bb.utils.contains("MACHINE_FEATURES", "pitft28r", "stmpe-ts", "", d)}"
 
 # A LOADADDR is needed when building a uImage format kernel. This value is not
 # set by default in rpi-4.8.y and later branches so we need to provide it
@@ -135,19 +130,8 @@ do_configure_prepend() {
     rm -f ${B}/.config.patched
 }
 
-do_compile_append() {
-    if [ "${SITEINFO_BITS}" = "64" ]; then
-        cc_extra=$(get_cc_option)
-        oe_runmake dtbs CC="${KERNEL_CC} $cc_extra " LD="${KERNEL_LD}" ${KERNEL_EXTRA_ARGS}
-    fi
-}
-
 do_deploy_append() {
     # Deploy cmdline.txt
     install -d ${DEPLOYDIR}/bcm2835-bootfiles
-    PITFT="${@bb.utils.contains("MACHINE_FEATURES", "pitft", "1", "0", d)}"
-    if [ ${PITFT} = "1" ]; then
-        PITFT_PARAMS="fbcon=map:10 fbcon=font:VGA8x8"
-    fi
     echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/bcm2835-bootfiles/cmdline.txt
 }
