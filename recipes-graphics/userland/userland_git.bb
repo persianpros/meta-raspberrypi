@@ -9,7 +9,7 @@ PROVIDES += "virtual/libgles2 virtual/egl"
 
 RPROVIDES_${PN} += "libgles2 egl libegl libegl1 libglesv2-2"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 SRCREV = "${AUTOREV}"
 

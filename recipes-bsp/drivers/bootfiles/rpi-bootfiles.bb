@@ -11,7 +11,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 
 DEPENDS = "rpi-config"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 S = "${RPIFW_S}/boot"
 

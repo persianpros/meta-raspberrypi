@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/git/COPYING;md5=892f569a555ba9c07a568a7c0c
 DEPENDS = "userland ffmpeg freetype jpeg"
 RDEPENDS_${PN} = "userland"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 inherit gitpkgv pkgconfig autotools-brokensep
 

@@ -5,7 +5,7 @@ DESCRIPTION = "Commented config.txt file for the Raspberry Pi. \
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 SRCREV = "648ffc470824c43eb0d16c485f4c24816b32cd6f"
 SRC_URI = "git://github.com/Evilpaul/RPi-config.git;protocol=git;branch=master \

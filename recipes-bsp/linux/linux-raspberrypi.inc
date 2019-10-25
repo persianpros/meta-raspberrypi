@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
@@ -102,21 +102,6 @@ do_configure_prepend() {
 
     # Localversion
     kernel_configure_variable LOCALVERSION "\"\""
-
-    # Open Vision
-    kernel_configure_variable DRM n
-    kernel_configure_variable DRM_LOAD_EDID_FIRMWARE n
-    kernel_configure_variable DRM_UDL n
-    kernel_configure_variable DRM_PANEL_SIMPLE n
-    kernel_configure_variable DRM_PANEL_RASPBERRYPI_TOUCHSCREEN n
-    kernel_configure_variable DRM_VC4 n
-    kernel_configure_variable DRM_TINYDRM n
-    kernel_configure_variable TINYDRM_ILI9225 n
-    kernel_configure_variable TINYDRM_ILI9341 n
-    kernel_configure_variable TINYDRM_MI0283QT n
-    kernel_configure_variable TINYDRM_REPAPER n
-    kernel_configure_variable TINYDRM_ST7586 n
-    kernel_configure_variable TINYDRM_ST7735R n
 
     if [ "${INITRAMFS_IMAGE_BUNDLE}" = "1" ]; then
         kernel_configure_variable OVERLAY_FS y

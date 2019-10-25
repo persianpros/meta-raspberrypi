@@ -12,7 +12,7 @@ SRC_URI += "file://0001-include-sys-types.h-explicitly-for-getting-caddr_t-d.pat
 
 inherit setuptools
 
-COMPATIBLE_MACHINE = "raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4"
+COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
 RDEPENDS_${PN} = "\
     python-logging \
