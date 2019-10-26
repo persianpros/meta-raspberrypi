@@ -7,4 +7,4 @@ PACKAGECONFIG_append_rpi = " dispmanx"
 
 #PACKAGECONFIG_GL_rpi = "egl gles2"
 
-PACKAGECONFIG[dispmanx] = "--enable-dispmanx,--disable-dispmanx,userland"
+PACKAGECONFIG[dispmanx]_rpi = "--enable-dispmanx,--disable-dispmanx,userland"
