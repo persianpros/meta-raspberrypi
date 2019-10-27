@@ -1,4 +1,4 @@
-DESCRIPTION = "Closed source binary files to help boot the ARM on the BCM2835."
+DESCRIPTION = "Closed source binary files to help boot the ARM on RPi."
 LICENSE = "Proprietary"
 
 LIC_FILES_CHKSUM = "file://LICENCE.broadcom;md5=4a4d169737c0786fb9482bb6d30401d1"
