@@ -7,11 +7,9 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
 
-SRCREV = "648ffc470824c43eb0d16c485f4c24816b32cd6f"
-SRC_URI = "git://github.com/Evilpaul/RPi-config.git;protocol=git;branch=master \
-          "
+SRC_URI = "file://config.txt"
 
-S = "${WORKDIR}/git"
+S = "${WORKDIR}"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -75,6 +73,15 @@ do_deploy() {
     fi
 
     # Set HDMI and composite video options
+    if [ -n "${HDMI_SAFE_MODE}" ]; then
+        sed -i '/#hdmi_safe=/ c\hdmi_safe=${HDMI_SAFE_MODE}' ${DEPLOYDIR}/rpi-bootfiles/config.txt
+    fi
+    if [ -n "${HDMI_IGNORE_EDID}" ]; then
+        sed -i '/#hdmi_ignore_edid=/ c\hdmi_ignore_edid=${HDMI_IGNORE_EDID}' ${DEPLOYDIR}/rpi-bootfiles/config.txt
+    fi
+    if [ -n "${DISABLE_FW_KMS}" ]; then
+        sed -i '/#disable_fw_kms_setup=/ c\disable_fw_kms_setup=${DISABLE_FW_KMS}' ${DEPLOYDIR}/rpi-bootfiles/config.txt
+    fi
     if [ -n "${HDMI_FORCE_HOTPLUG}" ]; then
         sed -i '/#hdmi_force_hotplug=/ c\hdmi_force_hotplug=${HDMI_FORCE_HOTPLUG}' ${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
@@ -129,12 +136,6 @@ do_deploy() {
     if [ "${ENABLE_DWC2_PERIPHERAL}" = "1" ]; then
         echo "# Enable USB peripheral mode" >> ${DEPLOYDIR}/rpi-bootfiles/config.txt
         echo "dtoverlay=dwc2,dr_mode=peripheral" >> ${DEPLOYDIR}/rpi-bootfiles/config.txt
-    fi
-
-    # AT86RF23X support
-    if [ "${ENABLE_AT86RF}" = "1" ]; then
-        echo "# Enable AT86RF23X" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
-        echo "dtoverlay=at86rf233,speed=3000000" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
 
     # ENABLE CAN

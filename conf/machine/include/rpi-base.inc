@@ -6,6 +6,14 @@ PREFERRED_PROVIDER_virtual/egl ?= "userland"
 PREFERRED_PROVIDER_virtual/libgles2 ?= "userland"
 PREFERRED_PROVIDER_jpeg ?= "jpeg"
 
+HDMI_IGNORE_EDID = "0xa5000080"
+DISABLE_OVERSCAN = "1"
+HDMI_DRIVE = "2"
+HDMI_FORCE_HOTPLUG = "1"
+SDTV_MODE = "2"
+SDTV_ASPECT = "3"
+DISABLE_FW_KMS = "1"
+
 IMAGE_CLASSES += "sdcard_image-rpi"
 
 SOC_FAMILY = "rpi"
@@ -86,10 +94,12 @@ KERNEL_MODULE_AUTOLOAD += "\
 "
 
 RPI_KERNEL_DEVICETREE_OVERLAYS = "\
-	overlays/dwc-otg.dtbo \
+	overlays/dwc2.dtbo \
 	overlays/gpio-key.dtbo \
+	overlays/i2c-rtc.dtbo \
 	overlays/miniuart-bt.dtbo \
 	overlays/pps-gpio.dtbo \
+	overlays/rpi-ft5406.dtbo \
 	overlays/rpi-poe.dtbo \
 	overlays/w1-gpio-pullup.dtbo \
 	overlays/w1-gpio.dtbo \
