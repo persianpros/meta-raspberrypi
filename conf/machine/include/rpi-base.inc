@@ -14,6 +14,8 @@ SDTV_MODE = "2"
 SDTV_ASPECT = "3"
 DISABLE_FW_KMS = "1"
 
+KERNEL_MODULE_AUTOLOAD += "brcmfmac"
+
 IMAGE_CLASSES += "sdcard_image-rpi"
 
 SOC_FAMILY = "rpi"
@@ -31,6 +33,10 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	kernel-module-dvbsoftwareca \
 	kernel-module-gpio-ir-tx \
 	kernel-module-gpio-ir-recv \
+	kernel-module-btbcm \
+	kernel-module-brcmutil \
+	kernel-module-brcmfmac \
+	kernel-module-rndis-wlan \
 	${RPI_DVB_MODULES} \
 	liborc-0.4-0 \
 	orc \
