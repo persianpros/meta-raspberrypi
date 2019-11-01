@@ -117,6 +117,7 @@ do_configure_prepend() {
     kernel_configure_variable TINYDRM_REPAPER n
     kernel_configure_variable TINYDRM_ST7586 n
     kernel_configure_variable TINYDRM_ST7735R n
+    kernel_configure_variable USB_SERIAL_DEBUG n
 
     if [ "${INITRAMFS_IMAGE_BUNDLE}" = "1" ]; then
         kernel_configure_variable OVERLAY_FS y
