@@ -27,74 +27,20 @@ WKS_FILE ?= "sdimage-raspberrypi.wks"
 DVBMEDIASINK_CONFIG = "--with-wmv --with-pcm --with-eac3 --with-h265 --with-dtsdownmix"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
+	rpi-brcm-firmwares \
 	rpi-dvb-modules-e2procfs \
 	kernel-module-e2-procfs \
 	rpi-dvbsoftwareca \
 	kernel-module-dvbsoftwareca \
-	kernel-module-gpio-ir-tx \
-	kernel-module-gpio-ir-recv \
-	kernel-module-btbcm \
-	kernel-module-brcmutil \
-	kernel-module-brcmfmac \
-	kernel-module-rndis-wlan \
-	${RPI_DVB_MODULES} \
-	liborc-0.4-0 \
-	orc \
-	fribidi \
-	omxplayer \
-	libcec \
+	kernel-modules \
 	enigma2-plugin-extensions-lcd4linux \
-"
-
-RPI_DVB_MODULES = "\
-	kernel-module-cx231xx-dvb \
-	kernel-module-dvb-as102 \
-	kernel-module-dvb-core \
-	kernel-module-dvb-pll \
-	kernel-module-dvb-usb \
-	kernel-module-dvb-usb-a800 \
-	kernel-module-dvb-usb-af9005 \
-	kernel-module-dvb-usb-af9015 \
-	kernel-module-dvb-usb-af9035 \
-	kernel-module-dvb-usb-anysee \
-	kernel-module-dvb-usb-au6610 \
-	kernel-module-dvb-usb-az6007 \
-	kernel-module-dvb-usb-az6027 \
-	kernel-module-dvb-usb-ce6230 \
-	kernel-module-dvb-usb-cinergyt2 \
-	kernel-module-dvb-usb-cxusb \
-	kernel-module-dvb-usb-dib0700 \
-	kernel-module-dvb-usb-dibusb-common \
-	kernel-module-dvb-usb-dibusb-mb \
-	kernel-module-dvb-usb-dibusb-mc \
-	kernel-module-dvb-usb-dibusb-mc-common \
-	kernel-module-dvb-usb-digitv \
-	kernel-module-dvb-usb-dtt200u \
-	kernel-module-dvb-usb-dtv5100 \
-	kernel-module-dvb-usb-dvbsky \
-	kernel-module-dvb-usb-dw2102 \
-	kernel-module-dvb-usb-ec168 \
-	kernel-module-dvb-usb-gl861 \
-	kernel-module-dvb-usb-gp8psk \
-	kernel-module-dvb-usb-lmedm04 \
-	kernel-module-dvb-usb-m920x \
-	kernel-module-dvb-usb-mxl111sf \
-	kernel-module-dvb-usb-nova-t-usb2 \
-	kernel-module-dvb-usb-opera \
-	kernel-module-dvb-usb-pctv452e \
-	kernel-module-dvb-usb-rtl28xxu \
-	kernel-module-dvb-usb-technisat-usb2 \
-	kernel-module-dvb-usb-ttusb2 \
-	kernel-module-dvb-usb-umt-010 \
-	kernel-module-dvb-usb-v2 \
-	kernel-module-dvb-usb-vp702x \
-	kernel-module-dvb-usb-vp7045 \
-	kernel-module-em28xx-dvb \
-	kernel-module-smsdvb \
-	kernel-module-tm6000-dvb \
+	libcec \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
+	brcmfmac \
+	dvb-core \
+	dvb-usb \
 	gpio-ir-tx \
 	gpio-ir-recv \
 "
@@ -132,7 +78,7 @@ MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio rpi-visi
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
 
-MACHINE_EXTRA_RRECOMMENDS += " kernel-modules udev-rules-rpi"
+MACHINE_EXTRA_RRECOMMENDS += " udev-rules-rpi"
 
 # Set Raspberrypi splash image
 SPLASH = "psplash-raspberrypi"
