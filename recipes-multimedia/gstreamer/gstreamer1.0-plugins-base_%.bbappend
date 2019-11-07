@@ -7,4 +7,8 @@ PACKAGECONFIG_append_rpi += " dispmanx"
 
 #PACKAGECONFIG_GL_rpi = "egl gles2"
 
-PACKAGECONFIG[dispmanx] = "--enable-dispmanx,--disable-dispmanx,userland"
+OPENVISIONGSTEAMERBASE ?= "normal"
+
+OPENVISIONGSTEAMERBASE_rpi = "rpi"
+
+require openvision-gstreamerbase-${OPENVISIONGSTEAMERBASE}.inc
