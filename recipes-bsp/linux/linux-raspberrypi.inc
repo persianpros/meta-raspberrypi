@@ -11,7 +11,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "\
     https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
-    file://rpi-kernel-misc.cfg \
+    file://rpi_defconfig \
 "
 
 KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
@@ -23,11 +23,7 @@ inherit kernel siteinfo machine_kernel_pr
 require recipes-kernel/linux/linux-yocto.inc
 
 KCONFIG_MODE = "--alldefconfig"
-KBUILD_DEFCONFIG_raspberrypi0 ?= "bcmrpi_defconfig"
-KBUILD_DEFCONFIG_raspberrypi ?= "bcmrpi_defconfig"
-KBUILD_DEFCONFIG_raspberrypi2 ?= "bcm2709_defconfig"
-KBUILD_DEFCONFIG_raspberrypi3 ?= "bcm2709_defconfig"
-KBUILD_DEFCONFIG_raspberrypi4 ?= "bcm2711_defconfig"
+KBUILD_DEFCONFIG = "rpi_defconfig"
 
 # CMDLINE for raspberrypi
 SERIAL = "${@oe.utils.conditional("ENABLE_UART", "1", "console=serial0,115200", "", d)}"
@@ -103,22 +99,6 @@ do_configure_prepend() {
     # Localversion
     kernel_configure_variable LOCALVERSION "\"\""
 
-    # Open Vision
-    kernel_configure_variable DRM n
-    kernel_configure_variable DRM_LOAD_EDID_FIRMWARE n
-    kernel_configure_variable DRM_UDL n
-    kernel_configure_variable DRM_PANEL_SIMPLE n
-    kernel_configure_variable DRM_PANEL_RASPBERRYPI_TOUCHSCREEN n
-    kernel_configure_variable DRM_VC4 n
-    kernel_configure_variable DRM_TINYDRM n
-    kernel_configure_variable TINYDRM_ILI9225 n
-    kernel_configure_variable TINYDRM_ILI9341 n
-    kernel_configure_variable TINYDRM_MI0283QT n
-    kernel_configure_variable TINYDRM_REPAPER n
-    kernel_configure_variable TINYDRM_ST7586 n
-    kernel_configure_variable TINYDRM_ST7735R n
-    kernel_configure_variable USB_SERIAL_DEBUG n
-
     if [ "${INITRAMFS_IMAGE_BUNDLE}" = "1" ]; then
         kernel_configure_variable OVERLAY_FS y
         kernel_configure_variable SQUASHFS y
@@ -136,3 +116,9 @@ do_deploy_append() {
     install -d ${DEPLOYDIR}/rpi-bootfiles
     echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/rpi-bootfiles/cmdline.txt
 }
+
+do_openvisiondefconfig() {
+    install -m 0644 ${WORKDIR}/rpi_defconfig ${S}/arch/arm/configs/
+}
+
+addtask openvisiondefconfig before do_configure after do_unpack
