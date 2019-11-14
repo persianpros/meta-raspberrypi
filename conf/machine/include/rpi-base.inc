@@ -24,8 +24,6 @@ include conf/machine/include/soc-family.inc
 IMAGE_FSTYPES ?= "rpi-sdimg"
 WKS_FILE ?= "sdimage-raspberrypi.wks"
 
-DVBMEDIASINK_CONFIG = "--with-wmv --with-pcm --with-eac3 --with-h265 --with-dtsdownmix"
-
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	rpi-brcm-firmwares \
 	rpi-dvb-modules-e2procfs \
@@ -33,7 +31,6 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	rpi-dvbsoftwareca \
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
-	enigma2-plugin-extensions-lcd4linux \
 	libcec \
 "
 
