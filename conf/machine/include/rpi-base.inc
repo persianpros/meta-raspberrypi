@@ -14,8 +14,6 @@ SDTV_MODE = "2"
 SDTV_ASPECT = "3"
 DISABLE_FW_KMS = "1"
 
-KERNEL_MODULE_AUTOLOAD += "brcmfmac"
-
 IMAGE_CLASSES += "sdcard_image-rpi"
 
 SOC_FAMILY = "rpi"
@@ -36,6 +34,8 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 
 KERNEL_MODULE_AUTOLOAD += "\
 	brcmfmac \
+	bcm2835-v4l2 \
+	em28xx-v4l \
 	dvb-core \
 	dvb-usb \
 	gpio-ir-tx \
