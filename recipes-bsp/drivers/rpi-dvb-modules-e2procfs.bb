@@ -27,8 +27,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel
-	install -m 0644 ${S}/e2_procfs.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/
+	install -d ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel
+	install -m 0644 ${S}/e2_procfs.ko ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel/
 	install -d ${D}/${sysconfdir}/modules-load.d
 	echo "e2_procfs" > ${D}/${sysconfdir}/modules-load.d/${MACHINE}.conf
 }
