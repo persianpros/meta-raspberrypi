@@ -29,7 +29,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	rpi-dvbsoftwareca \
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
-	libcec \
+	${@bb.utils.contains("MACHINE_FEATURES", "nolcd", "", "enigma2-plugin-extensions-lcd4linux", d)} \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
