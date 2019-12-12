@@ -1,10 +1,10 @@
 require linux-raspberrypi.inc
 
-LINUX_VERSION = "4.19.86"
+LINUX_VERSION = "4.19.88"
 
-SRCREV = "a4724c87014e2fe11904d17447ad00b5ee177b1f"
+SRCREV = "988cc7beacc150756c3fbe40646afcf8438b741b"
 
 S_rpi = "${WORKDIR}/linux-${SRCREV}"
 
-SRC_URI[md5sum] = "c71d5cddb94ca6ace2b8774942ffbf8a"
-SRC_URI[sha256sum] = "255c34fa874a1917de48fde3c663d730630fe7bdb469b721bce1756f5d93bad3"
+SRC_URI[md5sum] = "c9c90bfbb570dc2ed11b4690bc9ea5e4"
+SRC_URI[sha256sum] = "d743a92b3d94973876dd7513044d4d8b119091ab8e66fcee3d0623e1c09d1d6d"
