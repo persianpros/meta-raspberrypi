@@ -45,14 +45,14 @@ IMAGE_ROOTFS_ALIGNMENT = "4096"
 SDIMG_ROOTFS_TYPE ?= "ext3"
 SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${SDIMG_ROOTFS_TYPE}"
 
-IMAGE_DEPENDS_rpi-sdimg = " \
-			parted-native:do_populate_sysroot \
-			mtools-native:do_populate_sysroot \
-			dosfstools-native:do_populate_sysroot \
-			virtual/kernel:do_deploy \
-			${IMAGE_BOOTLOADER}:do_deploy \
-			rpi-config:do_deploy \
-			"
+do_image_rpi-sdimg[depends] = " \
+	parted-native:do_populate_sysroot \
+	mtools-native:do_populate_sysroot \
+	dosfstools-native:do_populate_sysroot \
+	virtual/kernel:do_deploy \
+	${IMAGE_BOOTLOADER}:do_deploy \
+	rpi-config:do_deploy \
+	"
 
 # SD card image name
 SDIMG = "${IMGDEPLOYDIR}/${IMAGE_NAME}.img"
