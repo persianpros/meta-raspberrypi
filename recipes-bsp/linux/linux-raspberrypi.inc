@@ -25,6 +25,8 @@ require recipes-kernel/linux/linux-yocto.inc
 KCONFIG_MODE = "--alldefconfig"
 KBUILD_DEFCONFIG = "rpi_defconfig"
 
+LINUX_VERSION_EXTENSION ?= ""
+
 # CMDLINE for raspberrypi
 SERIAL = "${@oe.utils.conditional("ENABLE_UART", "1", "console=serial0,115200", "", d)}"
 CMDLINE ?= "dwc_otg.lpm_enable=0 ${SERIAL} root=/dev/mmcblk0p2 rootfstype=ext4 rootwait"
@@ -95,9 +97,6 @@ do_configure_prepend() {
 
     mv -f ${B}/.config ${B}/.config.patched
     CONF_SED_SCRIPT=""
-
-    # Localversion
-    kernel_configure_variable LOCALVERSION "\"\""
 
     if [ "${INITRAMFS_IMAGE_BUNDLE}" = "1" ]; then
         kernel_configure_variable OVERLAY_FS y
