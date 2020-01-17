@@ -47,7 +47,6 @@ do_install_append () {
 # to force the .so files into the runtime package (and keep them
 # out of -dev package).
 FILES_SOLIBSDEV = ""
-INSANE_SKIP_${PN} += "dev-so"
 
 FILES_${PN} += " \
     /usr/etc/ \
