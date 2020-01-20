@@ -110,6 +110,13 @@ do_configure_prepend() {
     rm -f ${B}/.config.patched
 }
 
+do_compile_append() {
+    if [ "${SITEINFO_BITS}" = "64" ]; then
+        cc_extra=$(get_cc_option)
+        oe_runmake dtbs CC="${KERNEL_CC} $cc_extra " LD="${KERNEL_LD}" ${KERNEL_EXTRA_ARGS}
+    fi
+}
+
 do_deploy_append() {
     # Deploy cmdline.txt
     install -d ${DEPLOYDIR}/rpi-bootfiles
