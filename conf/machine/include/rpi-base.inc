@@ -30,6 +30,8 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
 	${@bb.utils.contains("MACHINE_FEATURES", "nolcd", "", "enigma2-plugin-extensions-lcd4linux", d)} \
+	lirc \
+	lirc-plugins \
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
@@ -70,7 +72,7 @@ KERNEL_DEVICETREE ?= " \
 KERNEL_IMAGETYPE_DIRECT ??= "zImage"
 KERNEL_IMAGETYPE ??= "zImage"
 
-MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio rpi-vision satip"
+MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip"
 
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
@@ -102,11 +104,10 @@ def make_dtb_boot_files(d):
 
     return ' '.join([transform(dtb) for dtb in alldtbs.split(' ') if dtb])
 
-
 IMAGE_BOOT_FILES ?= "rpi-bootfiles/* \
-                 ${@make_dtb_boot_files(d)} \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
+
 do_image_wic[depends] += " \
     rpi-bootfiles:do_deploy \
     "
