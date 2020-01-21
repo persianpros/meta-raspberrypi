@@ -105,6 +105,7 @@ def make_dtb_boot_files(d):
     return ' '.join([transform(dtb) for dtb in alldtbs.split(' ') if dtb])
 
 IMAGE_BOOT_FILES ?= "rpi-bootfiles/* \
+                 ${@make_dtb_boot_files(d)} \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
 
