@@ -41,9 +41,6 @@ IMAGE_ROOTFS_ALIGNMENT = "4096"
 SDIMG_ROOTFS_TYPE ?= "ext3"
 SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.${SDIMG_ROOTFS_TYPE}"
 
-# For the names of kernel artifacts
-inherit kernel-artifact-names
-
 IMAGE_DEPENDS_rpi-sdimg = " \
     parted-native:do_populate_sysroot \
     mtools-native:do_populate_sysroot \
