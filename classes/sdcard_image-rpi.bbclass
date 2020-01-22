@@ -1,7 +1,8 @@
 inherit image_types
+inherit linux-raspberrypi-base
 
 #
-# Create an image that can be written onto a SD card using dd.
+# Create an image that can by written onto a SD card using dd.
 #
 # The disk layout used is:
 #
@@ -28,6 +29,9 @@ IMAGE_TYPEDEP_rpi-sdimg = "${SDIMG_ROOTFS_TYPE}"
 # Set kernel and boot loader
 IMAGE_BOOTLOADER ?= "rpi-bootfiles"
 
+# Set initramfs extension
+KERNEL_INITRAMFS ?= ""
+
 # Boot partition volume id
 BOOTDD_VOLUME_ID ?= "${MACHINE}"
 
@@ -39,24 +43,22 @@ IMAGE_ROOTFS_ALIGNMENT = "4096"
 
 # Use an uncompressed ext3 by default as rootfs
 SDIMG_ROOTFS_TYPE ?= "ext3"
-SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.${SDIMG_ROOTFS_TYPE}"
+SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${SDIMG_ROOTFS_TYPE}"
 
 IMAGE_DEPENDS_rpi-sdimg = " \
-    parted-native:do_populate_sysroot \
-    mtools-native:do_populate_sysroot \
-    dosfstools-native:do_populate_sysroot \
-    virtual/kernel:do_deploy \
-    ${IMAGE_BOOTLOADER}:do_deploy \
-    rpi-config:do_deploy \
-"
-
-do_image_rpi_sdimg[recrdeps] = "do_build"
+			parted-native:do_populate_sysroot \
+			mtools-native:do_populate_sysroot \
+			dosfstools-native:do_populate_sysroot \
+			virtual/kernel:do_deploy \
+			${IMAGE_BOOTLOADER}:do_deploy \
+			rpi-config:do_deploy \
+			"
 
 # SD card image name
 SDIMG = "${IMGDEPLOYDIR}/${IMAGE_NAME}.img"
 
 # Compression method to apply to SDIMG after it has been created. Supported
-# compression formats are "gzip", "bzip2" or "xz". The original .img file
+# compression formats are "gzip", "bzip2" or "xz". The original .rpi-sdimg file
 # is kept and a new compressed file is created if one of these compression
 # formats is chosen. If SDIMG_COMPRESSION is set to any other value it is
 # silently ignored.
@@ -69,121 +71,109 @@ FATPAYLOAD ?= ""
 SDIMG_VFAT = "${IMAGE_NAME}.vfat"
 SDIMG_LINK_VFAT = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.vfat"
 
-def split_overlays(d, out, ver=None):
-    dts = d.getVar("KERNEL_DEVICETREE")
-    # Device Tree Overlays are assumed to be suffixed by '-overlay.dtb' (4.1.x) or by '.dtbo' (4.4.9+) string and will be put in a dedicated folder
-    if out:
-        overlays = oe.utils.str_filter_out('\S+\-overlay\.dtb$', dts, d)
-        overlays = oe.utils.str_filter_out('\S+\.dtbo$', overlays, d)
-    else:
-        overlays = oe.utils.str_filter('\S+\-overlay\.dtb$', dts, d) + \
-                   " " + oe.utils.str_filter('\S+\.dtbo$', dts, d)
-
-    return overlays
-
 IMAGE_CMD_rpi-sdimg () {
 
-    # Align partitions
-    BOOT_SPACE_ALIGNED=$(expr ${BOOT_SPACE} + ${IMAGE_ROOTFS_ALIGNMENT} - 1)
-    BOOT_SPACE_ALIGNED=$(expr ${BOOT_SPACE_ALIGNED} - ${BOOT_SPACE_ALIGNED} % ${IMAGE_ROOTFS_ALIGNMENT})
-    SDIMG_SIZE=$(expr ${IMAGE_ROOTFS_ALIGNMENT} + ${BOOT_SPACE_ALIGNED} + $ROOTFS_SIZE)
+	# Align partitions
+	BOOT_SPACE_ALIGNED=$(expr ${BOOT_SPACE} + ${IMAGE_ROOTFS_ALIGNMENT} - 1)
+	BOOT_SPACE_ALIGNED=$(expr ${BOOT_SPACE_ALIGNED} - ${BOOT_SPACE_ALIGNED} % ${IMAGE_ROOTFS_ALIGNMENT})
+	SDIMG_SIZE=$(expr ${IMAGE_ROOTFS_ALIGNMENT} + ${BOOT_SPACE_ALIGNED} + $ROOTFS_SIZE)
 
-    echo "Creating filesystem with Boot partition ${BOOT_SPACE_ALIGNED} KiB and RootFS $ROOTFS_SIZE KiB"
+	echo "Creating filesystem with Boot partition ${BOOT_SPACE_ALIGNED} KiB and RootFS $ROOTFS_SIZE KiB"
 
-    # Check if we are building with device tree support
-    DTS="${KERNEL_DEVICETREE}"
+	# Check if we are building with device tree support
+	DTS="${@get_dts(d)}"
 
-    # Initialize sdcard image file
-    dd if=/dev/zero of=${SDIMG} bs=1024 count=0 seek=${SDIMG_SIZE}
+	# Initialize sdcard image file
+	dd if=/dev/zero of=${SDIMG} bs=1024 count=0 seek=${SDIMG_SIZE}
 
-    # Create partition table
-    parted -s ${SDIMG} mklabel msdos
-    # Create boot partition and mark it as bootable
-    parted -s ${SDIMG} unit KiB mkpart primary fat32 ${IMAGE_ROOTFS_ALIGNMENT} $(expr ${BOOT_SPACE_ALIGNED} \+ ${IMAGE_ROOTFS_ALIGNMENT})
-    parted -s ${SDIMG} set 1 boot on
-    # Create rootfs partition to the end of disk
-    parted -s ${SDIMG} -- unit KiB mkpart primary ext2 $(expr ${BOOT_SPACE_ALIGNED} \+ ${IMAGE_ROOTFS_ALIGNMENT}) -1s
-    parted ${SDIMG} print
+	# Create partition table
+	parted -s ${SDIMG} mklabel msdos
+	# Create boot partition and mark it as bootable
+	parted -s ${SDIMG} unit KiB mkpart primary fat32 ${IMAGE_ROOTFS_ALIGNMENT} $(expr ${BOOT_SPACE_ALIGNED} \+ ${IMAGE_ROOTFS_ALIGNMENT})
+	parted -s ${SDIMG} set 1 boot on
+	# Create rootfs partition to the end of disk
+	parted -s ${SDIMG} -- unit KiB mkpart primary ext2 $(expr ${BOOT_SPACE_ALIGNED} \+ ${IMAGE_ROOTFS_ALIGNMENT}) -1s
+	parted ${SDIMG} print
 
-    # Create a vfat image with boot files
-    BOOT_BLOCKS=$(LC_ALL=C parted -s ${SDIMG} unit b print | awk '/ 1 / { print substr($4, 1, length($4 -1)) / 512 /2 }')
-    rm -f ${WORKDIR}/boot.img
-    mkfs.vfat -F32 -n "${BOOTDD_VOLUME_ID}" -S 512 -C ${WORKDIR}/boot.img $BOOT_BLOCKS
-    mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* ::/ || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* into boot.img"
-    if test -n "${DTS}"; then
-        # Copy board device trees to root folder
-        for dtbf in ${@split_overlays(d, True)}; do
-            dtb=`basename $dtbf`
-            mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/$dtb ::$dtb || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/$dtb into boot.img"
-        done
+	# Create a vfat image with boot files
+	BOOT_BLOCKS=$(LC_ALL=C parted -s ${SDIMG} unit b print | awk '/ 1 / { print substr($4, 1, length($4 -1)) / 512 /2 }')
+	rm -f ${WORKDIR}/boot.img
+	mkfs.vfat -F32 -n "${BOOTDD_VOLUME_ID}" -S 512 -C ${WORKDIR}/boot.img $BOOT_BLOCKS
+	mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* ::/ || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* into boot.img"
+	if test -n "${DTS}"; then
+		# Copy board device trees to root folder
+		for dtbf in ${@split_overlays(d, True)}; do
+			dtb=`basename $dtbf`
+			mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$dtb ::$dtb || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/$dtb into boot.img"
+		done
 
-        # Copy device tree overlays to dedicated folder
-        mmd -i ${WORKDIR}/boot.img overlays
-        for dtbf in ${@split_overlays(d, False)}; do
-            dtb=`basename $dtbf`
-            mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/$dtb ::overlays/$dtb || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/$dtb into boot.img"
-        done
-    fi
+		# Copy device tree overlays to dedicated folder
+		mmd -i ${WORKDIR}/boot.img overlays
+		for dtbf in ${@split_overlays(d, False)}; do
+			dtb=`basename $dtbf`
+			mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$dtb ::overlays/$dtb || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/$dtb into boot.img"
+		done
+	fi
 
-    if [ -n "${FATPAYLOAD}" ] ; then
-        echo "Copying payload into VFAT"
-        for entry in ${FATPAYLOAD} ; do
-            # use bbwarn instead of bbfatal to stop aborting on vfat issues like not supporting .~lock files
-            mcopy -v -i ${WORKDIR}/boot.img -s ${IMAGE_ROOTFS}$entry :: || bbwarn "mcopy cannot copy ${IMAGE_ROOTFS}$entry into boot.img"
-        done
-    fi
+	if [ ! -z "${INITRAMFS_IMAGE}" -a "${INITRAMFS_IMAGE_BUNDLE}" = "1" ]; then
+		mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${INITRAMFS_LINK_NAME}.bin ::${SDIMG_KERNELIMAGE} || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${INITRAMFS_LINK_NAME}.bin into boot.img"
+	else
+		mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE} ::${SDIMG_KERNELIMAGE} || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE} into boot.img"
+	fi
 
-    # Add stamp file
-    echo "${IMAGE_NAME}" > ${WORKDIR}/image-version-info
-    echo "${IMAGE_NAME}" > ${IMGDEPLOYDIR}/imageversion
-    echo -e "You could use a normal USB keyboard for RPi with Open Vision.\nF9 = RED\nF10 = GREEN\nF11 = YELLOW\nF12 = BLUE\nSpace = MENU\nEnter = OK\nESC = EXIT" > ${IMGDEPLOYDIR}/keyboard.txt; \
-    mcopy -v -i ${WORKDIR}/boot.img ${WORKDIR}/image-version-info :: || bbfatal "mcopy cannot copy ${WORKDIR}/image-version-info into boot.img"
+	if [ -n "${FATPAYLOAD}" ] ; then
+		echo "Copying payload into VFAT"
+		for entry in ${FATPAYLOAD} ; do
+				# add the || true to stop aborting on vfat issues like not supporting .~lock files
+				mcopy -v -i ${WORKDIR}/boot.img -s ${IMAGE_ROOTFS}$entry :: || bbwarn "mcopy cannot copy ${IMAGE_ROOTFS}$entry into boot.img"
+		done
+	fi
 
-    # Deploy vfat partition
-    if [ "${SDIMG_VFAT_DEPLOY}" = "1" ]; then
-        cp ${WORKDIR}/boot.img ${IMGDEPLOYDIR}/${SDIMG_VFAT}
-        ln -sf ${SDIMG_VFAT} ${SDIMG_LINK_VFAT}
-    fi
+	# Add stamp file
+	echo "${IMAGE_NAME}" > ${WORKDIR}/image-version-info
+	echo "${IMAGE_NAME}" > ${IMGDEPLOYDIR}/imageversion
+	echo -e "You could use a normal USB keyboard for RPi with Open Vision.\nF9 = RED\nF10 = GREEN\nF11 = YELLOW\nF12 = BLUE\nSpace = MENU\nEnter = OK\nESC = EXIT" > ${IMGDEPLOYDIR}/keyboard.txt; \
+	mcopy -v -i ${WORKDIR}/boot.img ${WORKDIR}/image-version-info :: || bbfatal "mcopy cannot copy ${WORKDIR}/image-version-info into boot.img"
 
-    # Burn Partitions
-    dd if=${WORKDIR}/boot.img of=${SDIMG} conv=notrunc seek=1 bs=$(expr ${IMAGE_ROOTFS_ALIGNMENT} \* 1024)
-    # If SDIMG_ROOTFS_TYPE is a .xz file use xzcat
-    if echo "${SDIMG_ROOTFS_TYPE}" | egrep -q "*\.xz"
-    then
-        xzcat ${SDIMG_ROOTFS} | dd of=${SDIMG} conv=notrunc seek=1 bs=$(expr 1024 \* ${BOOT_SPACE_ALIGNED} + ${IMAGE_ROOTFS_ALIGNMENT} \* 1024)
-    else
-        dd if=${SDIMG_ROOTFS} of=${SDIMG} conv=notrunc seek=1 bs=$(expr 1024 \* ${BOOT_SPACE_ALIGNED} + ${IMAGE_ROOTFS_ALIGNMENT} \* 1024)
-    fi
+	# Burn Partitions
+	dd if=${WORKDIR}/boot.img of=${SDIMG} conv=notrunc seek=1 bs=$(expr ${IMAGE_ROOTFS_ALIGNMENT} \* 1024) && sync && sync
+	# If SDIMG_ROOTFS_TYPE is a .xz file use xzcat
+	if echo "${SDIMG_ROOTFS_TYPE}" | egrep -q "*\.xz"
+	then
+		xzcat ${SDIMG_ROOTFS} | dd of=${SDIMG} conv=notrunc seek=1 bs=$(expr 1024 \* ${BOOT_SPACE_ALIGNED} + ${IMAGE_ROOTFS_ALIGNMENT} \* 1024) && sync && sync
+	else
+		dd if=${SDIMG_ROOTFS} of=${SDIMG} conv=notrunc seek=1 bs=$(expr 1024 \* ${BOOT_SPACE_ALIGNED} + ${IMAGE_ROOTFS_ALIGNMENT} \* 1024) && sync && sync
+	fi
 
-    # Optionally apply compression
-    case "${SDIMG_COMPRESSION}" in
-    "gzip")
-        gzip -k9 "${SDIMG}"
-        ;;
-    "bzip2")
-        bzip2 -k9 "${SDIMG}"
-        ;;
-    "xz")
-        xz -k "${SDIMG}"
-        ;;
-    "zip")
-        rm -f ${IMGDEPLOYDIR}/*.zip
-        zip -j ${IMGDEPLOYDIR}/${IMAGE_NAME}_sdcard.zip "${SDIMG}" ${IMGDEPLOYDIR}/imageversion ${IMGDEPLOYDIR}/keyboard.txt; \
-        rm -f "${SDIMG}"
-        ;;
-    esac
+	# Optionally apply compression
+	case "${SDIMG_COMPRESSION}" in
+	"gzip")
+		gzip -k9 "${SDIMG}"
+		;;
+	"bzip2")
+		bzip2 -k9 "${SDIMG}"
+		;;
+	"xz")
+		xz -k "${SDIMG}"
+		;;
+	"zip")
+		rm -f ${IMGDEPLOYDIR}/*.zip
+		zip -j ${IMGDEPLOYDIR}/${IMAGE_NAME}_sdcard.zip "${SDIMG}" ${IMGDEPLOYDIR}/imageversion ${IMGDEPLOYDIR}/keyboard.txt; \
+		rm -f "${SDIMG}"
+		;;
+	esac
 }
 
 ROOTFS_POSTPROCESS_COMMAND += " rpi_generate_sysctl_config ; "
 
 rpi_generate_sysctl_config() {
-    # systemd sysctl config
-    test -d ${IMAGE_ROOTFS}${sysconfdir}/sysctl.d && \
-        echo "vm.min_free_kbytes = 8192" > ${IMAGE_ROOTFS}${sysconfdir}/sysctl.d/rpi-vm.conf
+	# systemd sysctl config
+	test -d ${IMAGE_ROOTFS}${sysconfdir}/sysctl.d && \
+		echo "vm.min_free_kbytes = 8192" > ${IMAGE_ROOTFS}${sysconfdir}/sysctl.d/rpi-vm.conf
 
-    # sysv sysctl config
-    IMAGE_SYSCTL_CONF="${IMAGE_ROOTFS}${sysconfdir}/sysctl.conf"
-    test -e ${IMAGE_ROOTFS}${sysconfdir}/sysctl.conf && \
-        sed -e "/vm.min_free_kbytes/d" -i ${IMAGE_SYSCTL_CONF}
-    echo "" >> ${IMAGE_SYSCTL_CONF} && echo "vm.min_free_kbytes = 8192" >> ${IMAGE_SYSCTL_CONF}
+	# sysv sysctl config
+	IMAGE_SYSCTL_CONF="${IMAGE_ROOTFS}${sysconfdir}/sysctl.conf"
+	test -e ${IMAGE_ROOTFS}${sysconfdir}/sysctl.conf && \
+		sed -e "/vm.min_free_kbytes/d" -i ${IMAGE_SYSCTL_CONF}
+	echo "" >> ${IMAGE_SYSCTL_CONF} && echo "vm.min_free_kbytes = 8192" >> ${IMAGE_SYSCTL_CONF}
 }
