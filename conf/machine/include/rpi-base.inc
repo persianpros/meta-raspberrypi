@@ -72,7 +72,7 @@ KERNEL_DEVICETREE ?= " \
 KERNEL_IMAGETYPE_DIRECT ??= "zImage"
 KERNEL_IMAGETYPE ??= "zImage"
 
-MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip"
+MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rpi-vision"
 
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
