@@ -1,10 +1,12 @@
 BOX_BRAND = "rpi"
 
-PREFERRED_PROVIDER_virtual/kernel ?= "linux-raspberrypi"
-PREFERRED_VERSION_linux-raspberrypi ?= "4.19.%"
-PREFERRED_PROVIDER_virtual/egl ?= "userland"
-PREFERRED_PROVIDER_virtual/libgles2 ?= "userland"
-PREFERRED_PROVIDER_jpeg ?= "jpeg"
+PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
+PREFERRED_VERSION_linux-raspberrypi = "4.19.%"
+PREFERRED_PROVIDER_virtual/egl = "userland"
+PREFERRED_PROVIDER_virtual/libgles2 = "userland"
+PREFERRED_PROVIDER_jpeg = "jpeg"
+PREFERRED_PROVIDER_virtual/libomxil = "userland"
+VIRTUAL-RUNTIME_libomxil = "userland"
 
 HDMI_IGNORE_EDID = "0xa5000080"
 DISABLE_OVERSCAN = "1"

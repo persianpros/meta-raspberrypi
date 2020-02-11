@@ -5,7 +5,7 @@ vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG."
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=0448d6488ef8cc380632b1569ee6d196"
 
-PROVIDES += "virtual/libgles2 virtual/egl"
+PROVIDES += "virtual/libgles2 virtual/egl virtual/libomxil"
 
 RPROVIDES_${PN} += "libgles2 egl libegl libegl1 libglesv2-2"
 
