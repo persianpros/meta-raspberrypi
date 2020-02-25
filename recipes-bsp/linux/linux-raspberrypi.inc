@@ -14,6 +14,13 @@ SRC_URI = "\
     file://rpi_defconfig \
 "
 
+# What we need from https://github.com/raspberrypi/linux/tree/rpi-4.19.y/arch/arm/configs
+# DEFCONFIG_raspberrypi = "bcmrpi_defconfig"
+# DEFCONFIG_raspberrypi0 = "bcmrpi_defconfig"
+# DEFCONFIG_raspberrypi2 = "bcm2709_defconfig"
+# DEFCONFIG_raspberrypi3 = "bcm2709_defconfig"
+# DEFCONFIG_raspberrypi4 = "bcm2711_defconfig"
+
 KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
 
 PE = "1"
