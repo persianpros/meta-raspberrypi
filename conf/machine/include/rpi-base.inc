@@ -19,7 +19,7 @@ DISABLE_FW_KMS = "1"
 IMAGE_CLASSES += "sdcard_image-rpi"
 
 SOC_FAMILY = "rpi"
-include conf/machine/include/soc-family.inc
+require conf/machine/include/soc-family.inc
 
 IMAGE_FSTYPES ?= "rpi-sdimg"
 WKS_FILE ?= "sdimage-raspberrypi.wks"
