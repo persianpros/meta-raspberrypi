@@ -15,6 +15,7 @@ HDMI_FORCE_HOTPLUG = "1"
 SDTV_MODE = "2"
 SDTV_ASPECT = "3"
 DISABLE_FW_KMS = "1"
+ENABLE_RPI_TV="1"
 
 IMAGE_CLASSES += "sdcard_image-rpi"
 

@@ -144,6 +144,12 @@ do_deploy() {
         echo "dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
 
+    # ENABLE RPI TV HAT
+    if [ "${ENABLE_RPI_TV}" = "1" ]; then
+        echo "# Enable RPI TV HAT" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=rpi-tv" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+    fi
+
     # Append extra config if the user has provided any
     printf "${RPI_EXTRA_CONFIG}\n" >> ${DEPLOYDIR}/rpi-bootfiles/config.txt
 }
