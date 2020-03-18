@@ -33,6 +33,7 @@ SRC_URI = "git://github.com/popcornmix/omxplayer.git;protocol=git;branch=master 
            file://cross-crompile-ffmpeg.patch \
            file://0007-Remove-Makefile-hardcoded-arch-tune.patch \
            "
+
 S = "${WORKDIR}/git"
 
 COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspberrypi4)$"
@@ -49,7 +50,7 @@ inherit autotools-brokensep pkgconfig
 
 # This isn't used directly by omxplayer, but applied to Makefile.ffmpeg which
 # runs the ffmpeg configuration
-PACKAGECONFIG ??= ""
+PACKAGECONFIG = ""
 PACKAGECONFIG[samba] = "--enable-libsmbclient,--disable-libsmbclient,samba"
 
 # Needed in ffmpeg configure
@@ -62,11 +63,11 @@ export FFMPEG_EXTRA_CFLAGS  = "${TUNE_CCARGS} ${TOOLCHAIN_OPTIONS}"
 export FFMPEG_EXTRA_LDFLAGS  = "${TUNE_CCARGS} ${TOOLCHAIN_OPTIONS}"
 
 # Needed in top Makefile
-
 export LDFLAGS = "-L${S}/ffmpeg_compiled${libdir} \
                   -L${STAGING_DIR_HOST}/lib \
                   -L${STAGING_DIR_HOST}${libdir} \
                  "
+
 export INCLUDES = "-isystem${STAGING_DIR_HOST}/usr/include/interface/vcos/pthreads \
                    -isystem${STAGING_DIR_HOST}/usr/include/freetype2 \
                    -isystem${STAGING_DIR_HOST}/usr/include/interface/vmcs_host/linux \

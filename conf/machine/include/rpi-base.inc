@@ -15,15 +15,15 @@ HDMI_FORCE_HOTPLUG = "1"
 SDTV_MODE = "2"
 SDTV_ASPECT = "3"
 DISABLE_FW_KMS = "1"
-ENABLE_RPI_TV="1"
+ENABLE_RPI_TV = "1"
 
 IMAGE_CLASSES += "sdcard_image-rpi"
 
 SOC_FAMILY = "rpi"
 require conf/machine/include/soc-family.inc
 
-IMAGE_FSTYPES ?= "rpi-sdimg"
-WKS_FILE ?= "sdimage-raspberrypi.wks"
+IMAGE_FSTYPES = "rpi-sdimg"
+WKS_FILE = "sdimage-raspberrypi.wks"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	rpi-brcm-firmwares \
@@ -47,6 +47,8 @@ KERNEL_MODULE_AUTOLOAD += "\
 	gpio-ir-recv \
 "
 
+# Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
+
 RPI_KERNEL_DEVICETREE_OVERLAYS = "\
 	overlays/dwc2.dtbo \
 	overlays/gpio-key.dtbo \
@@ -63,7 +65,7 @@ RPI_KERNEL_DEVICETREE_OVERLAYS = "\
 	overlays/gpio-fan.dtbo \
 "
 
-KERNEL_DEVICETREE ?= " \
+KERNEL_DEVICETREE = "\
 	${RPI_KERNEL_DEVICETREE} \
 	${RPI_KERNEL_DEVICETREE_OVERLAYS} \
 "
@@ -72,8 +74,8 @@ KERNEL_DEVICETREE ?= " \
 #
 # * When u-boot is disabled use the "Image" format which can be directly loaded
 #   by the rpi firmware.
-KERNEL_IMAGETYPE_DIRECT ??= "zImage"
-KERNEL_IMAGETYPE ??= "zImage"
+KERNEL_IMAGETYPE_DIRECT = "zImage"
+KERNEL_IMAGETYPE = "zImage"
 
 MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rpi-vision"
 
@@ -107,7 +109,7 @@ def make_dtb_boot_files(d):
 
     return ' '.join([transform(dtb) for dtb in alldtbs.split(' ') if dtb])
 
-IMAGE_BOOT_FILES ?= "rpi-bootfiles/* \
+IMAGE_BOOT_FILES = "rpi-bootfiles/* \
                  ${@make_dtb_boot_files(d)} \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "

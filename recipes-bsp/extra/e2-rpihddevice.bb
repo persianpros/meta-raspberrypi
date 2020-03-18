@@ -22,7 +22,7 @@ S = "${WORKDIR}/git"
 
 ASNEEDED = ""
 
-EXTRA_OEMAKE = ' \
+EXTRA_OEMAKE = '\
 	SDKSTAGE="${STAGING_DIR_HOST}" \
 '
 
@@ -30,13 +30,13 @@ do_install() {
 	oe_runmake DESTDIR=${D} install
 }
 
-FILES_${PN} += " \
+FILES_${PN} += "\
 	${libdir}/* \
 "
 
-FILES_${PN}-dev += " \
+FILES_${PN}-dev += "\
 	$${includedir}/* \
 "
 
-FILES_${PN}-dbg += " \
+FILES_${PN}-dbg += "\
 	${libdir}/.debug/* \

@@ -28,7 +28,7 @@ EXTRA_OECMAKE = "-DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS='-Wl,--no-a
                  -DVMCS_INSTALL_PREFIX=${exec_prefix} \
 "
 
-PACKAGECONFIG ?= "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'wayland', '', d)}"
+PACKAGECONFIG = "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'wayland', '', d)}"
 
 PACKAGECONFIG[wayland] = "-DBUILD_WAYLAND=TRUE -DWAYLAND_SCANNER_EXECUTABLE:FILEPATH=${STAGING_BINDIR_NATIVE}/wayland-scanner,,wayland-native wayland"
 
@@ -48,13 +48,16 @@ do_install_append () {
 # out of -dev package).
 FILES_SOLIBSDEV = ""
 
-FILES_${PN} += " \
+FILES_${PN} += "\
     /usr/etc/ \
     ${libdir}/*.so \
     ${libdir}/plugins"
+
 FILES_${PN}-dev += "${includedir} \
                    ${prefix}/src"
+
 FILES_${PN}-doc += "${datadir}/install"
+
 FILES_${PN}-dbg += "${libdir}/plugins/.debug"
 
 RDEPENDS_${PN} += "bash"

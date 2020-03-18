@@ -35,6 +35,7 @@ do_deploy() {
 do_deploy[depends] += "rpi-config:do_deploy"
 
 addtask deploy before do_build after do_install
+
 do_deploy[dirs] += "${DEPLOYDIR}/${PN}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

@@ -27,22 +27,22 @@ inherit linux-raspberrypi-base
 IMAGE_TYPEDEP_rpi-sdimg = "${SDIMG_ROOTFS_TYPE}"
 
 # Set kernel and boot loader
-IMAGE_BOOTLOADER ?= "rpi-bootfiles"
+IMAGE_BOOTLOADER = "rpi-bootfiles"
 
 # Set initramfs extension
-KERNEL_INITRAMFS ?= ""
+KERNEL_INITRAMFS = ""
 
 # Boot partition volume id
-BOOTDD_VOLUME_ID ?= "${MACHINE}"
+BOOTDD_VOLUME_ID = "${MACHINE}"
 
 # Boot partition size [in KiB] (will be rounded up to IMAGE_ROOTFS_ALIGNMENT)
-BOOT_SPACE ?= "40960"
+BOOT_SPACE = "40960"
 
 # Set alignment to 4MB [in KiB]
 IMAGE_ROOTFS_ALIGNMENT = "4096"
 
 # Use an uncompressed ext3 by default as rootfs
-SDIMG_ROOTFS_TYPE ?= "ext3"
+SDIMG_ROOTFS_TYPE = "ext3"
 SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${SDIMG_ROOTFS_TYPE}"
 
 IMAGE_DEPENDS_rpi-sdimg = " \
@@ -62,10 +62,10 @@ SDIMG = "${IMGDEPLOYDIR}/${IMAGE_NAME}.img"
 # is kept and a new compressed file is created if one of these compression
 # formats is chosen. If SDIMG_COMPRESSION is set to any other value it is
 # silently ignored.
-SDIMG_COMPRESSION ?= "zip"
+SDIMG_COMPRESSION = "zip"
 
 # Additional files and/or directories to be copied into the vfat partition from the IMAGE_ROOTFS.
-FATPAYLOAD ?= ""
+FATPAYLOAD = ""
 
 # SD card vfat partition image name
 SDIMG_VFAT = "${IMAGE_NAME}.vfat"

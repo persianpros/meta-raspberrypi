@@ -155,6 +155,7 @@ do_deploy() {
 }
 
 addtask deploy before do_build after do_install
+
 do_deploy[dirs] += "${DEPLOYDIR}/rpi-bootfiles"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
