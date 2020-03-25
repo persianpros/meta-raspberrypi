@@ -25,7 +25,7 @@ IMAGE_FSTYPES = "rpi-sdimg"
 WKS_FILE = "sdimage-raspberrypi.wks"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
-	rpi-brcm-firmwares \
+	rpi-firmwares \
 	rpi-dvb-modules-e2procfs \
 	kernel-module-e2-procfs \
 	rpi-dvbsoftwareca \
