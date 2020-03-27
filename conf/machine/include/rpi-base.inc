@@ -37,6 +37,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 "
 
 KERNEL_MODULE_AUTOLOAD += "\
+	e2_procfs \
 	brcmfmac \
 	bcm2835-v4l2 \
 	em28xx-v4l \
