@@ -132,7 +132,7 @@ IMAGE_CMD_rpi-sdimg () {
 	# Add stamp file
 	echo "${IMAGE_NAME}" > ${WORKDIR}/image-version-info
 	echo "${IMAGE_NAME}" > ${IMGDEPLOYDIR}/imageversion
-	echo -e "You could use a normal USB keyboard for RPi with Open Vision.\nF9 = RED\nF10 = GREEN\nF11 = YELLOW\nF12 = BLUE\nSpace = MENU\nEnter = OK\nESC = EXIT" > ${IMGDEPLOYDIR}/keyboard.txt; \
+	echo -e "You could use a normal USB keyboard for RPi with Open Vision.\nF1 = RED\nF2 = GREEN\nF3 = YELLOW\nF4 = BLUE\nSpace = MENU\nEnter = OK\nESC = EXIT" > ${IMGDEPLOYDIR}/keyboard.txt; \
 	mcopy -v -i ${WORKDIR}/boot.img ${WORKDIR}/image-version-info :: || bbfatal "mcopy cannot copy ${WORKDIR}/image-version-info into boot.img"
 
 	# Burn Partitions
