@@ -25,13 +25,14 @@ IMAGE_FSTYPES = "rpi-sdimg"
 WKS_FILE = "sdimage-raspberrypi.wks"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
-	rpi-firmwares \
-	rpi-dvb-modules-e2procfs \
 	kernel-module-e2-procfs \
-	rpi-dvbsoftwareca \
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
+	rpi-dvb-modules-e2procfs \
+	rpi-dvbsoftwareca \
+	rpi-firmwares \
 	${@bb.utils.contains("MACHINE_FEATURES", "nolcd", "", "enigma2-plugin-extensions-lcd4linux", d)} \
+	libcec \
 	lirc \
 	lirc-plugins \
 "
