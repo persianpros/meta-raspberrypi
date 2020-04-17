@@ -82,7 +82,7 @@ KERNEL_IMAGETYPE = "zImage"
 MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rpi-vision"
 
 # Raspberry Pi has no hardware clock
-MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
+MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
 
 MACHINE_EXTRA_RRECOMMENDS += " udev-rules-rpi"
 
