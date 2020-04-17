@@ -12,6 +12,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI = "\
     https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
     file://rpi_defconfig \
+    file://${OPENVISION_BASE}/openvision-oe/recipes-linux/kernel-patches/kernel-add-support-for-gcc6.patch \
 "
 
 # What we need from https://github.com/raspberrypi/linux/tree/rpi-4.19.y/arch/arm/configs
