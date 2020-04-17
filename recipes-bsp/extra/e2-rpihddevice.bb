@@ -1,4 +1,4 @@
-SUMMARY = "rpihddevice for enigma2"
+SUMMARY = "RaspberryPi rpihddevice for enigma2"
 DESCRIPTION = "Enigma2 HD output device for Raspberry Pi. The plugin makes use of the RaspberryPi's VideoCore GPU and provides a lightweight implementation for Enigma2 output device."
 SECTION = "multimedia"
 LICENSE = "GPLv2"
