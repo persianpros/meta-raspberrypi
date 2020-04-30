@@ -68,10 +68,10 @@ export LDFLAGS = "-L${S}/ffmpeg_compiled${libdir} \
                   -L${STAGING_DIR_HOST}${libdir} \
                  "
 
-export INCLUDES = "-isystem${STAGING_DIR_HOST}/usr/include/interface/vcos/pthreads \
-                   -isystem${STAGING_DIR_HOST}/usr/include/freetype2 \
-                   -isystem${STAGING_DIR_HOST}/usr/include/interface/vmcs_host/linux \
-                   -isystem${STAGING_DIR_HOST}/usr/include/dbus-1.0 \
+export INCLUDES = "-isystem${STAGING_DIR_HOST}${incdir}/interface/vcos/pthreads \
+                   -isystem${STAGING_DIR_HOST}${incdir}/freetype2 \
+                   -isystem${STAGING_DIR_HOST}${incdir}/interface/vmcs_host/linux \
+                   -isystem${STAGING_DIR_HOST}${incdir}/dbus-1.0 \
                    -isystem${STAGING_DIR_HOST}${libdir}/dbus-1.0/include \
                   "
 export DIST = "${D}"
