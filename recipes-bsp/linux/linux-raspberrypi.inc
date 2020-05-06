@@ -136,3 +136,6 @@ do_openvisiondefconfig() {
 }
 
 addtask openvisiondefconfig before do_configure after do_unpack
+
+do_rm_work() {
+}
