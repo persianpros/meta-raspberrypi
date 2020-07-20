@@ -79,12 +79,12 @@ KERNEL_DEVICETREE = "\
 KERNEL_IMAGETYPE_DIRECT = "zImage"
 KERNEL_IMAGETYPE = "zImage"
 
-MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rpi-vision"
+MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rpi-vision HDMI"
 
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
 
-MACHINE_EXTRA_RRECOMMENDS += " udev-rules-rpi"
+MACHINE_EXTRA_RRECOMMENDS += "udev-rules-rpi"
 
 # Set Raspberrypi splash image
 SPLASH = "psplash-raspberrypi"
