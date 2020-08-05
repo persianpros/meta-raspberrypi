@@ -116,7 +116,7 @@ IMAGE_BOOT_FILES = "rpi-bootfiles/* \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
 
-do_image_wic[depends] += " \
+do_image_wic[depends] += "\
     rpi-bootfiles:do_deploy \
     "
 

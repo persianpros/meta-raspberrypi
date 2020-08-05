@@ -12,4 +12,4 @@ SRC_URI[sha256sum] = "ca458e01428927cc12e13e4ef0de219902feeba5fd7f6bcb5056ce33c4
 SRC_URI += "file://0001-perf-Make-perf-able-to-build-with-latest-libbfd.patch"
 
 # We need to change the PR when we change defconfig but not needed when we upgrade the kernel to a higher version.
-MACHINE_KERNEL_PR_append = "-dvb"
+MACHINE_KERNEL_PR_append = " -dvb"
