@@ -13,8 +13,8 @@ COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspb
 
 SRCREV = "${AUTOREV}"
 
-PV = "1.0+git${SRCPV}"
-PKGV = "1.0+git${GITPKGV}"
+PV = "git${SRCPV}"
+PKGV = "git${GITPKGV}"
 
 SRC_URI = "git://github.com/OpenVisionE2/rpi-dvbsoftwareca.git;protocol=git"
 

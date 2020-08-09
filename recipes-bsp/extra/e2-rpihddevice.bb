@@ -13,8 +13,8 @@ inherit gitpkgv pkgconfig autotools-brokensep
 
 SRCREV = "${AUTOREV}"
 
-PV = "1.0+git${SRCPV}"
-PKGV = "1.0+git${GITPKGV}"
+PV = "git${SRCPV}"
+PKGV = "git${GITPKGV}"
 
 SRC_URI = "git://github.com/OpenVisionE2/e2-rpihddevice.git;protocol=git"
 

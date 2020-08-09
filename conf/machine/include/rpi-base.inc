@@ -1,7 +1,9 @@
+KERNELVERSION = "4.19.118"
+
 BOX_BRAND = "rpi"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
-PREFERRED_VERSION_linux-raspberrypi = "4.19.%"
+PREFERRED_VERSION_linux-raspberrypi = "${KERNELVERSION}"
 PREFERRED_PROVIDER_virtual/egl = "userland"
 PREFERRED_PROVIDER_virtual/libgles2 = "userland"
 PREFERRED_PROVIDER_jpeg = "jpeg"
@@ -35,7 +37,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	libcec \
 	lirc \
 	lirc-plugins \
-"
+	"
 
 KERNEL_MODULE_AUTOLOAD += "\
 	e2_procfs \
@@ -47,7 +49,7 @@ KERNEL_MODULE_AUTOLOAD += "\
 	spi-bcm2835 \
 	gpio-ir-tx \
 	gpio-ir-recv \
-"
+	"
 
 # Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
 
@@ -65,12 +67,12 @@ RPI_KERNEL_DEVICETREE_OVERLAYS = "\
 	overlays/gpio-ir.dtbo \
 	overlays/rpi-tv.dtbo \
 	overlays/gpio-fan.dtbo \
-"
+	"
 
 KERNEL_DEVICETREE = "\
 	${RPI_KERNEL_DEVICETREE} \
 	${RPI_KERNEL_DEVICETREE_OVERLAYS} \
-"
+	"
 
 # By default:
 #

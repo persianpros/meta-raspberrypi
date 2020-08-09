@@ -10,10 +10,10 @@ COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspb
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "\
-    https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
-    file://rpi_defconfig \
-    file://${OPENVISION_BASE}/meta-openvision/recipes-linux/kernel-patches/kernel-add-support-for-gcc${VISIONGCCVERSION}.patch \
-"
+	https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
+	file://rpi_defconfig \
+	file://${OPENVISION_BASE}/meta-openvision/recipes-linux/kernel-patches/kernel-add-support-for-gcc${VISIONGCCVERSION}.patch \
+	"
 
 # What we need from https://github.com/raspberrypi/linux/tree/rpi-4.19.y/arch/arm/configs
 # DEFCONFIG_raspberrypi = "bcmrpi_defconfig"

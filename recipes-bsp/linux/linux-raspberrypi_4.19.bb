@@ -1,6 +1,6 @@
 require linux-raspberrypi.inc
 
-LINUX_VERSION = "4.19.118"
+LINUX_VERSION = "${KERNELVERSION}"
 
 SRCREV = "fe2c7bf4cad4641dfb6f12712755515ab15815ca"
 
