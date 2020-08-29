@@ -37,6 +37,7 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	libcec \
 	lirc \
 	lirc-plugins \
+	udev-rules-rpi \
 	"
 
 KERNEL_MODULE_AUTOLOAD += "\
@@ -85,8 +86,6 @@ MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rp
 
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
-
-MACHINE_EXTRA_RRECOMMENDS += "udev-rules-rpi"
 
 # Set Raspberrypi splash image
 SPLASH = "psplash-raspberrypi"
