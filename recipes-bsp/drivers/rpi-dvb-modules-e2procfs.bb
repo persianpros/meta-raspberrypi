@@ -22,9 +22,9 @@ inherit module machine_kernel_pr gitpkgv
 EXTRA_OEMAKE = "KSRC=${STAGING_KERNEL_BUILDDIR}"
 
 do_configure_prepend(){
-    sed -i "s/@rpi@/${MACHINE}/" "${S}/e2_procfs_info.c"
-    sed -i "s/@RaspberryPi@/${BOX_BRAND}/" "${S}/e2_procfs_info.c"
-    sed -i "s/@BCMRPi@/${RPICHIPSET}/" "${S}/e2_procfs_info.c"
+	sed -i "s/@rpi@/${MACHINE}/" "${S}/e2_procfs_info.c"
+	sed -i "s/@RaspberryPi@/${BOX_BRAND}/" "${S}/e2_procfs_info.c"
+	sed -i "s/@BCMRPi@/${RPICHIPSET}/" "${S}/e2_procfs_info.c"
 }
 
 do_compile() {
