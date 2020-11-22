@@ -9,18 +9,22 @@ COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspb
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
+KMETA = "kernel-meta"
+
 SRC_URI = "\
 	https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
+	git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=yocto-5.4;destsuffix=${KMETA} \
 	file://rpi_defconfig \
 	file://${OPENVISION_BASE}/meta-openvision/recipes-linux/kernel-patches/kernel-add-support-for-gcc${VISIONGCCVERSION}.patch \
 	"
 
-# What we need from https://github.com/raspberrypi/linux/tree/rpi-4.19.y/arch/arm/configs
+# What we need from https://github.com/raspberrypi/linux/tree/rpi-5.4.y/arch/arm/configs
 # DEFCONFIG_raspberrypi = "bcmrpi_defconfig"
 # DEFCONFIG_raspberrypi0 = "bcmrpi_defconfig"
 # DEFCONFIG_raspberrypi2 = "bcm2709_defconfig"
 # DEFCONFIG_raspberrypi3 = "bcm2709_defconfig"
 # DEFCONFIG_raspberrypi4 = "bcm2711_defconfig"
+# For DVB drivers we could check https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/RPi/devices
 
 KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
 
@@ -126,7 +130,7 @@ do_compile_append() {
 }
 
 do_deploy_append() {
-    # Deploy cmdline.txt
+    # Deploy cmdline.txt only for the main kernel package
     install -d ${DEPLOYDIR}/rpi-bootfiles
     echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/rpi-bootfiles/cmdline.txt
 }

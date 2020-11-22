@@ -1,9 +1,9 @@
-KERNELVERSION = "4.19.118"
+KERNELVERSION = "5.4.77"
 
 BOX_BRAND = "rpi"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
-PREFERRED_VERSION_linux-raspberrypi = "4.19.%"
+PREFERRED_VERSION_linux-raspberrypi = "5.4.%"
 PREFERRED_PROVIDER_virtual/egl = "userland"
 PREFERRED_PROVIDER_virtual/libgles2 = "userland"
 PREFERRED_PROVIDER_jpeg = "jpeg"

@@ -80,7 +80,7 @@ do_install_append () {
 # out of -dev package).
 FILES_SOLIBSDEV = ""
 
-FILES_${PN} += " \
+FILES_${PN} += "\
     ${libdir}/*.so \
     ${libdir}/plugins"
 
