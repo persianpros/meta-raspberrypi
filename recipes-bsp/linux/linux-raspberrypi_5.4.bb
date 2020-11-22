@@ -3,6 +3,7 @@ require linux-raspberrypi.inc
 LINUX_VERSION = "${KERNELVERSION}"
 
 SRCREV = "b8681a08ba16b15cc9f010bef2a24ffac0b054d1"
+SRCREV_meta = "d626f9108d590d41e82b97cbffc380aa699e86e1"
 
 S_rpi = "${WORKDIR}/linux-${SRCREV}"
 
