@@ -10,7 +10,7 @@ SRC_URI[md5sum] = "d10f8eb0ba6423afe5e4c2c1f59d82d3"
 SRC_URI[sha256sum] = "a01cb69aedec9ac5a6d19a0e7c6149d6bdd3085e4fa7b131b4ecf9e2496e67dd"
 
 SRC_URI += "file://0001-Revert-selftests-bpf-Skip-perf-hw-events-test-if-the.patch \
-	file://0002-Revert-selftests-bpf-Fix-perf_buffer-test-on-systems.patch \2
+	file://0002-Revert-selftests-bpf-Fix-perf_buffer-test-on-systems.patch \
 	file://0001-Add-Silicon-Labs-SI2183.patch \
 	file://0002-Add-Airoha-Technology-AV201x.patch \
 	file://0003-Add-TBS-5520SE.patch \

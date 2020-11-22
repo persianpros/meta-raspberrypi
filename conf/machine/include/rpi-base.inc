@@ -87,6 +87,8 @@ MACHINE_FEATURES += "apm usbhost keyboard vfat ext2 alsa bluetooth sdio satip rp
 # Raspberry Pi has no hardware clock
 MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
 
+SERIAL_CONSOLES_CHECK ??= "${SERIAL_CONSOLES}"
+
 # Set Raspberrypi splash image
 SPLASH = "psplash-raspberrypi"
 
