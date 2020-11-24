@@ -128,8 +128,8 @@ do_compile_append() {
 
 do_deploy_append() {
     # Deploy cmdline.txt only for the main kernel package
-    install -d ${DEPLOYDIR}/rpi-bootfiles
-    echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/rpi-bootfiles/cmdline.txt
+    install -d ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
+    echo "${CMDLINE}${PITFT_PARAMS}" > ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/cmdline.txt
 }
 
 do_openvisiondefconfig() {

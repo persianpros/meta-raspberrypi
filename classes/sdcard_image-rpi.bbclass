@@ -27,7 +27,7 @@ inherit linux-raspberrypi-base
 IMAGE_TYPEDEP_rpi-sdimg = "${SDIMG_ROOTFS_TYPE}"
 
 # Set kernel and boot loader
-IMAGE_BOOTLOADER = "rpi-bootfiles"
+IMAGE_BOOTLOADER = "${BOOTFILES_DIR_NAME}"
 
 # Set initramfs extension
 KERNEL_INITRAMFS = ""
@@ -99,7 +99,7 @@ IMAGE_CMD_rpi-sdimg () {
 	BOOT_BLOCKS=$(LC_ALL=C parted -s ${SDIMG} unit b print | awk '/ 1 / { print substr($4, 1, length($4 -1)) / 512 /2 }')
 	rm -f ${WORKDIR}/boot.img
 	mkfs.vfat -F32 -n "${BOOTDD_VOLUME_ID}" -S 512 -C ${WORKDIR}/boot.img $BOOT_BLOCKS
-	mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* ::/ || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/rpi-bootfiles/* into boot.img"
+	mcopy -v -i ${WORKDIR}/boot.img -s ${DEPLOY_DIR_IMAGE}/${BOOTFILES_DIR_NAME}/* ::/ || bbfatal "mcopy cannot copy ${DEPLOY_DIR_IMAGE}/${BOOTFILES_DIR_NAME}/* into boot.img"
 	if test -n "${DTS}"; then
 		# Copy board device trees to root folder
 		for dtbf in ${@split_overlays(d, True)}; do

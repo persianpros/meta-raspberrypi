@@ -89,6 +89,10 @@ MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
 
 SERIAL_CONSOLES_CHECK ??= "${SERIAL_CONSOLES}"
 
+# The name of the deploy directory for raspberry pi boot files.
+# This variable is referred to by recipes fetching / generating the files.
+BOOTFILES_DIR_NAME = "rpi-bootfiles"
+
 # Set Raspberrypi splash image
 SPLASH = "psplash-raspberrypi"
 
@@ -114,13 +118,13 @@ def make_dtb_boot_files(d):
         return ''
     return ' '.join([transform(dtb) for dtb in alldtbs.split(' ') if dtb])
 
-IMAGE_BOOT_FILES = "rpi-bootfiles/* \
+IMAGE_BOOT_FILES = "${BOOTFILES_DIR_NAME}/* \
                  ${@make_dtb_boot_files(d)} \
                  ${KERNEL_IMAGETYPE};${SDIMG_KERNELIMAGE} \
                  "
 
 do_image_wic[depends] += "\
-    rpi-bootfiles:do_deploy \
+    ${BOOTFILES_DIR_NAME}:do_deploy \
     "
 
 do_image_wic[recrdeps] = "do_build"
