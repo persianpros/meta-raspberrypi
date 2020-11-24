@@ -55,10 +55,13 @@ KERNEL_MODULE_AUTOLOAD += "\
 # Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
 
 RPI_KERNEL_DEVICETREE_OVERLAYS = "\
+	overlays/disable-bt.dtbo \
 	overlays/dwc2.dtbo \
 	overlays/gpio-key.dtbo \
 	overlays/i2c-rtc.dtbo \
 	overlays/miniuart-bt.dtbo \
+	overlays/mcp2515-can0.dtbo \
+	overlays/mcp2515-can1.dtbo \
 	overlays/pps-gpio.dtbo \
 	overlays/rpi-ft5406.dtbo \
 	overlays/rpi-poe.dtbo \
