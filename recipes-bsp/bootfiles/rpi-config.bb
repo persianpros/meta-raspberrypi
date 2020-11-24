@@ -13,6 +13,11 @@ S = "${WORKDIR}"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
+GPIO_IR ?= "18"
+GPIO_IR_TX ?= "17"
+
+CAN_OSCILLATOR ?= "16000000"
+
 inherit deploy nopackages
 
 do_deploy() {
@@ -132,16 +137,28 @@ do_deploy() {
         echo "enable_uart=1" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
 
+    # Infrared support
+    if [ "${ENABLE_IR}" = "1" ]; then
+        echo "# Enable infrared" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=gpio-ir,gpio_pin=${GPIO_IR}" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=gpio-ir-tx,gpio_pin=${GPIO_IR_TX}" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+    fi
+
     # DWC2 USB peripheral support
     if [ "${ENABLE_DWC2_PERIPHERAL}" = "1" ]; then
         echo "# Enable USB peripheral mode" >> ${DEPLOYDIR}/rpi-bootfiles/config.txt
         echo "dtoverlay=dwc2,dr_mode=peripheral" >> ${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
 
+    # ENABLE DUAL CAN
+    if [ "${ENABLE_DUAL_CAN}" = "1" ]; then
+        echo "# Enable DUAL CAN" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=mcp2515-can0,oscillator=${CAN_OSCILLATOR},interrupt=25" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=mcp2515-can1,oscillator=${CAN_OSCILLATOR},interrupt=24" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
     # ENABLE CAN
-    if [ "${ENABLE_CAN}" = "1" ]; then
+    elif [ "${ENABLE_CAN}" = "1" ]; then
         echo "# Enable CAN" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
-        echo "dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
+        echo "dtoverlay=mcp2515-can0,oscillator=${CAN_OSCILLATOR},interrupt=25" >>${DEPLOYDIR}/rpi-bootfiles/config.txt
     fi
 
     # ENABLE RPI TV HAT
