@@ -2,12 +2,12 @@ require linux-raspberrypi.inc
 
 LINUX_VERSION = "${KERNELVERSION}"
 
-SRCREV = "b8681a08ba16b15cc9f010bef2a24ffac0b054d1"
+SRCREV = "9797f1a4938c20139b00a25de93cc99efb5c291b"
 
 S_rpi = "${WORKDIR}/linux-${SRCREV}"
 
-SRC_URI[md5sum] = "d10f8eb0ba6423afe5e4c2c1f59d82d3"
-SRC_URI[sha256sum] = "a01cb69aedec9ac5a6d19a0e7c6149d6bdd3085e4fa7b131b4ecf9e2496e67dd"
+SRC_URI[md5sum] = "01ee6701dfde85b45f9af160153ceda0"
+SRC_URI[sha256sum] = "ad6c146a5ea6e4948513f2cbead845d63e01186cb6488cd2707ed8ec35ef72e3"
 
 SRC_URI += "file://0001-Revert-selftests-bpf-Skip-perf-hw-events-test-if-the.patch \
 	file://0002-Revert-selftests-bpf-Fix-perf_buffer-test-on-systems.patch \
