@@ -29,7 +29,6 @@ PE = "1"
 PV = "${LINUX_VERSION}+git${SRCREV}"
 
 inherit kernel machine_kernel_pr samba_change_dialect siteinfo
-require recipes-kernel/linux/linux-yocto.inc
 
 KCONFIG_MODE = "--alldefconfig"
 KBUILD_DEFCONFIG = "rpi_defconfig"
