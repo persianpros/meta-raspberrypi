@@ -11,7 +11,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "\
 	https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
-	file://rpi_defconfig \
+	file://defconfig \
 	file://${OPENVISION_BASE}/meta-openvision/recipes-linux/kernel-patches/kernel-add-support-for-gcc${VISIONGCCVERSION}.patch \
 	"
 
@@ -131,7 +131,8 @@ do_deploy_append() {
 }
 
 do_openvisiondefconfig() {
-    install -m 0644 ${WORKDIR}/rpi_defconfig ${S}/arch/arm/configs/
+    install -m 0644 ${WORKDIR}/defconfig ${S}/arch/${ARCH}/configs/
+    in_tree_defconfig="${WORKDIR}/defconfig"
 }
 
 addtask openvisiondefconfig before do_configure after do_unpack
