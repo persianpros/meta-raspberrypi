@@ -130,6 +130,10 @@ do_image_wic[depends] += "\
     ${BOOTFILES_DIR_NAME}:do_deploy \
     "
 
+IMAGE_CMD_prepend = "\
+	rm -Rf ${IMAGE_ROOTFS}/tmp/*; \
+	"
+
 do_image_wic[recrdeps] = "do_build"
 
 # The kernel image is installed into the FAT32 boot partition and does not need
