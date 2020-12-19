@@ -19,13 +19,13 @@ do_deploy() {
     install -d ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
 
     for i in ${S}/*.elf ; do
-        cp $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
+        cp -f $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
     done
     for i in ${S}/*.dat ; do
-        cp $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
+        cp -f $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
     done
     for i in ${S}/*.bin ; do
-        cp $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
+        cp -f $i ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
     done
 
     # Add stamp in deploy directory

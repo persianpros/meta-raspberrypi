@@ -23,7 +23,7 @@ inherit deploy nopackages
 do_deploy() {
     install -d ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}
 
-    cp ${S}/config.txt ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/
+    cp -f ${S}/config.txt ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/
 
     if [ -n "${KEY_DECODE_MPG2}" ]; then
         sed -i '/#decode_MPG2=/ c\decode_MPG2=${KEY_DECODE_MPG2}' ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
