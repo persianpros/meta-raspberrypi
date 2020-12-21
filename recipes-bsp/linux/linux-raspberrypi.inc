@@ -39,13 +39,6 @@ LINUX_VERSION_EXTENSION = ""
 # manually. This value unused if KERNEL_IMAGETYPE is not uImage.
 KERNEL_EXTRA_ARGS += "LOADADDR=0x00008000"
 
-do_compile_append() {
-    if [ "${SITEINFO_BITS}" = "64" ]; then
-        cc_extra=$(get_cc_option)
-        oe_runmake dtbs CC="${KERNEL_CC} $cc_extra " LD="${KERNEL_LD}" ${KERNEL_EXTRA_ARGS}
-    fi
-}
-
 do_openvisiondefconfig() {
     install -m 0644 ${WORKDIR}/defconfig ${S}/arch/${ARCH}/configs/
     in_tree_defconfig="${WORKDIR}/defconfig"
