@@ -1,0 +1,60 @@
+From 0d40aefb1fc3f69af3b450d78df038dd86b1738b Mon Sep 17 00:00:00 2001
+From: 4l3x2k <4l3x2k@users.noreply.github.com>
+Date: Tue, 10 Nov 2020 13:06:01 +0000
+Subject: [PATCH 2/2] Update dvb_frontend.h
+
+---
+ include/media/dvb_frontend.h | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/include/media/dvb_frontend.h b/include/media/dvb_frontend.h
+index 0d76fa4551b3..3c94a4561eb4 100644
+--- a/include/media/dvb_frontend.h
++++ b/include/media/dvb_frontend.h
+@@ -429,8 +429,10 @@ struct dvb_frontend_internal_info {
+  * @ts_bus_ctrl:	callback function used to take control of the TS bus.
+  * @set_lna:		callback function to power on/off/auto the LNA.
+  * @search:		callback function used on some custom algo search algos.
+- * @tuner_ops:		pointer to &struct dvb_tuner_ops
+- * @analog_ops:		pointer to &struct analog_demod_ops
++ * @tuner_ops:		pointer to struct dvb_tuner_ops
++ * @analog_ops:		pointer to struct analog_demod_ops
++ * @set_property:	callback function to allow the frontend to validade
++ *			incoming properties. Should not be used on new drivers.
+  */
+ struct dvb_frontend_ops {
+ 	struct dvb_frontend_internal_info info;
+@@ -491,6 +493,22 @@ struct dvb_frontend_ops {
+ 
+ 	struct dvb_tuner_ops tuner_ops;
+ 	struct analog_demod_ops analog_ops;
++	
++	int (*set_property)(struct dvb_frontend* fe, u32 cmd, u32 data);
++
++	void(*spi_read)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
++	void(*spi_write)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
++
++	void(*mcu_read)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
++	void(*mcu_write)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
++
++	void(*reg_i2cread)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
++	void(*reg_i2cwrite)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
++
++	void(*eeprom_read)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
++	void(*eeprom_write)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
++    
++    int (*read_temp)(struct dvb_frontend* fe, s16* temp);
+ };
+ 
+ #ifdef __DVB_CORE__
+@@ -622,6 +640,7 @@ struct dtv_frontend_properties {
+ 
+ 	/* Multistream specifics */
+ 	u32			stream_id;
++	u32			modcode;
+ 
+ 	/* Physical Layer Scrambling specifics */
+ 	u32			scrambling_sequence_index;
+-- 
+2.25.1
+

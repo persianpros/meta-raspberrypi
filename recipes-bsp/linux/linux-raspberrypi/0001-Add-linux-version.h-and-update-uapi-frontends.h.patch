@@ -1,0 +1,61 @@
+From 8a9411b59de0d35fa21cdc6ef96e4ef51027e226 Mon Sep 17 00:00:00 2001
+From: 4l3x2k <4l3x2k@users.noreply.github.com>
+Date: Tue, 10 Nov 2020 12:44:46 +0000
+Subject: [PATCH 1/2] Add linux/version.h and update uapi frontends.h
+
+---
+ drivers/media/dvb-frontends/si2183.c |  2 ++
+ include/uapi/linux/dvb/frontend.h    | 26 ++++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
+
+diff --git a/drivers/media/dvb-frontends/si2183.c b/drivers/media/dvb-frontends/si2183.c
+index 4b5bc34f4346..287f2729daf9 100644
+--- a/drivers/media/dvb-frontends/si2183.c
++++ b/drivers/media/dvb-frontends/si2183.c
+@@ -17,6 +17,8 @@
+ #include <linux/firmware.h>
+ #include <linux/i2c-mux.h>
+ 
++#include <linux/version.h>
++
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+ #define SI2183_USE_I2C_MUX
+ #endif
+diff --git a/include/uapi/linux/dvb/frontend.h b/include/uapi/linux/dvb/frontend.h
+index 4f9b4551c534..5b780295d588 100644
+--- a/include/uapi/linux/dvb/frontend.h
++++ b/include/uapi/linux/dvb/frontend.h
+@@ -1008,4 +1008,30 @@ struct dvb_frontend_event {
+ 
+ #endif
+ 
++struct ecp3_info
++{
++	__u8 reg;
++	__u32 data;
++};
++
++struct eeprom_info
++{
++	__u8 reg;
++	__u8 data;
++};
++
++#define FE_ECP3FW_READ    _IOR('o', 90, struct ecp3_info)
++#define FE_ECP3FW_WRITE   _IOW('o', 91, struct ecp3_info)
++
++#define FE_24CXX_READ    _IOR('o', 92, struct mcu24cxx_info)
++#define FE_24CXX_WRITE   _IOW('o', 93, struct mcu24cxx_info)
++
++#define FE_REGI2C_READ    _IOR('o', 94, struct usbi2c_access)
++#define FE_REGI2C_WRITE   _IOW('o', 95, struct usbi2c_access)
++
++#define FE_EEPROM_READ    _IOR('o', 96, struct eeprom_info)
++#define FE_EEPROM_WRITE   _IOW('o', 97, struct eeprom_info)
++
++#define FE_READ_TEMP	  _IOR('o', 98, __s16)
++
+ #endif /*_DVBFRONTEND_H_*/
+-- 
+2.25.1
+
