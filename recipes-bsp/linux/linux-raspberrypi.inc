@@ -22,7 +22,7 @@ SRC_URI = "\
 	file://0001-Register-and-unregister-second-frontend-for-dvb-s.patch \
 	"
 
-# What we need from https://github.com/raspberrypi/linux/tree/rpi-5.4.y/arch/arm/configs
+# What we need from https://github.com/raspberrypi/linux/tree/rpi-5.10.y/arch/arm/configs
 # DEFCONFIG_raspberrypi = "bcmrpi_defconfig"
 # DEFCONFIG_raspberrypi0 = "bcmrpi_defconfig"
 # DEFCONFIG_raspberrypi2 = "bcm2709_defconfig"
@@ -30,7 +30,7 @@ SRC_URI = "\
 # DEFCONFIG_raspberrypi4 = "bcm2711_defconfig"
 # For DVB drivers we could check https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/RPi/devices
 
-KERNEL_EXTRA_ARGS_append_rpi = " DTC_FLAGS='-@ -H epapr'"
+KERNEL_DTC_FLAGS += "-@ -H epapr"
 
 PE = "1"
 PV = "${LINUX_VERSION}+git${SRCREV}"
