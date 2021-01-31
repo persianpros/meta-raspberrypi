@@ -13,7 +13,7 @@ SRCREV = "${AUTOREV}"
 PV = "git${SRCPV}"
 PKGV = "git${GITPKGV}"
 
-SRC_URI = "git://github.com/OpenVisionE2/rpi-e2-procfs.git;protocol=git"
+SRC_URI = "git://git@github.com/OpenVisionE2/rpi-e2-procfs.git;protocol=ssh"
 
 S = "${WORKDIR}/git/source/e2_procfs"
 
