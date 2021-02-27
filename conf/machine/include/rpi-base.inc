@@ -27,14 +27,12 @@ IMAGE_FSTYPES = "rpi-sdimg"
 WKS_FILE = "sdimage-raspberrypi.wks"
 
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
-	gstreamer1.0-plugins-bad-fbdevsink \
 	kernel-module-e2-procfs \
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
 	rpi-dvb-modules-e2procfs \
 	rpi-dvbsoftwareca \
 	rpi-firmwares \
-	${@bb.utils.contains("MACHINE_FEATURES", "nolcd", "", "enigma2-plugin-extensions-lcd4linux", d)} \
 	libcec \
 	lirc \
 	lirc-plugins \
