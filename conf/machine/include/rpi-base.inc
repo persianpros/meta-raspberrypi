@@ -30,12 +30,13 @@ MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "\
 	kernel-module-e2-procfs \
 	kernel-module-dvbsoftwareca \
 	kernel-modules \
-	rpi-dvb-modules-e2procfs \
-	rpi-dvbsoftwareca \
-	rpi-firmwares \
 	libcec \
 	lirc \
 	lirc-plugins \
+	rpi-dvb-modules-e2procfs \
+	rpi-dvbsoftwareca \
+	rpi-firmwares \
+	rpi-vtunerc \
 	udev-rules-rpi \
 	"
 
@@ -48,6 +49,7 @@ KERNEL_MODULE_AUTOLOAD += "\
 	spi-bcm2835 \
 	gpio-ir-tx \
 	gpio-ir-recv \
+	vtunerc \
 	"
 
 # Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
