@@ -13,13 +13,8 @@ SRC_URI = "\
 	https://github.com/raspberrypi/linux/archive/${SRCREV}.tar.gz \
 	file://defconfig \
 	file://${OPENVISION_BASE}/meta-openvision/recipes-linux/kernel-patches/kernel-add-support-for-gcc${VISIONGCCVERSION}.patch \
-	file://0001-Add-Silicon-Labs-SI2183.patch \
-	file://0002-Add-Airoha-Technology-AV201x.patch \
-	file://0003-Add-TBS-5520SE.patch \
-	file://0001-Add-linux-version.h-and-update-uapi-frontends.h.patch \
-	file://0002-Update-dvb_frontend.h.patch \
-	file://0001-Update-dvb-usb.h-and-uapi-frontend.h.patch \
-	file://0001-Register-and-unregister-second-frontend-for-dvb-s.patch \
+	file://0001-TBS5520SE.patch \
+	file://0001-VTUNERC.patch \
 	"
 
 # What we need from https://github.com/raspberrypi/linux/tree/rpi-5.10.y/arch/arm/configs

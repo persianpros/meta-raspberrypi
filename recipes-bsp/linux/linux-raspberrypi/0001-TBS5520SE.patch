@@ -1,19 +1,37 @@
-From 700fce0fe1466e278fdc304dc1c856840947e480 Mon Sep 17 00:00:00 2001
-From: 4l3x2k <4l3x2k@users.noreply.github.com>
-Date: Mon, 9 Nov 2020 13:32:14 +0000
-Subject: [PATCH 1/3] Add Silicon Labs SI2183
+From d5fcce4d28cfe0d28d823a93bca67e403ed0fa3a Mon Sep 17 00:00:00 2001
+From: pi <pi@raspberrypi.local>
+Date: Tue, 2 Feb 2021 03:14:10 +0000
+Subject: [PATCH 1/2] TBS5520SE
 
 ---
- drivers/media/dvb-frontends/Kconfig  |    7 +
- drivers/media/dvb-frontends/Makefile |    1 +
- drivers/media/dvb-frontends/si2183.c | 1632 ++++++++++++++++++++++++++
- drivers/media/dvb-frontends/si2183.h |   66 ++
- 4 files changed, 1706 insertions(+)
+ drivers/media/dvb-frontends/Kconfig     |    7 +
+ drivers/media/dvb-frontends/Makefile    |    1 +
+ drivers/media/dvb-frontends/si2183.c    | 1640 +++++++++++++++++++++++
+ drivers/media/dvb-frontends/si2183.h    |   66 +
+ drivers/media/tuners/Kconfig            |    7 +
+ drivers/media/tuners/Makefile           |    1 +
+ drivers/media/tuners/av201x.c           |  302 +++++
+ drivers/media/tuners/av201x.h           |   55 +
+ drivers/media/tuners/av201x_priv.h      |  110 ++
+ drivers/media/usb/dvb-usb/Kconfig       |    9 +
+ drivers/media/usb/dvb-usb/Makefile      |    3 +
+ drivers/media/usb/dvb-usb/dvb-usb-dvb.c |   20 +
+ drivers/media/usb/dvb-usb/dvb-usb.h     |    9 +-
+ drivers/media/usb/dvb-usb/tbs5520se.c   |  509 +++++++
+ drivers/media/usb/dvb-usb/tbs5520se.h   |    8 +
+ include/media/dvb_frontend.h            |   23 +-
+ include/uapi/linux/dvb/frontend.h       |   41 +
+ 17 files changed, 2806 insertions(+), 5 deletions(-)
  create mode 100644 drivers/media/dvb-frontends/si2183.c
  create mode 100644 drivers/media/dvb-frontends/si2183.h
+ create mode 100644 drivers/media/tuners/av201x.c
+ create mode 100644 drivers/media/tuners/av201x.h
+ create mode 100644 drivers/media/tuners/av201x_priv.h
+ create mode 100644 drivers/media/usb/dvb-usb/tbs5520se.c
+ create mode 100644 drivers/media/usb/dvb-usb/tbs5520se.h
 
 diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
-index a29e9ddf9c82..bd6c017696c3 100644
+index a29e9ddf9..bd6c01769 100644
 --- a/drivers/media/dvb-frontends/Kconfig
 +++ b/drivers/media/dvb-frontends/Kconfig
 @@ -7,6 +7,13 @@ menu "Customise DVB Frontends"
@@ -31,7 +49,7 @@ index a29e9ddf9c82..bd6c017696c3 100644
  	tristate "STB0899 based"
  	depends on DVB_CORE && I2C
 diff --git a/drivers/media/dvb-frontends/Makefile b/drivers/media/dvb-frontends/Makefile
-index e9179162658c..8db5a2d39db5 100644
+index e91791626..8db5a2d39 100644
 --- a/drivers/media/dvb-frontends/Makefile
 +++ b/drivers/media/dvb-frontends/Makefile
 @@ -127,6 +127,7 @@ obj-$(CONFIG_DVB_AS102_FE) += as102_fe.o
@@ -44,10 +62,10 @@ index e9179162658c..8db5a2d39db5 100644
  obj-$(CONFIG_DVB_HELENE) += helene.o
 diff --git a/drivers/media/dvb-frontends/si2183.c b/drivers/media/dvb-frontends/si2183.c
 new file mode 100644
-index 000000000000..4b5bc34f4346
+index 000000000..4ee1ccdad
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/si2183.c
-@@ -0,0 +1,1632 @@
+@@ -0,0 +1,1640 @@
 +/*
 + * Silicon Labs Si2183(2) DVB-T/T2/C/C2/S/S2 demodulator driver
 + *
@@ -66,6 +84,8 @@ index 000000000000..4b5bc34f4346
 +#include <media/dvb_frontend.h>
 +#include <linux/firmware.h>
 +#include <linux/i2c-mux.h>
++
++#include <linux/version.h>
 +
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
 +#define SI2183_USE_I2C_MUX
@@ -1141,6 +1161,12 @@ index 000000000000..4b5bc34f4346
 +		return ret;
 +	}
 +
++	/* green lock led by pin setting */
++	memcpy(cmd.args, "\x12\x8\x0", 3);
++	cmd.wlen = 3;
++	cmd.rlen = 3;
++	si2183_cmd_execute(client, &cmd);
++
 +	dev->fw_loaded = true;
 +warm:
 +	dev->active_fe |= (1 << fe->id);
@@ -1682,7 +1708,7 @@ index 000000000000..4b5bc34f4346
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/dvb-frontends/si2183.h b/drivers/media/dvb-frontends/si2183.h
 new file mode 100644
-index 000000000000..6c654bba3b2c
+index 000000000..6c654bba3
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/si2183.h
 @@ -0,0 +1,66 @@
@@ -1752,6 +1778,1229 @@ index 000000000000..6c654bba3b2c
 +};
 +
 +#endif
+diff --git a/drivers/media/tuners/Kconfig b/drivers/media/tuners/Kconfig
+index e104bb776..f56cecb4a 100644
+--- a/drivers/media/tuners/Kconfig
++++ b/drivers/media/tuners/Kconfig
+@@ -296,4 +296,11 @@ config MEDIA_TUNER_QM1D1B0004
+ 	default m if !MEDIA_SUBDRV_AUTOSELECT
+ 	help
+ 	  Sharp QM1D1B0004 ISDB-S tuner driver.
++
++config MEDIA_TUNER_AV201X
++	tristate "Airoha Technology AV201x silicon tuner"
++	depends on MEDIA_SUPPORT && I2C
++	default m if !MEDIA_SUBDRV_AUTOSELECT
++	help
++	  Airoha Technology AV201x silicon tuner driver.
+ endmenu
+diff --git a/drivers/media/tuners/Makefile b/drivers/media/tuners/Makefile
+index 7b4f84235..5d98b8b49 100644
+--- a/drivers/media/tuners/Makefile
++++ b/drivers/media/tuners/Makefile
+@@ -43,6 +43,7 @@ obj-$(CONFIG_MEDIA_TUNER_MXL301RF) += mxl301rf.o
+ obj-$(CONFIG_MEDIA_TUNER_QM1D1C0042) += qm1d1c0042.o
+ obj-$(CONFIG_MEDIA_TUNER_QM1D1B0004) += qm1d1b0004.o
+ obj-$(CONFIG_MEDIA_TUNER_M88RS6000T) += m88rs6000t.o
++obj-$(CONFIG_MEDIA_TUNER_AV201X) += av201x.o
+ obj-$(CONFIG_MEDIA_TUNER_TDA18250) += tda18250.o
+ 
+ ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
+diff --git a/drivers/media/tuners/av201x.c b/drivers/media/tuners/av201x.c
+new file mode 100644
+index 000000000..071baa902
+--- /dev/null
++++ b/drivers/media/tuners/av201x.c
+@@ -0,0 +1,302 @@
++/*
++ * AV201x Airoha Technology silicon tuner driver
++ *
++ * Copyright (C) 2014 Luis Alves <ljalvs@gmail.com>
++ *
++ *    This program is free software; you can redistribute it and/or modify
++ *    it under the terms of the GNU General Public License as published by
++ *    the Free Software Foundation; either version 2 of the License, or
++ *    (at your option) any later version.
++ *
++ *    This program is distributed in the hope that it will be useful,
++ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *    GNU General Public License for more details.
++ *
++ *    You should have received a copy of the GNU General Public License along
++ *    with this program; if not, write to the Free Software Foundation, Inc.,
++ *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include "av201x.h"
++#include "av201x_priv.h"
++
++/* write multiple (continuous) registers */
++static int av201x_wrm(struct av201x_priv *priv, u8 *buf, int len)
++{
++	int ret;
++	struct i2c_msg msg = {
++		.addr = priv->cfg->i2c_address,
++		.flags = 0, .buf = buf, .len = len };
++
++	dev_dbg(&priv->i2c->dev, "%s() i2c wrm @0x%02x (len=%d) ",
++		__func__, buf[0], len);
++
++	ret = i2c_transfer(priv->i2c, &msg, 1);
++	if (ret < 0) {
++		dev_warn(&priv->i2c->dev,
++			"%s: i2c wrm err(%i) @0x%02x (len=%d)\n",
++			KBUILD_MODNAME, ret, buf[0], len);
++		return ret;
++	}
++	return 0;
++}
++
++/* write one register */
++static int av201x_wr(struct av201x_priv *priv, u8 addr, u8 data)
++{
++	u8 buf[] = { addr, data };
++	return av201x_wrm(priv, buf, 2);
++}
++
++/* read multiple (continuous) registers starting at addr */
++static int av201x_rdm(struct av201x_priv *priv, u8 addr, u8 *buf, int len)
++{
++	int ret;
++	struct i2c_msg msg[] = {
++		{ .addr = priv->cfg->i2c_address, .flags = 0,
++			.buf = &addr, .len = 1 },
++		{ .addr = priv->cfg->i2c_address, .flags = I2C_M_RD,
++			.buf = buf, .len = len }
++	};
++
++	dev_dbg(&priv->i2c->dev, "%s() i2c rdm @0x%02x (len=%d)\n",
++		__func__, addr, len);
++
++	ret = i2c_transfer(priv->i2c, msg, 2);
++	if (ret < 0) {
++		dev_warn(&priv->i2c->dev,
++			"%s: i2c rdm err(%i) @0x%02x (len=%d)\n",
++			KBUILD_MODNAME, ret, addr, len);
++		return ret;
++	}
++	return 0;
++}
++
++/* read one register */
++static int av201x_rd(struct av201x_priv *priv, u8 addr, u8 *data)
++{
++	return av201x_rdm(priv, addr, data, 1);
++}
++
++/* read register, apply masks, write back */
++static int av201x_regmask(struct av201x_priv *priv,
++	u8 reg, u8 setmask, u8 clrmask)
++{
++	int ret;
++	u8 b = 0;
++	if (clrmask != 0xff) {
++		ret = av201x_rd(priv, reg, &b);
++		if (ret)
++			return ret;
++		b &= ~clrmask;
++	}
++	return av201x_wr(priv, reg, b | setmask);
++}
++
++static int av201x_wrtable(struct av201x_priv *priv,
++	struct av201x_regtable *regtable, int len)
++{
++	int ret, i;
++
++	for (i = 0; i < len; i++) {
++		ret = av201x_regmask(priv, regtable[i].addr,
++			regtable[i].setmask, regtable[i].clrmask);
++		if (ret)
++			return ret;
++		if (regtable[i].sleep)
++			msleep(regtable[i].sleep);
++	}
++	return 0;
++}
++
++static void av201x_release(struct dvb_frontend *fe)
++{
++	struct av201x_priv *priv = fe->tuner_priv;
++	dev_dbg(&priv->i2c->dev, "%s()\n", __func__);
++
++	kfree(fe->tuner_priv);
++	fe->tuner_priv = NULL;
++}
++
++static int av201x_init(struct dvb_frontend *fe)
++{
++	struct av201x_priv *priv = fe->tuner_priv;
++	int ret;
++	dev_dbg(&priv->i2c->dev, "%s()\n", __func__);
++
++	ret = av201x_wrtable(priv, av201x_inittuner0,
++		ARRAY_SIZE(av201x_inittuner0));
++
++	switch (priv->cfg->id) {
++	case ID_AV2011:
++		ret |= av201x_wrtable(priv, av201x_inittuner1a,
++			ARRAY_SIZE(av201x_inittuner1a));
++		break;
++	case ID_AV2012:
++	default:
++		ret |= av201x_wrtable(priv, av201x_inittuner1b,
++			ARRAY_SIZE(av201x_inittuner1b));
++		break;
++	}
++
++	ret |= av201x_wrtable(priv, av201x_inittuner2,
++		ARRAY_SIZE(av201x_inittuner2));
++
++	ret |= av201x_wr(priv, REG_TUNER_CTRL, 0x96);
++
++	msleep(120);
++
++	if (ret)
++		dev_dbg(&priv->i2c->dev, "%s() failed\n", __func__);
++	return ret;
++}
++
++static int av201x_sleep(struct dvb_frontend *fe)
++{
++	struct av201x_priv *priv = fe->tuner_priv;
++	int ret;
++	dev_dbg(&priv->i2c->dev, "%s()\n", __func__);
++
++	ret = av201x_regmask(priv, REG_TUNER_CTRL, AV201X_SLEEP, 0);
++	if (ret)
++		dev_dbg(&priv->i2c->dev, "%s() failed\n", __func__);
++	return ret;
++}
++
++static int av201x_set_params(struct dvb_frontend *fe)
++{
++	struct av201x_priv *priv = fe->tuner_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	u32 n, bw, bf;
++	u8 buf[5];
++	int ret;
++
++	dev_dbg(&priv->i2c->dev, "%s() delivery_system=%d frequency=%d " \
++			"symbol_rate=%d\n", __func__,
++			c->delivery_system, c->frequency, c->symbol_rate);
++
++	/*
++	   ** PLL setup **
++	   RF = (pll_N * ref_freq) / pll_M
++	   pll_M = fixed 0x10000
++	   PLL output is divided by 2
++	   REG_FN = pll_M<24:0>
++	*/
++	buf[0] = REG_FN;
++	n = DIV_ROUND_CLOSEST(c->frequency, priv->cfg->xtal_freq);
++	buf[1] = (n > 0xff) ? 0xff : (u8) n;
++	n = DIV_ROUND_CLOSEST((c->frequency / 1000) << 17, priv->cfg->xtal_freq / 1000);
++	buf[2] = (u8) (n >> 9);
++	buf[3] = (u8) (n >> 1);
++	buf[4] = (u8) (((n << 7) & 0x80) | 0x50);
++	ret = av201x_wrm(priv, buf, 5);
++	if (ret)
++		goto exit;
++
++	msleep(20);
++
++	/* set bandwidth */
++	bw = (c->symbol_rate / 1000) * 135/200;
++	if (c->symbol_rate < 6500000)
++		bw += 6000;
++	bw += 2000;
++	bw *= 108/100;
++
++	/* check limits (4MHz < bw < 40MHz) */
++	if (bw > 40000)
++		bw = 40000;
++	else if (bw < 4000)
++		bw = 4000;
++
++	/* bandwidth step = 211kHz */
++	bf = DIV_ROUND_CLOSEST(bw * 127, 21100);
++	ret = av201x_wr(priv, REG_BWFILTER, (u8) bf);
++
++	/* enable fine tune agc */
++	ret |= av201x_wr(priv, REG_FT_CTRL, AV201X_FT_EN | AV201X_FT_BLK);
++
++	ret |= av201x_wr(priv, REG_TUNER_CTRL, 0x96);
++	msleep(20);
++exit:
++	if (ret)
++		dev_dbg(&priv->i2c->dev, "%s() failed\n", __func__);
++	return ret;
++}
++
++static  int   AV201x_agc         [] = {     0,  82,   100,  116,  140,  162,  173,  187,  210,  223,  254,  255};
++static  int   AV201x_level_dBm_10[] = {    90, -50,  -263, -361, -463, -563, -661, -761, -861, -891, -904, -910};
++
++static int av201x_get_rf_strength(struct dvb_frontend *fe, u16 *st)
++{
++	struct av201x_priv *priv = fe->tuner_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	int   if_agc, index, table_length, slope, *x, *y;
++
++	if_agc = *st;
++	x = AV201x_agc;
++	y = AV201x_level_dBm_10;
++	table_length = sizeof(AV201x_agc)/sizeof(int);
++
++	
++	/* Finding in which segment the if_agc value is */
++	for (index = 0; index < table_length; index ++)
++		if (x[index] > if_agc ) break;
++
++	/* Computing segment slope */
++	slope =  ((y[index]-y[index-1])*1000)/(x[index]-x[index-1]);
++	/* Linear approximation of rssi value in segment (rssi values will be in 0.1dBm unit: '-523' means -52.3 dBm) */
++	*st = 1000 + ((y[index-1] + ((if_agc - x[index-1])*slope + 500)/1000))/10;
++
++	c->strength.len = 1;
++	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
++	c->strength.stat[0].svalue = ((y[index-1] + ((if_agc - x[index-1])*slope + 500)/1000)) * 100;
++
++	return 0;
++}
++
++
++static const struct dvb_tuner_ops av201x_tuner_ops = {
++	.info = {
++		.name           = "Airoha Technology AV201x",
++		.frequency_min_hz = 850 * MHz,
++		.frequency_max_hz = 2300 * MHz,
++	},
++
++	.release = av201x_release,
++
++	.init = av201x_init,
++	.sleep = av201x_sleep,
++	.set_params = av201x_set_params,
++	.get_rf_strength = av201x_get_rf_strength,
++};
++
++struct dvb_frontend *av201x_attach(struct dvb_frontend *fe,
++		struct av201x_config *cfg, struct i2c_adapter *i2c)
++{
++	struct av201x_priv *priv = NULL;
++
++	priv = kzalloc(sizeof(struct av201x_priv), GFP_KERNEL);
++	if (priv == NULL) {
++		dev_dbg(&i2c->dev, "%s() attach failed\n", __func__);
++		return NULL;
++	}
++
++	priv->cfg = cfg;
++	priv->i2c = i2c;
++
++	dev_info(&priv->i2c->dev,
++		"%s: Airoha Technology AV201x successfully attached\n",
++		KBUILD_MODNAME);
++
++	memcpy(&fe->ops.tuner_ops, &av201x_tuner_ops,
++			sizeof(struct dvb_tuner_ops));
++
++	fe->tuner_priv = priv;
++	return fe;
++}
++EXPORT_SYMBOL(av201x_attach);
++
++MODULE_DESCRIPTION("Airoha Technology AV201x silicon tuner driver");
++MODULE_AUTHOR("Luis Alves <ljalvs@gmail.com>");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/tuners/av201x.h b/drivers/media/tuners/av201x.h
+new file mode 100644
+index 000000000..92f40094d
+--- /dev/null
++++ b/drivers/media/tuners/av201x.h
+@@ -0,0 +1,55 @@
++/*
++ * AV201x Airoha Technology silicon tuner driver
++ *
++ * Copyright (C) 2014 Luis Alves <ljalvs@gmail.com>
++ *
++ *    This program is free software; you can redistribute it and/or modify
++ *    it under the terms of the GNU General Public License as published by
++ *    the Free Software Foundation; either version 2 of the License, or
++ *    (at your option) any later version.
++ *
++ *    This program is distributed in the hope that it will be useful,
++ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *    GNU General Public License for more details.
++ *
++ *    You should have received a copy of the GNU General Public License along
++ *    with this program; if not, write to the Free Software Foundation, Inc.,
++ *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef AV201X_H
++#define AV201X_H
++
++#include <linux/kconfig.h>
++#include <media/dvb_frontend.h>
++
++typedef enum av201x_id {
++	ID_AV2011,
++	ID_AV2012,
++	ID_AV2018,
++} av201x_id_t;
++
++struct av201x_config {
++	/* tuner i2c address */
++	u8 i2c_address;
++	/* tuner type */
++	av201x_id_t id;
++
++	/* crystal freq in kHz */
++	u32 xtal_freq;
++};
++
++#if IS_REACHABLE(CONFIG_MEDIA_TUNER_AV201X)
++extern struct dvb_frontend *av201x_attach(struct dvb_frontend *fe,
++		struct av201x_config *cfg, struct i2c_adapter *i2c);
++#else
++static inline struct dvb_frontend *av201x_attach(struct dvb_frontend *fe,
++		struct av201x_config *cfg, struct i2c_adapter *i2c)
++{
++	printk(KERN_WARNING "%s: driver disabled by Kconfig\n", __func__);
++	return NULL;
++}
++#endif
++
++#endif /* AV201X_H */
+diff --git a/drivers/media/tuners/av201x_priv.h b/drivers/media/tuners/av201x_priv.h
+new file mode 100644
+index 000000000..c56ba203d
+--- /dev/null
++++ b/drivers/media/tuners/av201x_priv.h
+@@ -0,0 +1,110 @@
++/*
++ * AV201x Airoha Technology silicon tuner driver
++ *
++ * Copyright (C) 2014 Luis Alves <ljalvs@gmail.com>
++ *
++ *    This program is free software; you can redistribute it and/or modify
++ *    it under the terms of the GNU General Public License as published by
++ *    the Free Software Foundation; either version 2 of the License, or
++ *    (at your option) any later version.
++ *
++ *    This program is distributed in the hope that it will be useful,
++ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *    GNU General Public License for more details.
++ *
++ *    You should have received a copy of the GNU General Public License along
++ *    with this program; if not, write to the Free Software Foundation, Inc.,
++ *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef AV201X_PRIV_H
++#define AV201X_PRIV_H
++
++struct av201x_priv {
++	struct av201x_config *cfg;
++	struct i2c_adapter *i2c;
++};
++
++enum av201x_regs_addr {
++	REG_FN		= 0x00,
++	REG_BWFILTER	= 0x05,
++	REG_TUNER_STAT	= 0x0b,
++	REG_TUNER_CTRL	= 0x0c,
++	REG_FT_CTRL	= 0x25,
++};
++
++/* REG_TUNER_STAT */
++#define AV201X_PLLLOCK		(1<<0)
++
++/* REG_TUNER_CTRL */
++#define AV201X_SLEEP		(1<<5)
++#define AV201X_RFLP		(1<<6)
++
++/* REG_FT_CTRL */
++#define AV201X_FT_EN		(1<<1)
++#define AV201X_FT_BLK		(1<<2)
++
++struct av201x_regtable {
++	u8 addr;
++	u8 setmask;
++	u8 clrmask;
++	int sleep;
++};
++
++static struct av201x_regtable av201x_inittuner0[] = {
++	{0x00, 0x38, 0xff, 0},
++	{0x01, 0x00, 0xff, 0},
++	{0x02, 0x00, 0xff, 0},
++	{0x03, 0x50, 0xff, 0},
++	{0x04, 0x1f, 0xff, 0},
++	{0x05, 0xa3, 0xff, 0},
++	{0x06, 0xfd, 0xff, 0},
++	{0x07, 0x58, 0xff, 0},
++	{0x08, 0x36, 0xff, 0},
++	{0x09, 0xc2, 0xff, 0},
++	{0x0a, 0x88, 0xff, 0},
++	{0x0b, 0xb4, 0xff, 20},
++	{0x0d, 0x40, 0xff, 0},
++};
++
++static struct av201x_regtable av201x_inittuner1a[] = {
++	{0x0e, 0x94, 0xff, 0},
++	{0x0f, 0x9a, 0xff, 0},
++};
++
++static struct av201x_regtable av201x_inittuner1b[] = {
++	{0x0e, 0x5b, 0xff, 0},
++	{0x0f, 0x6a, 0xff, 0},
++};
++
++static struct av201x_regtable av201x_inittuner2[] = {
++	{0x10, 0x66, 0xff, 0},
++	{0x11, 0x40, 0xff, 0},
++	{0x12, 0x80, 0xff, 0},
++	{0x13, 0x2b, 0xff, 0},
++	{0x14, 0x6a, 0xff, 0},
++	{0x15, 0x50, 0xff, 0},
++	{0x16, 0x91, 0xff, 0},
++	{0x17, 0x27, 0xff, 0},
++	{0x18, 0x8f, 0xff, 0},
++	{0x19, 0xcc, 0xff, 0},
++	{0x1a, 0x21, 0xff, 0},
++	{0x1b, 0x10, 0xff, 0},
++	{0x1c, 0x80, 0xff, 0},
++	{0x1d, 0x02, 0xff, 0},
++	{0x1e, 0xf5, 0xff, 0},
++	{0x1f, 0x7f, 0xff, 0},
++	{0x20, 0x4a, 0xff, 0},
++	{0x21, 0x9b, 0xff, 0},
++	{0x22, 0xe0, 0xff, 0},
++	{0x23, 0xe0, 0xff, 0},
++	{0x24, 0x36, 0xff, 0},
++	{0x25, 0x00, 0xff, 0},
++	{0x26, 0xab, 0xff, 0},
++	{0x27, 0x97, 0xff, 0},
++	{0x28, 0xc5, 0xff, 0},
++	{0x29, 0xa8, 0xff, 20},
++};
++
++#endif /* AV201X_PRIV_H */
+diff --git a/drivers/media/usb/dvb-usb/Kconfig b/drivers/media/usb/dvb-usb/Kconfig
+index 2d7a5c1c8..299df28c6 100644
+--- a/drivers/media/usb/dvb-usb/Kconfig
++++ b/drivers/media/usb/dvb-usb/Kconfig
+@@ -341,3 +341,12 @@ config DVB_USB_TECHNISAT_USB2
+ 	select DVB_STV6110x if MEDIA_SUBDRV_AUTOSELECT
+ 	help
+ 	  Say Y here to support the Technisat USB2 DVB-S/S2 device
++
++config DVB_USB_TBS5520se
++        tristate "Turbosight TBS5520se support"
++        depends on DVB_USB
++        select DVB_SI2183 if MEDIA_SUBDRV_AUTOSELECT
++        select MEDIA_TUNER_SI2157 if MEDIA_SUBDRV_AUTOSELECT
++	select MEDIA_TUNER_AV201X if MEDIA_SUBDRV_AUTOSELECT
++        help
++          Say Y here to support the Turbosight TBS5520se USB2 DVB-T/T2/C/C2/S/S2/S2x device
+diff --git a/drivers/media/usb/dvb-usb/Makefile b/drivers/media/usb/dvb-usb/Makefile
+index 28e4806a8..d7bde07de 100644
+--- a/drivers/media/usb/dvb-usb/Makefile
++++ b/drivers/media/usb/dvb-usb/Makefile
+@@ -77,6 +77,9 @@ obj-$(CONFIG_DVB_USB_CINERGY_T2) += dvb-usb-cinergyT2.o
+ dvb-usb-az6027-objs := az6027.o
+ obj-$(CONFIG_DVB_USB_AZ6027) += dvb-usb-az6027.o
+ 
++dvb-usb-tbs5520se-objs = tbs5520se.o
++obj-$(CONFIG_DVB_USB_TBS5520se) += dvb-usb-tbs5520se.o
++
+ dvb-usb-technisat-usb2-objs := technisat-usb2.o
+ obj-$(CONFIG_DVB_USB_TECHNISAT_USB2) += dvb-usb-technisat-usb2.o
+ 
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
+index 0a7f8ba90..0afa09464 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
+@@ -317,6 +317,22 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
+ 				return 0;
+ 		}
+ 
++		if(adap->fe_adap[i].fe2!=NULL){
++			if (dvb_register_frontend(&adap->dvb_adap, adap->fe_adap[i].fe2)) {
++				err("Frontend %d registration failed.", i);
++				dvb_frontend_detach(adap->fe_adap[i].fe2);
++				adap->fe_adap[i].fe2 = NULL;
++				/* In error case, do not try register more FEs,
++				 * still leaving already registered FEs alive. */
++				if (i == 0)
++					return -ENODEV;
++				else
++					return 0;
++			}
++
++
++		}
++
+ 		/* only attach the tuner if the demod is there */
+ 		if (adap->props.fe[i].tuner_attach != NULL)
+ 			adap->props.fe[i].tuner_attach(adap);
+@@ -343,6 +359,10 @@ int dvb_usb_adapter_frontend_exit(struct dvb_usb_adapter *adap)
+ 			dvb_unregister_frontend(adap->fe_adap[i].fe);
+ 			dvb_frontend_detach(adap->fe_adap[i].fe);
+ 		}
++		if (adap->fe_adap[i].fe2 != NULL) {
++			dvb_unregister_frontend(adap->fe_adap[i].fe2);
++			dvb_frontend_detach(adap->fe_adap[i].fe2);
++		}
+ 	}
+ 	adap->num_frontends_initialized = 0;
+ 
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb.h b/drivers/media/usb/dvb-usb/dvb-usb.h
+index 2eb0e24e8..365cecb99 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb.h
++++ b/drivers/media/usb/dvb-usb/dvb-usb.h
+@@ -369,7 +371,8 @@ struct usb_data_stream {
+  */
+ struct dvb_usb_fe_adapter {
+ 	struct dvb_frontend *fe;
+-
++	struct dvb_frontend *fe2;
++	struct dvb_frontend _fe2;
+ 	int (*fe_init)  (struct dvb_frontend *);
+ 	int (*fe_sleep) (struct dvb_frontend *);
+ 
+diff --git a/drivers/media/usb/dvb-usb/tbs5520se.c b/drivers/media/usb/dvb-usb/tbs5520se.c
+new file mode 100644
+index 000000000..c456e9319
+--- /dev/null
++++ b/drivers/media/usb/dvb-usb/tbs5520se.c
+@@ -0,0 +1,509 @@
++/*
++ * TurboSight TBS 5520se  driver
++ *
++ * Copyright (c) 2017 Davin <smailedavin@hotmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation, version 2.
++ *
++ */
++
++#include <linux/version.h>
++#include "tbs5520se.h"
++#include "si2183.h"
++#include "si2157.h"
++#include "av201x.h"
++
++#define TBS5520SE_READ_MSG 0
++#define TBS5520SE_WRITE_MSG 1
++
++#define TBS5520SE_RC_QUERY (0x1a00)
++#define TBS5520SE_VOLTAGE_CTRL (0x1800)
++
++struct tbs5520se_state {
++	struct i2c_client *i2c_client_demod;
++	struct i2c_client *i2c_client_tuner; 
++	u32 last_key_pressed;
++};
++
++static struct av201x_config tbs5520se_av201x_cfg = {
++	.i2c_address = 0x62,
++	.id          = ID_AV2018,
++	.xtal_freq   = 27000,
++};
++
++/* debug */
++static int dvb_usb_tbs5520se_debug;
++module_param_named(debug, dvb_usb_tbs5520se_debug, int, 0644);
++MODULE_PARM_DESC(debug, "set debugging level (1=info 2=xfer (or-able))." 
++							DVB_USB_DEBUG_STATUS);
++
++DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
++
++static int tbs5520se_op_rw(struct usb_device *dev, u8 request, u16 value,
++				u16 index, u8 * data, u16 len, int flags)
++{
++	int ret;
++	void *u8buf;
++
++	unsigned int pipe = (flags == TBS5520SE_READ_MSG) ?
++			usb_rcvctrlpipe(dev, 0) : usb_sndctrlpipe(dev, 0);
++	u8 request_type = (flags == TBS5520SE_READ_MSG) ? USB_DIR_IN : USB_DIR_OUT;
++	u8buf = kmalloc(len, GFP_KERNEL);
++	if (!u8buf)
++		return -ENOMEM;
++
++	if (flags == TBS5520SE_WRITE_MSG)
++		memcpy(u8buf, data, len);
++	ret = usb_control_msg(dev, pipe, request, request_type | USB_TYPE_VENDOR,
++				value, index , u8buf, len, 2000);
++
++	if (flags == TBS5520SE_READ_MSG)
++		memcpy(data, u8buf, len);
++	kfree(u8buf);
++	return ret;
++}
++
++/* I2C */
++static int tbs5520se_i2c_transfer(struct i2c_adapter *adap, 
++					struct i2c_msg msg[], int num)
++{
++	struct dvb_usb_device *d = i2c_get_adapdata(adap);
++	int i = 0;
++	u8 buf6[20];
++	u8 inbuf[20];
++
++	if (!d)
++		return -ENODEV;
++	if (mutex_lock_interruptible(&d->i2c_mutex) < 0)
++		return -EAGAIN;
++
++	switch (num) {
++	case 2:
++		buf6[0]=msg[1].len;//lenth
++		buf6[1]=msg[0].addr<<1;//demod addr
++		//register
++		buf6[2] = msg[0].buf[0];
++
++		tbs5520se_op_rw(d->udev, 0x90, 0, 0,
++					buf6, 3, TBS5520SE_WRITE_MSG);
++		//msleep(5);
++		tbs5520se_op_rw(d->udev, 0x91, 0, 0,
++					inbuf, buf6[0], TBS5520SE_READ_MSG);
++		memcpy(msg[1].buf, inbuf, msg[1].len);
++
++		break;
++	case 1:
++		switch (msg[0].addr) {
++		case 0x67:
++		case 0x62:
++		case 0x61:
++			if (msg[0].flags == 0) {
++				buf6[0] = msg[0].len+1;//lenth
++				buf6[1] = msg[0].addr<<1;//addr
++				for(i=0;i<msg[0].len;i++) {
++					buf6[2+i] = msg[0].buf[i];//register
++				}
++				tbs5520se_op_rw(d->udev, 0x80, 0, 0,
++					buf6, msg[0].len+2, TBS5520SE_WRITE_MSG);
++			} else {
++				buf6[0] = msg[0].len;//length
++				buf6[1] = (msg[0].addr<<1) | 0x01;//addr
++				tbs5520se_op_rw(d->udev, 0x93, 0, 0,
++						buf6, 2, TBS5520SE_WRITE_MSG);
++				//msleep(5);
++				tbs5520se_op_rw(d->udev, 0x91, 0, 0,
++					inbuf, buf6[0], TBS5520SE_READ_MSG);
++				memcpy(msg[0].buf, inbuf, msg[0].len);
++			}
++			//msleep(3);
++		break;
++		case (TBS5520SE_VOLTAGE_CTRL):
++			buf6[0] = 3;
++			buf6[1] = msg[0].buf[0];
++			tbs5520se_op_rw(d->udev, 0x8a, 0, 0,
++					buf6, 2, TBS5520SE_WRITE_MSG);
++			break;
++		case (TBS5520SE_RC_QUERY):
++			tbs5520se_op_rw(d->udev, 0xb8, 0, 0,
++					buf6, 4, TBS5520SE_READ_MSG);
++			msg[0].buf[0] = buf6[2];
++			msg[0].buf[1] = buf6[3];
++			//msleep(3);
++			//info("TBS5520SE_RC_QUERY %x %x %x %x\n",
++			//		buf6[0],buf6[1],buf6[2],buf6[3]);
++			break;
++		}
++
++		break;
++	}
++
++	mutex_unlock(&d->i2c_mutex);
++	return num;
++}
++
++static u32 tbs5520se_i2c_func(struct i2c_adapter *adapter)
++{
++	return I2C_FUNC_I2C;
++}
++
++static struct i2c_algorithm tbs5520se_i2c_algo = {
++	.master_xfer = tbs5520se_i2c_transfer,
++	.functionality = tbs5520se_i2c_func,
++};
++
++static int tbs5520se_set_voltage(struct dvb_frontend *fe, 
++						enum fe_sec_voltage voltage)
++{
++	static u8 command_13v[1] = {0x00};
++	static u8 command_18v[1] = {0x01};
++	struct i2c_msg msg[] = {
++		{.addr = TBS5520SE_VOLTAGE_CTRL, .flags = 0,
++			.buf = command_13v, .len = 1},
++	};
++	
++	struct dvb_usb_adapter *udev_adap =
++		(struct dvb_usb_adapter *)(fe->dvb->priv);
++	if (voltage == SEC_VOLTAGE_18)
++		msg[0].buf = command_18v;
++
++	//info("tbs5520se_set_voltage %d",voltage);
++	i2c_transfer(&udev_adap->dev->i2c_adap, msg, 1);
++	
++	return 0;
++}
++
++static int tbs5520se_read_mac_address(struct dvb_usb_device *d, u8 mac[6])
++{
++	int i,ret;
++	u8 ibuf[3] = {0, 0,0};
++	u8 eeprom[256], eepromline[16];
++
++	for (i = 0; i < 256; i++) {
++		ibuf[0]=1;//lenth
++		ibuf[1]=0xa0;//eeprom addr
++		ibuf[2]=i;//register
++		ret = tbs5520se_op_rw(d->udev, 0x90, 0, 0,
++					ibuf, 3, TBS5520SE_WRITE_MSG);
++		ret = tbs5520se_op_rw(d->udev, 0x91, 0, 0,
++					ibuf, 1, TBS5520SE_READ_MSG);
++			if (ret < 0) {
++				err("read eeprom failed.");
++				return -1;
++			} else {
++				eepromline[i%16] = ibuf[0];
++				eeprom[i] = ibuf[0];
++			}
++			
++			if ((i % 16) == 15) {
++				deb_xfer("%02x: ", i - 15);
++				debug_dump(eepromline, 16, deb_xfer);
++			}
++	}
++	memcpy(mac, eeprom + 16, 6);
++	return 0;
++};
++
++static struct dvb_usb_device_properties tbs5520se_properties;
++
++static int tbs5520se_frontend_attach(struct dvb_usb_adapter *adap)
++{
++	struct dvb_usb_device *d = adap->dev;
++	struct tbs5520se_state *st = d->priv;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client_demod;
++	struct i2c_client *client_tuner;
++	struct i2c_board_info info;
++	struct si2183_config si2183_config;
++	struct si2157_config si2157_config;
++	u8 buf[20];
++
++
++	/* attach frontend */
++	memset(&si2183_config,0,sizeof(si2183_config));
++	si2183_config.i2c_adapter = &adapter;
++	si2183_config.fe = &adap->fe_adap[0].fe;	
++	si2183_config.ts_mode = SI2183_TS_PARALLEL;
++	si2183_config.ts_clock_gapped = true;
++	si2183_config.rf_in = 0;
++	si2183_config.RF_switch = NULL;
++	si2183_config.agc_mode = 0x5 ;
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	strlcpy(info.type, "si2183", I2C_NAME_SIZE);
++	info.addr = 0x67;
++	info.platform_data = &si2183_config;
++	request_module(info.type);
++	client_demod = i2c_new_client_device(&d->i2c_adap, &info);
++	if (client_demod == NULL || client_demod->dev.driver == NULL)
++		return -ENODEV;
++
++	if (!try_module_get(client_demod->dev.driver->owner)) {
++		i2c_unregister_device(client_demod);
++		return -ENODEV;
++	}
++
++	st->i2c_client_demod = client_demod;
++
++	/* dvb core doesn't support 2 tuners for 1 demod so
++	   we split the adapter in 2 frontends */
++
++	adap->fe_adap[0].fe2 = &adap->fe_adap[0]._fe2;
++	memcpy(adap->fe_adap[0].fe2, adap->fe_adap[0].fe, sizeof(struct dvb_frontend));
++
++	/* terrestrial tuner */
++	memset(adap->fe_adap[0].fe->ops.delsys, 0, MAX_DELSYS);
++	adap->fe_adap[0].fe->ops.delsys[0] = SYS_DVBT;
++	adap->fe_adap[0].fe->ops.delsys[1] = SYS_DVBT2;
++	adap->fe_adap[0].fe->ops.delsys[2] = SYS_DVBC_ANNEX_A;
++	adap->fe_adap[0].fe->ops.delsys[3] = SYS_ISDBT;
++	adap->fe_adap[0].fe->ops.delsys[4] = SYS_DVBC_ANNEX_B;
++
++	/* attach ter tuner */
++	memset(&si2157_config, 0, sizeof(si2157_config));
++	si2157_config.fe = adap->fe_adap[0].fe;
++	si2157_config.if_port = 1;
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	strlcpy(info.type, "si2157", I2C_NAME_SIZE);
++	info.addr = 0x61;
++	info.platform_data = &si2157_config;
++	request_module(info.type);
++	client_tuner = i2c_new_client_device(adapter, &info);
++	if (client_tuner == NULL || client_tuner->dev.driver == NULL) {
++		module_put(client_demod->dev.driver->owner);
++		i2c_unregister_device(client_demod);
++		return -ENODEV;
++	}
++	if (!try_module_get(client_tuner->dev.driver->owner)) {
++		i2c_unregister_device(client_tuner);
++		module_put(client_demod->dev.driver->owner);
++		i2c_unregister_device(client_demod);
++		return -ENODEV;
++	}
++
++	st->i2c_client_tuner = client_tuner;
++
++	memset(adap->fe_adap[0].fe2->ops.delsys, 0, MAX_DELSYS);
++	adap->fe_adap[0].fe2->ops.delsys[0] = SYS_DVBS;
++	adap->fe_adap[0].fe2->ops.delsys[1] = SYS_DVBS2;
++	adap->fe_adap[0].fe2->ops.delsys[2] = SYS_DSS;
++	adap->fe_adap[0].fe2->id = 1;
++
++	if (dvb_attach(av201x_attach, adap->fe_adap[0].fe2, &tbs5520se_av201x_cfg,
++			adapter) == NULL) {
++		return -ENODEV;
++	}
++	else {
++		buf[0] = 1;
++		buf[1] = 0;
++		tbs5520se_op_rw(d->udev, 0x8a, 0, 0,
++					buf, 2, TBS5520SE_WRITE_MSG);
++		
++		adap->fe_adap[0].fe2->ops.set_voltage = tbs5520se_set_voltage;
++		
++	}
++
++	buf[0] = 0;
++	buf[1] = 0;
++	tbs5520se_op_rw(d->udev, 0xb7, 0, 0,
++			buf, 2, TBS5520SE_WRITE_MSG);
++	buf[0] = 8;
++	buf[1] = 1;
++	tbs5520se_op_rw(d->udev, 0x8a, 0, 0,
++			buf, 2, TBS5520SE_WRITE_MSG);
++
++	strlcpy(adap->fe_adap[0].fe->ops.info.name,d->props.devices[0].name,52);
++	strcat(adap->fe_adap[0].fe->ops.info.name," DVB-T/T2/C/C2/ISDB-T");
++	strlcpy(adap->fe_adap[0].fe2->ops.info.name,d->props.devices[0].name,52);
++	strcat(adap->fe_adap[0].fe2->ops.info.name," DVB-S/S2/S2X");
++
++	return 0;
++}
++
++static struct usb_device_id tbs5520se_table[] = {
++	{USB_DEVICE(0x734c, 0x5521)},
++	{ }
++};
++
++MODULE_DEVICE_TABLE(usb, tbs5520se_table);
++
++static int tbs5520se_load_firmware(struct usb_device *dev,
++			const struct firmware *frmwr)
++{
++	u8 *b, *p;
++	int ret = 0, i;
++	u8 reset;
++	const struct firmware *fw;
++	switch (dev->descriptor.idProduct) {
++	case 0x5521:
++		ret = request_firmware(&fw, tbs5520se_properties.firmware, &dev->dev);
++		if (ret != 0) {
++			err("did not find the firmware file. (%s) "
++			"Please see linux/Documentation/dvb/ for more details "
++			"on firmware-problems.", tbs5520se_properties.firmware);
++			return ret;
++		}
++		break;
++	default:
++		fw = frmwr;
++		break;
++	}
++	info("start downloading TBS5520se firmware");
++	p = kmalloc(fw->size, GFP_KERNEL);
++	reset = 1;
++	/*stop the CPU*/
++	tbs5520se_op_rw(dev, 0xa0, 0x7f92, 0, &reset, 1, TBS5520SE_WRITE_MSG);
++	tbs5520se_op_rw(dev, 0xa0, 0xe600, 0, &reset, 1, TBS5520SE_WRITE_MSG);
++
++	if (p != NULL) {
++		memcpy(p, fw->data, fw->size);
++		for (i = 0; i < fw->size; i += 0x40) {
++			b = (u8 *) p + i;
++			if (tbs5520se_op_rw(dev, 0xa0, i, 0, b , 0x40,
++					TBS5520SE_WRITE_MSG) != 0x40) {
++				err("error while transferring firmware");
++				ret = -EINVAL;
++				break;
++			}
++		}
++		/* restart the CPU */
++		reset = 0;
++		if (ret || tbs5520se_op_rw(dev, 0xa0, 0x7f92, 0, &reset, 1,
++					TBS5520SE_WRITE_MSG) != 1) {
++			err("could not restart the USB controller CPU.");
++			ret = -EINVAL;
++		}
++		if (ret || tbs5520se_op_rw(dev, 0xa0, 0xe600, 0, &reset, 1,
++					TBS5520SE_WRITE_MSG) != 1) {
++			err("could not restart the USB controller CPU.");
++			ret = -EINVAL;
++		}
++
++		msleep(100);
++		kfree(p);
++	}
++	return ret;
++}
++
++static struct dvb_usb_device_properties tbs5520se_properties = {
++	.caps = DVB_USB_IS_AN_I2C_ADAPTER,
++	.usb_ctrl = DEVICE_SPECIFIC,
++	.firmware = "dvb-usb-id5520se.fw",
++	.size_of_priv = sizeof(struct tbs5520se_state),
++	.no_reconnect = 1,
++
++	.i2c_algo = &tbs5520se_i2c_algo,
++
++	.generic_bulk_ctrl_endpoint = 0x81,
++	/* parameter for the MPEG2-data transfer */
++	.num_adapters = 1,
++	.download_firmware = tbs5520se_load_firmware,
++	.read_mac_address = tbs5520se_read_mac_address,
++	.adapter = {{
++		.num_frontends = 1,
++		.fe = {{
++			.frontend_attach = tbs5520se_frontend_attach,
++			.streaming_ctrl = NULL,
++			.tuner_attach = NULL,
++			.stream = {
++				.type = USB_BULK,
++				.count = 8,
++				.endpoint = 0x82,
++				.u = {
++					.bulk = {
++						.buffersize = 4096,
++					}
++				}
++			},
++		},
++/*			{
++				.frontend_attach = tbs5520se_satfrontend_attach,
++				.streaming_ctrl = NULL,
++				.tuner_attach = NULL,
++				.stream = {
++					.type = USB_BULK,
++					.count = 8,
++					.endpoint = 0x82,
++					.u = {
++						.bulk = {
++							.buffersize = 4096,
++						}
++					}
++				},
++			},*/
++
++		},
++		
++	}},
++
++	.num_device_descs = 1,
++	.devices = {
++		{"TurboSight TBS 5520SE",
++			{&tbs5520se_table[0], NULL},
++			{NULL},
++		}
++	}
++};
++
++static int tbs5520se_probe(struct usb_interface *intf,
++		const struct usb_device_id *id)
++{
++	if (0 == dvb_usb_device_init(intf, &tbs5520se_properties,
++			THIS_MODULE, NULL, adapter_nr)) {
++		return 0;
++	}
++	return -ENODEV;
++}
++
++static void tbs5520se_disconnect(struct usb_interface *intf)
++{
++#if 0
++	struct dvb_usb_device *d = usb_get_intfdata(intf);
++	struct tbs5520se_state *st = d->priv;
++	struct i2c_client *client;
++
++	/* remove I2C client for tuner */
++	client = st->i2c_client_tuner;
++	if (client) {
++		module_put(client->dev.driver->owner);
++		i2c_unregister_device(client);
++	}
++
++	/* remove I2C client for demodulator */
++	client = st->i2c_client_demod;
++	if (client) {
++		module_put(client->dev.driver->owner);
++		i2c_unregister_device(client);
++	}
++#endif	
++	dvb_usb_device_exit(intf);
++}
++
++static struct usb_driver tbs5520se_driver = {
++	.name = "tbs5520se",
++	.probe = tbs5520se_probe,
++	.disconnect = tbs5520se_disconnect,
++	.id_table = tbs5520se_table,
++};
++
++static int __init tbs5520se_module_init(void)
++{
++	int ret =  usb_register(&tbs5520se_driver);
++	if (ret)
++		err("usb_register failed. Error number %d", ret);
++
++	return ret;
++}
++
++static void __exit tbs5520se_module_exit(void)
++{
++	usb_deregister(&tbs5520se_driver);
++}
++
++module_init(tbs5520se_module_init);
++module_exit(tbs5520se_module_exit);
++
++MODULE_AUTHOR("Davin  <smiledavin@hotmail.com>");
++MODULE_DESCRIPTION("TurboSight TBS 5520SE driver");
++MODULE_VERSION("1.0");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/usb/dvb-usb/tbs5520se.h b/drivers/media/usb/dvb-usb/tbs5520se.h
+new file mode 100644
+index 000000000..f524a2f7e
+--- /dev/null
++++ b/drivers/media/usb/dvb-usb/tbs5520se.h
+@@ -0,0 +1,8 @@
++#ifndef _TBS5520SE_H_
++#define _TBS5520SE_H_
++
++#define DVB_USB_LOG_PREFIX "tbs5520se"
++#include "dvb-usb.h"
++
++#define deb_xfer(args...) dprintk(dvb_usb_tbs5520se_debug, 0x02, args)
++#endif
+diff --git a/include/media/dvb_frontend.h b/include/media/dvb_frontend.h
+index 0d76fa455..3c94a4561 100644
+--- a/include/media/dvb_frontend.h
++++ b/include/media/dvb_frontend.h
+@@ -429,8 +429,10 @@ struct dvb_frontend_internal_info {
+  * @ts_bus_ctrl:	callback function used to take control of the TS bus.
+  * @set_lna:		callback function to power on/off/auto the LNA.
+  * @search:		callback function used on some custom algo search algos.
+- * @tuner_ops:		pointer to &struct dvb_tuner_ops
+- * @analog_ops:		pointer to &struct analog_demod_ops
++ * @tuner_ops:		pointer to struct dvb_tuner_ops
++ * @analog_ops:		pointer to struct analog_demod_ops
++ * @set_property:	callback function to allow the frontend to validade
++ *			incoming properties. Should not be used on new drivers.
+  */
+ struct dvb_frontend_ops {
+ 	struct dvb_frontend_internal_info info;
+@@ -491,6 +493,22 @@ struct dvb_frontend_ops {
+ 
+ 	struct dvb_tuner_ops tuner_ops;
+ 	struct analog_demod_ops analog_ops;
++	
++	int (*set_property)(struct dvb_frontend* fe, u32 cmd, u32 data);
++
++	void(*spi_read)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
++	void(*spi_write)( struct dvb_frontend *fe,struct ecp3_info *ecp3inf);
++
++	void(*mcu_read)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
++	void(*mcu_write)( struct dvb_frontend *fe,struct mcu24cxx_info *mcu24cxxinf);
++
++	void(*reg_i2cread)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
++	void(*reg_i2cwrite)( struct dvb_frontend *fe,struct usbi2c_access *pi2cinf);
++
++	void(*eeprom_read)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
++	void(*eeprom_write)( struct dvb_frontend *fe,struct eeprom_info *peepinf);
++    
++    int (*read_temp)(struct dvb_frontend* fe, s16* temp);
+ };
+ 
+ #ifdef __DVB_CORE__
+@@ -622,6 +640,7 @@ struct dtv_frontend_properties {
+ 
+ 	/* Multistream specifics */
+ 	u32			stream_id;
++	u32			modcode;
+ 
+ 	/* Physical Layer Scrambling specifics */
+ 	u32			scrambling_sequence_index;
+diff --git a/include/uapi/linux/dvb/frontend.h b/include/uapi/linux/dvb/frontend.h
+index 4f9b4551c..aae8a1825 100644
+--- a/include/uapi/linux/dvb/frontend.h
++++ b/include/uapi/linux/dvb/frontend.h
+@@ -1008,4 +1008,45 @@ struct dvb_frontend_event {
+ 
+ #endif
+ 
++struct ecp3_info
++{
++	__u8 reg;
++	__u32 data;
++};
++
++struct mcu24cxx_info
++{
++	__u32 bassaddr;
++	__u8 reg;
++	__u32 data;
++};
++
++struct usbi2c_access
++{
++	__u8 chip_addr;
++	__u8 reg;
++	__u8 num;
++	__u8 buf[8];
++};
++
++struct eeprom_info
++{
++	__u8 reg;
++	__u8 data;
++};
++
++#define FE_ECP3FW_READ    _IOR('o', 90, struct ecp3_info)
++#define FE_ECP3FW_WRITE   _IOW('o', 91, struct ecp3_info)
++
++#define FE_24CXX_READ    _IOR('o', 92, struct mcu24cxx_info)
++#define FE_24CXX_WRITE   _IOW('o', 93, struct mcu24cxx_info)
++
++#define FE_REGI2C_READ    _IOR('o', 94, struct usbi2c_access)
++#define FE_REGI2C_WRITE   _IOW('o', 95, struct usbi2c_access)
++
++#define FE_EEPROM_READ    _IOR('o', 96, struct eeprom_info)
++#define FE_EEPROM_WRITE   _IOW('o', 97, struct eeprom_info)
++
++#define FE_READ_TEMP	  _IOR('o', 98, __s16)
++
+ #endif /*_DVBFRONTEND_H_*/
 -- 
-2.25.1
+2.20.1
 
