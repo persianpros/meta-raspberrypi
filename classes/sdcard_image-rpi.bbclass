@@ -33,7 +33,9 @@ IMAGE_BOOTLOADER = "${BOOTFILES_DIR_NAME}"
 KERNEL_INITRAMFS = ""
 
 # Boot partition volume id
-BOOTDD_VOLUME_ID = "${MACHINE}"
+# Shorten raspberrypi to just rpi to keep it under 11 characters
+# now enforced by mkfs.vfat from dosfstools-4.2
+BOOTDD_VOLUME_ID ?= "${@d.getVar('MACHINE').replace('raspberrypi', 'rpi')}"
 
 # Boot partition size [in KiB] (will be rounded up to IMAGE_ROOTFS_ALIGNMENT)
 BOOT_SPACE = "49152"
