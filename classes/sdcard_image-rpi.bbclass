@@ -43,8 +43,8 @@ BOOT_SPACE = "49152"
 # Set alignment to 4MB [in KiB]
 IMAGE_ROOTFS_ALIGNMENT = "4096"
 
-# Use an uncompressed ext3 by default as rootfs
-SDIMG_ROOTFS_TYPE = "ext3"
+# Use an uncompressed ext4 by default as rootfs
+SDIMG_ROOTFS_TYPE = "ext4"
 SDIMG_ROOTFS = "${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${SDIMG_ROOTFS_TYPE}"
 
 do_image_rpi_sdimg[depends] = " \
