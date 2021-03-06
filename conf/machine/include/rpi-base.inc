@@ -52,8 +52,10 @@ KERNEL_MODULE_AUTOLOAD += "\
 	vtunerc \
 	"
 
-# Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
+KERNEL_MODULE_PROBECONF += "vtunerc"
+module_conf_vtunerc = "options vtunerc adapter_nr=4,5,6,7 devices=4"
 
+# Help: https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
 RPI_KERNEL_DEVICETREE_OVERLAYS = "\
 	overlays/disable-bt.dtbo \
 	overlays/dwc2.dtbo \
