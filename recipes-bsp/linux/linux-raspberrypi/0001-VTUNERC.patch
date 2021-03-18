@@ -12,12 +12,12 @@ Subject: [PATCH 2/2] VTUNERC
  drivers/media/vtunerc/Makefile          |  36 ++
  drivers/media/vtunerc/README            |  66 +++
  drivers/media/vtunerc/TODO              |   4 +
- drivers/media/vtunerc/vtuner.h          | 114 +++++
- drivers/media/vtunerc/vtunerc_ctrldev.c | 451 +++++++++++++++++++
+ drivers/media/vtunerc/vtuner.h          | 115 +++++
+ drivers/media/vtunerc/vtunerc_ctrldev.c | 458 +++++++++++++++++++
  drivers/media/vtunerc/vtunerc_main.c    | 426 ++++++++++++++++++
  drivers/media/vtunerc/vtunerc_priv.h    | 121 +++++
  drivers/media/vtunerc/vtunerc_proxyfe.c | 570 ++++++++++++++++++++++++
- 13 files changed, 1815 insertions(+)
+ 13 files changed, 1823 insertions(+)
  create mode 100644 drivers/media/vtunerc/COMMITERS
  create mode 100644 drivers/media/vtunerc/HISTORY
  create mode 100644 drivers/media/vtunerc/Kconfig
@@ -223,7 +223,7 @@ new file mode 100644
 index 000000000..72dac63ee
 --- /dev/null
 +++ b/drivers/media/vtunerc/vtuner.h
-@@ -0,0 +1,114 @@
+@@ -0,0 +1,115 @@
 +/*
 + * vtunerc: /dev/vtunerc API
 + *
@@ -309,6 +309,7 @@ index 000000000..72dac63ee
 +				} vsb;
 +			} u;
 +		} fe_params;
++		struct dvb_frontend_tune_settings tune_settings;
 +		struct dtv_property prop;
 +		u32 status;
 +		u32 ber;
@@ -343,7 +344,7 @@ new file mode 100644
 index 000000000..6d0f05c32
 --- /dev/null
 +++ b/drivers/media/vtunerc/vtunerc_ctrldev.c
-@@ -0,0 +1,451 @@
+@@ -0,0 +1,458 @@
 +/*
 + * vtunerc: /dev/vtunerc device
 + *
@@ -523,6 +524,7 @@ index 000000000..6d0f05c32
 +		return -ERESTARTSYS;
 +
 +	switch (cmd) {
++	case 13:
 +	case VTUNER_SET_NAME:
 +		dprintk(ctx, "msg VTUNER_SET_NAME\n");
 +		len = strlen((char *)arg) + 1;
@@ -539,6 +541,7 @@ index 000000000..6d0f05c32
 +		}
 +		break;
 +
++	case 18:
 +	case VTUNER_SET_MODES:
 +		dprintk(ctx, "msg VTUNER_SET_MODES\n");
 +		for (i = 0; i < ctx->num_modes; i++)
@@ -551,6 +554,7 @@ index 000000000..6d0f05c32
 +		}
 +		/* follow into old code for compatibility */
 +
++	case 14:
 +	case VTUNER_SET_TYPE:
 +		dprintk(ctx, "msg VTUNER_SET_TYPE\n");
 +		if (strcasecmp((char *)arg, "DVB-S") == 0) {
@@ -590,6 +594,7 @@ index 000000000..6d0f05c32
 +		break;
 +
 +
++	case 16:
 +	case VTUNER_SET_FE_INFO:
 +		dprintk(ctx, "msg VTUNER_SET_FE_INFO\n");
 +		len = sizeof(struct dvb_frontend_info);
@@ -606,6 +611,7 @@ index 000000000..6d0f05c32
 +		}
 +		break;
 +
++	case 11:
 +	case VTUNER_GET_MESSAGE:
 +		dprintk(ctx, "msg VTUNER_GET_MESSAGE\n");
 +		if (wait_event_interruptible(ctx->ctrldev_wait_request_wq,
@@ -629,6 +635,7 @@ index 000000000..6d0f05c32
 +
 +		break;
 +
++	case 12:
 +	case VTUNER_SET_RESPONSE:
 +		dprintk(ctx, "msg VTUNER_SET_RESPONSE\n");
 +		if (copy_from_user(&ctx->ctrldev_response, (char *)arg,
@@ -639,6 +646,7 @@ index 000000000..6d0f05c32
 +
 +		break;
 +
++	case 17:
 +	case VTUNER_SET_NUM_MODES:
 +		dprintk(ctx, "msg VTUNER_SET_NUM_MODES (faked)\n");
 +		ctx->num_modes = (int) arg;
