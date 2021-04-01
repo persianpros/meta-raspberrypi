@@ -13,7 +13,7 @@ COMPATIBLE_MACHINE = "^(raspberrypi|raspberrypi0|raspberrypi2|raspberrypi3|raspb
 
 SRCBRANCH = "master"
 SRCFORK = "raspberrypi"
-SRCREV = "093b30bbc2fd083d68cc3ee07e6e555c6e592d11"
+SRCREV = "3fd8527eefd8790b4e8393458efc5f94eb21a615"
 
 # Use the date of the above commit as the package version. Update this when
 # SRCREV is changed.
