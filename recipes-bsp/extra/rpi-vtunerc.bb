@@ -13,8 +13,8 @@ SRC_URI = "file://${PN}.sh"
 S = "${WORKDIR}"
 
 do_install () {
-    install -d ${D}${sysconfdir}/init.d/
-    install -m 0755 ${WORKDIR}/${PN}.sh ${D}${sysconfdir}/init.d/
+    install -d ${D}${INIT_D_DIR}/
+    install -m 0755 ${WORKDIR}/${PN}.sh ${D}${INIT_D_DIR}/
 }
 
 FILES_${PN} = "${sysconfdir}"
