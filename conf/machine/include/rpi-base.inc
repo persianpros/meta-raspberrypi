@@ -6,8 +6,17 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
 PREFERRED_VERSION_linux-raspberrypi = "5.10.%"
 PREFERRED_PROVIDER_virtual/egl ?= "userland"
 PREFERRED_PROVIDER_virtual/libgles2 ?= "userland"
-PREFERRED_PROVIDER_virtual/libomxil = "userland"
+PREFERRED_PROVIDER_virtual/libgl ?= "mesa-gl"
+PREFERRED_PROVIDER_virtual/mesa ?= "mesa-gl"
+PREFERRED_PROVIDER_virtual/libgbm ?= "mesa-gl"
+PREFERRED_PROVIDER_virtual/libomxil ?= "userland"
 VIRTUAL-RUNTIME_libomxil = "userland"
+PREFERRED_PROVIDER_virtual/xserver ?= "xserver-xorg"
+
+XSERVER = "\
+	xserver-xorg \
+	xf86-video-fbdev \
+	"
 
 HDMI_IGNORE_EDID = "0xa5000080"
 DISABLE_OVERSCAN = "1"
