@@ -149,3 +149,5 @@ do_image_wic[recrdeps] = "do_build"
 # The kernel image is installed into the FAT32 boot partition and does not need
 # to also be installed into the rootfs.
 RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
+
+DISPLAY_BRAND = "Raspberry Pi"
