@@ -1,3 +1,3 @@
 meta-rpi [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ========
-RaspberryPi BSP layer for Open Vision 10.3
+RaspberryPi BSP layer for Open Vision 11.1
