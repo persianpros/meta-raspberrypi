@@ -2,9 +2,9 @@ require linux-raspberrypi.inc
 
 LINUX_VERSION = "${KERNELVERSION}"
 
-SRCREV = "58f672b8da4a4094283a7fcb29dc63f3eb7ddb62"
+SRCREV = "6b0f228ba15ade487ed4adc50fb7f460195c38db"
 
 S_rpi = "${WORKDIR}/linux-${SRCREV}"
 
-SRC_URI[md5sum] = "5f9034b79d57e89936a3eeb784e19a20"
-SRC_URI[sha256sum] = "7091fb26530786d9bc5d65d38d15b494af3741f1019b328df29e34f71197b413"
+SRC_URI[md5sum] = "bedd1713d90eab1fd232b558bdbb5e84"
+SRC_URI[sha256sum] = "550a1c1cd0aeaaa6a891a12169d8b51e086e22152399a7a67e7c1951cc2fef48"
