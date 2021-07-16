@@ -1,11 +1,11 @@
-RPIFW_DATE = "20210629"
+RPIFW_DATE = "20210716"
 
-SRCREV = "19272ccd69049aaf42c78a235a0bf37dbabd5ea7"
+SRCREV = "4be1d21062e8b646e588e104a5a5d414996a48b2"
 
 RPIFW_SRC_URI = "https://github.com/raspberrypi/firmware/archive/${SRCREV}.tar.gz"
 
-SRC_URI[md5sum] = "bcc10a6e6e052278e352189bb3d0be46"
-SRC_URI[sha256sum] = "accd328f21c11a643b358c647c0c532c8f97b0167b12d24d9f14aa71be526f0b"
+SRC_URI[md5sum] = "7d5cc6374d0c851a2226fc92cf070e83"
+SRC_URI[sha256sum] = "7309e460166ae623cbef803b041767c9f8adc3f536800fc883280ba955706dc2"
 
 RPIFW_S = "${WORKDIR}/firmware-${SRCREV}"
 
